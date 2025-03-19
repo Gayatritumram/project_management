@@ -12,8 +12,6 @@ public class TeamMemberDTO {
     private Long id;
     private String name;
     private String email;
-    private String password;
-    private String confirmPassword;
     private LocalDate joinDate;
     private String department;
     private String phone;

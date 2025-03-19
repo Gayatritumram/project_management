@@ -1,8 +1,6 @@
 package com.backend.project_management.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +13,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Table(name = "Project_Table")
 public class Project {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String projectName;
     private String projectCategory;
