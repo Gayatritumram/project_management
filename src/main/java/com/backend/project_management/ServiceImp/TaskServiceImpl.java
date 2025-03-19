@@ -1,4 +1,4 @@
-package com.backend.project_management.Service.SeviceIMP;
+package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.TaskDTO;
 import com.backend.project_management.Entity.Task;

@@ -3,9 +3,11 @@ package com.backend.project_management.Mapper;
 import com.backend.project_management.DTO.ProjectDTO;
 import com.backend.project_management.Entity.Project;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @NoArgsConstructor
-public class Mapper {
+public class ProjectMapper {
     //Project Mapper
     public static ProjectDTO mapToProjectDTO(Project project) {
         return new ProjectDTO(
