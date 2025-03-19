@@ -1,0 +1,47 @@
+package com.backend.project_management.Mapper;
+
+import com.backend.project_management.DTO.TaskDTO;
+import com.backend.project_management.Entity.Task;
+import org.springframework.stereotype.Component;
+
+@Component
+public class TaskMapper {
+
+    public TaskDTO toDTO(Task task) {
+        TaskDTO dto = new TaskDTO();
+        dto.setId(task.getId());
+        dto.setDescription(task.getDescription());
+        dto.setProjectName(task.getProjectName());
+        dto.setDays(task.getDays());
+        dto.setHour(task.getHour());
+        dto.setStatus(task.getStatus());
+        dto.setStatusBar(task.getStatusBar());
+        dto.setStartDate(task.getStartDate());
+        dto.setEndDate(task.getEndDate());
+        dto.setStartTime(task.getStartTime());
+        dto.setEndTime(task.getEndTime());
+        dto.setImageUrl(task.getImageUrl());
+        dto.setDurationInMinutes(task.getDurationInMinutes());
+        dto.setSubject(task.getSubject());
+        return dto;
+    }
+
+    public Task toEntity(TaskDTO dto) {
+        Task task = new Task();
+        task.setId(dto.getId());
+        task.setDescription(dto.getDescription());
+        task.setProjectName(dto.getProjectName());
+        task.setDays(dto.getDays());
+        task.setHour(dto.getHour());
+        task.setStatus(dto.getStatus());
+        task.setStatusBar(dto.getStatusBar());
+        task.setStartDate(dto.getStartDate());
+        task.setEndDate(dto.getEndDate());
+        task.setStartTime(dto.getStartTime());
+        task.setEndTime(dto.getEndTime());
+        task.setImageUrl(dto.getImageUrl());
+        task.setDurationInMinutes(dto.getDurationInMinutes());
+        task.setSubject(dto.getSubject());
+        return task;
+    }
+}
