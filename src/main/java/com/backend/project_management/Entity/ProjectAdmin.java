@@ -5,5 +5,6 @@ import jakarta.persistence.Entity;
 @Entity
 public class ProjectAdmin {
     private Long id;
+    private String name;
 
 }
