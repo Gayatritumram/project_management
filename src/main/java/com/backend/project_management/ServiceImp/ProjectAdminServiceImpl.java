@@ -8,6 +8,7 @@ import com.backend.project_management.Entity.Task;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.ProjectAdminMapper;
+import com.backend.project_management.Mapper.TeamMemberMapper;
 import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TaskRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
@@ -27,6 +28,8 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
     @Autowired
     private TeamMemberRepository memberRepository;
 
+    private final TeamMemberMapper teamMemberMapper;
+
     @Autowired
     private TaskRepository taskRepository;
 
@@ -35,6 +38,11 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+
+    public ProjectAdminServiceImpl(TeamMemberMapper teamMemberMapper) {
+        this.teamMemberMapper = teamMemberMapper;
+    }
 
 
     @Override
