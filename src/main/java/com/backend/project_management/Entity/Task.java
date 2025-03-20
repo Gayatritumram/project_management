@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Task_Table")
 public class Task {
 
     @Id
@@ -24,7 +23,6 @@ public class Task {
     private int days;
     private int hour;
     private String status;
-
     @Column(name = "statusBar", nullable = false)
     private double statusBar =0;
     private LocalDate startDate;
@@ -35,12 +33,8 @@ public class Task {
     private long durationInMinutes;
     private String subject;
 
-    @ManyToOne
-    @JoinColumn(name = "assigned_by")
-    private ProjectAdmin assignedBy;
-
-    @ManyToOne
-    @JoinColumn(name = "assigned_to")
+    @ManyToOne // Define relationship with TeamMember
+    @JoinColumn(name = "assigned_to", referencedColumnName = "id")
     private TeamMember assignedTo;
 
 }

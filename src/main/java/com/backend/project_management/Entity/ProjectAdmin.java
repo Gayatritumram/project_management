@@ -1,13 +1,14 @@
 package com.backend.project_management.Entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+
 @Entity
 @Table(name = "Project_admin")
 public class ProjectAdmin {
@@ -23,7 +24,6 @@ public class ProjectAdmin {
     @Transient
     private String cpassword;
 
-    @OneToMany(mappedBy = "assignedBy", cascade = CascadeType.ALL)
-    private List<Task> assignedTasks;
-
 }
+
+

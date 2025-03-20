@@ -26,4 +26,6 @@ public class TaskDTO {
     private String imageUrl;
     private long durationInMinutes;
     private String subject;
+
+    private Long assignedTo;
 }
