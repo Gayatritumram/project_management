@@ -21,6 +21,7 @@ public class ProjectAdminMapper {
         dto.setName(admin.getName());
         dto.setEmail(admin.getEmail());
         dto.setPhone(admin.getPhone());
+        dto.setPassword(admin.getPassword());
         return dto;
     }
 

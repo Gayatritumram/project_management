@@ -25,7 +25,6 @@ public class TeamMemberMapper {
         }
 
     public static TeamMemberDTO mapToTeamMemberDTO(TeamMember teamMember) {
-
         return new TeamMemberDTO(
                 teamMember.getId(),
                 teamMember.getName(),
