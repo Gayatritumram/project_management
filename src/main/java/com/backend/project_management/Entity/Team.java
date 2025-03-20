@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Entity
 @AllArgsConstructor
@@ -17,6 +19,6 @@ public class Team {
     private String branch;
     private String department;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Project assignProject;
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    private List<TeamMember> members;
 }

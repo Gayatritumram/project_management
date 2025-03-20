@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -23,5 +25,8 @@ public class ProjectAdmin {
     private String password;
     @Transient
     private String cpassword;
+
+    @OneToMany(mappedBy = "assignedBy", cascade = CascadeType.ALL)
+    private List<Task> assignedTasks;
 
 }

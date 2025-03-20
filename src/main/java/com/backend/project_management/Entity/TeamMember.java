@@ -28,5 +28,9 @@ public class TeamMember {
     private String branch;
     private boolean isLeader = false;
     //default value is false
+
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 }
 
