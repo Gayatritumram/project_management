@@ -5,9 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-@Data
+
 @AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class TeamMemberDTO {
     private Long id;
     private String name;
@@ -21,4 +21,22 @@ public class TeamMemberDTO {
     private String projectName;
     private String branch;
     private boolean isLeader = false;
+
+    public TeamMemberDTO(boolean isLeader, String branch, String projectName, String role, String address, String phone, String department, LocalDate joinDate, String password, String email, String name, Long id) {
+        this.isLeader = isLeader;
+        this.branch = branch;
+        this.projectName = projectName;
+        this.role = role;
+        this.address = address;
+        this.phone = phone;
+        this.department = department;
+        this.joinDate = joinDate;
+        this.password = password;
+        this.email = email;
+        this.name = name;
+        this.id = id;
+    }
+
+    public TeamMemberDTO(Long id, String name, String email, LocalDate joinDate, String department, String phone, String address, String role, String projectName, String branch, boolean leader) {
+    }
 }
