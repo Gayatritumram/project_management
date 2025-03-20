@@ -15,12 +15,12 @@ public class BranchController {
     @Autowired
     private BranchService branchService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<BranchDTO> createBranch(@RequestBody BranchDTO branchDTO) {
         return ResponseEntity.ok(branchService.createBranch(branchDTO));
     }
 
-    @GetMapping
+    @GetMapping("/GetAll")
     public ResponseEntity<List<BranchDTO>> getAllBranches() {
         return ResponseEntity.ok(branchService.getAllBranches());
     }
