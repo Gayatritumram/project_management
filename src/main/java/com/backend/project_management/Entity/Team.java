@@ -16,7 +16,7 @@ public class Team {
     private String teamName;
     private String branch;
     private String department;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    private Project assignProject;
+//
+//    @OneToOne(fetch = FetchType.LAZY)
+//    private Project assignProject;
 }
