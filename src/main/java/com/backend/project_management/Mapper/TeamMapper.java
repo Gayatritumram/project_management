@@ -10,6 +10,8 @@ public class TeamMapper {
         TeamDTO dto = new TeamDTO();
         dto.setId(team.getId());
         dto.setTeamName(team.getTeamName());
+        dto.setBranch(team.getBranch());
+        dto.setDepartment(team.getDepartment());
         return dto;
     }
 
@@ -17,6 +19,8 @@ public class TeamMapper {
         Team team = new Team();
         team.setId(teamDTO.getId());
         team.setTeamName(teamDTO.getTeamName());
+        team.setBranch(team.getBranch());
+        team.setDepartment(team.getDepartment());
         return team;
     }
 }
