@@ -2,7 +2,8 @@ package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.RoleDTO;
 import com.backend.project_management.Entity.Role;
-import com.backend.project_management.Exception.RoleNotFoundException;
+import com.backend.project_management.Exception.RequestNotFound;
+
 import com.backend.project_management.Mapper.RoleMapper;
 import com.backend.project_management.Repository.RoleRepository;
 import com.backend.project_management.Service.RoleService;
@@ -36,14 +37,14 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleDTO getRoleById(Long id) {
         Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new RoleNotFoundException("Role not found with id: " + id));
+                .orElseThrow(() -> new RequestNotFound("Role not found with id: " + id));
         return roleMapper.toDTO(role);
     }
 
     @Override
     public void deleteRole(Long id) {
         Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new RoleNotFoundException("Role not found with id: " + id));
+                .orElseThrow(() -> new RequestNotFound("Role not found with id: " + id));
         roleRepository.delete(role);
     }
 }

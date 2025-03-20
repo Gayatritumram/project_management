@@ -8,6 +8,7 @@ import com.backend.project_management.Repository.ProjectRepository;
 import com.backend.project_management.Service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,7 @@ public class ProjectServiceImp implements ProjectService {
     @Override
     public ProjectDTO addProject(ProjectDTO projectDTO) {
         Project project =ProjectMapper.mapToProject(projectDTO);
+        project.setEstimatedDate(LocalDate.now());
         Project savedProject = projectRepository.save(project);
         return ProjectMapper.mapToProjectDTO(savedProject);
     }

@@ -1,11 +1,16 @@
 package com.backend.project_management.DTO;
 
-import lombok.Data;
+import jakarta.persistence.Table;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Data
+@AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+
 public class TaskDTO {
     private Long id;
     private String description;
