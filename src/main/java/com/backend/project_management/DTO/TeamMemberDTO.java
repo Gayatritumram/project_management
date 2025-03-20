@@ -12,6 +12,7 @@ public class TeamMemberDTO {
     private Long id;
     private String name;
     private String email;
+    private String password;
     private LocalDate joinDate;
     private String department;
     private String phone;

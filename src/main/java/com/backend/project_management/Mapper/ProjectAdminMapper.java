@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProjectAdminMapper {
 
-    public ProjectAdmin toEntity(ProjectAdminDTO adminDTO){
+    public static ProjectAdmin toEntity(ProjectAdminDTO adminDTO){
         ProjectAdmin admin = new ProjectAdmin();
         admin.setName(adminDTO.getName());
         admin.setEmail(adminDTO.getEmail());
@@ -16,7 +16,7 @@ public class ProjectAdminMapper {
         return admin;
     }
 
-    public ProjectAdminDTO toDTO(ProjectAdmin admin){
+    public static ProjectAdminDTO toDTO(ProjectAdmin admin){
         ProjectAdminDTO dto = new ProjectAdminDTO();
         dto.setName(admin.getName());
         dto.setEmail(admin.getEmail());
