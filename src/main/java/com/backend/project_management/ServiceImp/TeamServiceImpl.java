@@ -69,30 +69,12 @@ public class TeamServiceImpl implements TeamService {
         existingTeam.setTeamName(teamDTO.getTeamName());
         return teamMapper.toDTO(teamRepository.save(existingTeam));
     }
-//
     @Override
     public void deleteTeam(Long id) {
         teamRepository.deleteById(id);
     }
 
-    @Override
-    public TeamMember createTeamLeader(TeamDTO teamMemberDTO) {
-        if (teamDTO.getTeamName() == null || teamDTO.getBranch() == null || teamDTO.getDepartment() == null) {
-            throw new IllegalArgumentException("Team Name, Branch, and Department are required!");
-        }
 
-        // Create a new Team Leader
-        TeamMember leader = new TeamMember();
-        leader.setName(teamDTO.getTeamName()); // Assuming team name is used as leader name
-        leader.setBranch(teamDTO.getBranch());
-        leader.setDepartment(teamDTO.getDepartment());
-        leader.setRole("TEAM_LEADER"); // Assign Team Leader Role
-        leader.setLeader(true);
-        leader.setPassword(passwordEncoder.encode("default123")); // Set default password
-
-        // Save to database
-        return memberRepository.save(leader);
-    }
 
 
 
