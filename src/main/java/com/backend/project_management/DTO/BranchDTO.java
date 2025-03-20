@@ -6,4 +6,5 @@ import lombok.Data;
 public class BranchDTO {
     private Long id;
     private String branchName;
+
 }
