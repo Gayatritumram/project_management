@@ -2,7 +2,10 @@ package com.backend.project_management.DTO;
 
 
 import com.backend.project_management.Entity.Project;
+import com.backend.project_management.Entity.Team;
 import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +29,9 @@ public class ProjectDTO {
     private String statusDescription;
     private String branch;
     private String department;
+
+
+    private Team team;
 }
 
 

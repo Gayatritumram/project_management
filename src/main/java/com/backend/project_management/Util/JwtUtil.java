@@ -3,8 +3,9 @@ package com.backend.project_management.Util;
 import java.util.Date;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class JwtUtil {
     private final String SECRET_KEY = "mysecretkey";
     private final long EXPIRATION_TIME = 86400000; // 1 Day

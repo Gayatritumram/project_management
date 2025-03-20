@@ -16,7 +16,7 @@ public class TeamController {
         this.teamService = teamService;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<TeamDTO> createTeam(@RequestBody TeamDTO teamDTO) {
         return ResponseEntity.ok(teamService.createTeam(teamDTO));
     }

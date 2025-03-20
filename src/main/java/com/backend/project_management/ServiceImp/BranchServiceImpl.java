@@ -2,7 +2,7 @@ package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.BranchDTO;
 import com.backend.project_management.Entity.Branch;
-import com.backend.project_management.Exception.BranchNotFoundException;
+import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.BranchMapper;
 import com.backend.project_management.Repository.BranchRepository;
 import com.backend.project_management.Service.BranchService;
@@ -36,14 +36,14 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public BranchDTO getBranchById(Long id) {
         Branch branch = branchRepository.findById(id)
-                .orElseThrow(() -> new BranchNotFoundException("Branch not found with id: " + id));
+                .orElseThrow(() -> new RequestNotFound("Branch not found with id: " + id));
         return branchMapper.toDTO(branch);
     }
 
     @Override
     public void deleteBranch(Long id) {
         Branch branch = branchRepository.findById(id)
-                .orElseThrow(() -> new BranchNotFoundException("Branch not found with id: " + id));
+                .orElseThrow(() -> new RequestNotFound("Branch not found with id: " + id));
         branchRepository.delete(branch);
     }
 }

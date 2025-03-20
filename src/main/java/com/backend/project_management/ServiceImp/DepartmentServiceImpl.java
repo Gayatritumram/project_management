@@ -2,7 +2,8 @@ package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.DepartmentDTO;
 import com.backend.project_management.Entity.Department;
-import com.backend.project_management.Exception.DepartmentNotFoundException;
+
+import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.DepartmentMapper;
 import com.backend.project_management.Repository.DepartmentRepository;
 import com.backend.project_management.Service.DepartmentService;
@@ -36,14 +37,14 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public DepartmentDTO getDepartmentById(Long id) {
         Department department = departmentRepository.findById(id)
-                .orElseThrow(() -> new DepartmentNotFoundException("Department not found with id: " + id));
+                .orElseThrow(() -> new RequestNotFound("Department not found with id: " + id));
         return departmentMapper.toDTO(department);
     }
 
     @Override
     public void deleteDepartment(Long id) {
         Department department = departmentRepository.findById(id)
-                .orElseThrow(() -> new DepartmentNotFoundException("Department not found with id: " + id));
+                .orElseThrow(() -> new RequestNotFound("Department not found with id: " + id));
         departmentRepository.delete(department);
     }
 }

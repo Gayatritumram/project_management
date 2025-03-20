@@ -25,6 +25,11 @@ public class Project {
     private LocalDate endDate;
     private LocalDate estimatedDate;
     private String statusDescription;
+
     private String branch;
     private String department;
+
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 }
