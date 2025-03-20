@@ -35,12 +35,12 @@ public class Task {
     private long durationInMinutes;
     private String subject;
 
-//    @ManyToOne
-//    @JoinColumn(name = "assigned_by")
-//    private ProjectAdmin assignedBy;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "assigned_to")
-//    private TeamMember assignedTo;
+    @ManyToOne
+    @JoinColumn(name = "assigned_by")
+    private ProjectAdmin assignedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "assigned_to")
+    private TeamMember assignedTo;
 
 }

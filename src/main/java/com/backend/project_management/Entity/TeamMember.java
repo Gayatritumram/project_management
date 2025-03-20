@@ -29,8 +29,8 @@ public class TeamMember {
     private boolean isLeader = false;
     //default value is false
 
-//    @ManyToOne
-//    @JoinColumn(name = "team_id")
-//    private Team team;
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 }
 

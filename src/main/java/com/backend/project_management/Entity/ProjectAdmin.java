@@ -25,7 +25,7 @@ public class ProjectAdmin {
     @Transient
     private String cpassword;
 
-    //@OneToMany(mappedBy = "assignedBy", cascade = CascadeType.ALL)
-    //private List<Task> assignedTasks;
+    @OneToMany(mappedBy = "assignedBy", cascade = CascadeType.ALL)
+    private List<Task> assignedTasks;
 
 }
