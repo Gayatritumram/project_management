@@ -29,6 +29,7 @@ public class Project {
     private String branch;
     private String department;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Team teamName;
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 }
