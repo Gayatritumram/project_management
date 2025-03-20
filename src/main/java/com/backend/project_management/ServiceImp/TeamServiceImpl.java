@@ -1,30 +1,45 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.TeamDTO;
-
-
+import com.backend.project_management.DTO.TeamMemberDTO;
 import com.backend.project_management.Entity.Team;
-
+import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Mapper.TeamMapper;
-
-
+import com.backend.project_management.Mapper.TeamMemberMapper;
+import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.Relation;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class TeamServiceImpl implements TeamService {
     @Autowired
-    private  TeamRepository teamRepository;
+    private final TeamRepository teamRepository;
+    @Autowired
+    private final TeamMapper teamMapper;
+
+    private final TeamMemberMapper teamMemberMapper;
 
     @Autowired
-    private  TeamMapper teamMapper;
+    private TeamMemberRepository memberRepository;
+    @Autowired
+    private TeamDTO teamDTO;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public TeamServiceImpl(TeamRepository teamRepository, TeamMapper teamMapper, TeamMemberMapper teamMemberMapper) {
+        this.teamRepository = teamRepository;
+        this.teamMapper = teamMapper;
+        this.teamMemberMapper = teamMemberMapper;
+    }
 
     @Override
     public TeamDTO createTeam(TeamDTO teamDTO) {
@@ -58,6 +73,25 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public void deleteTeam(Long id) {
         teamRepository.deleteById(id);
+    }
+
+    @Override
+    public TeamMember createTeamLeader(TeamDTO teamMemberDTO) {
+        if (teamDTO.getTeamName() == null || teamDTO.getBranch() == null || teamDTO.getDepartment() == null) {
+            throw new IllegalArgumentException("Team Name, Branch, and Department are required!");
+        }
+
+        // Create a new Team Leader
+        TeamMember leader = new TeamMember();
+        leader.setName(teamDTO.getTeamName()); // Assuming team name is used as leader name
+        leader.setBranch(teamDTO.getBranch());
+        leader.setDepartment(teamDTO.getDepartment());
+        leader.setRole("TEAM_LEADER"); // Assign Team Leader Role
+        leader.setLeader(true);
+        leader.setPassword(passwordEncoder.encode("default123")); // Set default password
+
+        // Save to database
+        return memberRepository.save(leader);
     }
 
 
