@@ -43,7 +43,7 @@ public class ProjectAdminController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<String> login(@RequestBody String email, @RequestBody String password) {
         ProjectAdminDTO admin = adminService.findAdminByEmail(email);
 
         if (admin != null && passwordEncoder.matches(password, admin.getPassword())) {
@@ -66,11 +66,7 @@ public class ProjectAdminController {
         return ResponseEntity.ok(teamService.createTeamMember(teamMemberDTO));
     }
 
-    @PostMapping("/create-team-member")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TeamMemberDTO> createTeamMember(@RequestBody TeamMemberDTO teamMemberDTO) {
-        return ResponseEntity.ok(teamService.createTeamMember(teamMemberDTO));
-    }
+
 
 
 }
