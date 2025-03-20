@@ -15,12 +15,12 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<DepartmentDTO> createDepartment(@RequestBody DepartmentDTO departmentDTO) {
         return ResponseEntity.ok(departmentService.createDepartment(departmentDTO));
     }
 
-    @GetMapping
+    @GetMapping("/GetAll")
     public ResponseEntity<List<DepartmentDTO>> getAllDepartments() {
         return ResponseEntity.ok(departmentService.getAllDepartments());
     }
