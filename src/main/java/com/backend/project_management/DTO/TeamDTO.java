@@ -1,8 +1,12 @@
 package com.backend.project_management.DTO;
 
 import com.backend.project_management.Entity.Project;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class TeamDTO {
     private Long id;

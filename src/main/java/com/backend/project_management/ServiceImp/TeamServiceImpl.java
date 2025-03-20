@@ -1,46 +1,35 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.TeamDTO;
-import com.backend.project_management.DTO.TeamMemberDTO;
 import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Mapper.TeamMapper;
-import com.backend.project_management.Mapper.TeamMemberMapper;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.management.relation.Relation;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class TeamServiceImpl implements TeamService {
-    @Autowired
+
     private final TeamRepository teamRepository;
-    @Autowired
+    private final TeamMemberRepository memberRepository;
     private final TeamMapper teamMapper;
-
-    private final TeamMemberMapper teamMemberMapper;
-
-    @Autowired
-    private TeamMemberRepository memberRepository;
-    @Autowired
-    private TeamDTO teamDTO;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public TeamServiceImpl(TeamRepository teamRepository, TeamMapper teamMapper, TeamMemberMapper teamMemberMapper) {
+    public TeamServiceImpl(TeamRepository teamRepository, TeamMapper teamMapper, TeamMemberRepository memberRepository, PasswordEncoder passwordEncoder) {
         this.teamRepository = teamRepository;
         this.teamMapper = teamMapper;
-        this.teamMemberMapper = teamMemberMapper;
+        this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    // Create a new Team
     @Override
     public TeamDTO createTeam(TeamDTO teamDTO) {
         Team team = teamMapper.toEntity(teamDTO);
@@ -48,6 +37,7 @@ public class TeamServiceImpl implements TeamService {
         return teamMapper.toDTO(team);
     }
 
+     //Get Team by ID
     @Override
     public TeamDTO getTeamById(Long id) {
         return teamRepository.findById(id)
@@ -55,6 +45,7 @@ public class TeamServiceImpl implements TeamService {
                 .orElseThrow(() -> new RuntimeException("Team not found"));
     }
 
+     // Get All Teams
     @Override
     public List<TeamDTO> getAllTeams() {
         return teamRepository.findAll().stream()
@@ -62,6 +53,7 @@ public class TeamServiceImpl implements TeamService {
                 .collect(Collectors.toList());
     }
 
+     //Update Team
     @Override
     public TeamDTO updateTeam(Long id, TeamDTO teamDTO) {
         Team existingTeam = teamRepository.findById(id)
@@ -70,13 +62,18 @@ public class TeamServiceImpl implements TeamService {
         return teamMapper.toDTO(teamRepository.save(existingTeam));
     }
 
+     // Delete Team
     @Override
     public void deleteTeam(Long id) {
+        if (!teamRepository.existsById(id)) {
+            throw new RuntimeException("Team not found");
+        }
         teamRepository.deleteById(id);
     }
 
+     //Create Team Leader
     @Override
-    public TeamMember createTeamLeader(TeamDTO teamMemberDTO) {
+    public TeamMember createTeamLeader(TeamDTO teamDTO) {
         if (teamDTO.getTeamName() == null || teamDTO.getBranch() == null || teamDTO.getDepartment() == null) {
             throw new IllegalArgumentException("Team Name, Branch, and Department are required!");
         }
@@ -90,10 +87,6 @@ public class TeamServiceImpl implements TeamService {
         leader.setLeader(true);
         leader.setPassword(passwordEncoder.encode("default123")); // Set default password
 
-        // Save to database
         return memberRepository.save(leader);
     }
-
-
-
 }
