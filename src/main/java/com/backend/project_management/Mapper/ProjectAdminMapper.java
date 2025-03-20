@@ -12,7 +12,7 @@ public class ProjectAdminMapper {
         admin.setName(adminDTO.getName());
         admin.setEmail(adminDTO.getEmail());
         admin.setPhone(adminDTO.getPhone());
-        admin.setPassword(adminDTO.getPassword());
+        admin.setPassword(adminDTO.getPassword()); // Password is stored in DB
         return admin;
     }
 
@@ -21,8 +21,7 @@ public class ProjectAdminMapper {
         dto.setName(admin.getName());
         dto.setEmail(admin.getEmail());
         dto.setPhone(admin.getPhone());
-        dto.setPassword(admin.getPassword());
+        // Remove: dto.setPassword(admin.getPassword()); // Don't expose password!
         return dto;
     }
-
 }
