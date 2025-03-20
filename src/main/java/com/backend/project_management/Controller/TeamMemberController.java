@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/team-members")
 @CrossOrigin(origins = "http://localhost:3000")

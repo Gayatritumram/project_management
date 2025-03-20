@@ -7,10 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/branches")
-@CrossOrigin(origins = "http://localhost:3000")
 public class BranchController {
     @Autowired
     private BranchService branchService;
