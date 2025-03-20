@@ -1,9 +1,6 @@
 package com.backend.project_management.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,4 +16,7 @@ public class Team {
     private String teamName;
     private String branch;
     private String department;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Project assignProject;
 }

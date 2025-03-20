@@ -25,6 +25,10 @@ public class Project {
     private LocalDate endDate;
     private LocalDate estimatedDate;
     private String statusDescription;
+
     private String branch;
     private String department;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Team teamName;
 }

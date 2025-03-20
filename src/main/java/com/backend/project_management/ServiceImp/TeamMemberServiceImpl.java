@@ -10,6 +10,7 @@ import com.backend.project_management.Service.TeamMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Override
     public TeamMemberDTO createTeamMember(TeamMemberDTO teamMemberDTO) {
         TeamMember teamMember = TeamMemberMapper.mapToTeamMember(teamMemberDTO);
+        teamMember.setJoinDate(LocalDate.now());
         return TeamMemberMapper.mapToTeamMemberDTO(repository.save(teamMember));
     }
 

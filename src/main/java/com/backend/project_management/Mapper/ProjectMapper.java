@@ -21,7 +21,8 @@ public class ProjectMapper {
                 project.getEstimatedDate(),
                 project.getStatusDescription(),
                 project.getBranch(),
-                project.getDepartment()
+                project.getDepartment(),
+                project.getTeamName()
 
         );
 
@@ -39,7 +40,9 @@ public class ProjectMapper {
                 projectDTO.getEstimatedDate(),
                 projectDTO.getStatusDescription(),
                 projectDTO.getBranch(),
-                projectDTO.getDepartment()
+                projectDTO.getDepartment(),
+                projectDTO.getTeamName()
+
 
                 );
     }
