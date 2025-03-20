@@ -28,6 +28,11 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
             throw new IllegalArgumentException("Passwords do not match!");
         }
 
+        // Check if the email is already in use
+        if (adminRepo.findByEmail(adminDTO.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email is already in use!");
+        }
+
         ProjectAdmin admin = adminMapper.toEntity(adminDTO);
 
         admin.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
