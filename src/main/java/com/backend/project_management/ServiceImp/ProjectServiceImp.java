@@ -7,11 +7,12 @@ import com.backend.project_management.Mapper.ProjectMapper;
 import com.backend.project_management.Repository.ProjectRepository;
 import com.backend.project_management.Service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Service
 public class ProjectServiceImp implements ProjectService {
     @Autowired
     private ProjectRepository projectRepository;
