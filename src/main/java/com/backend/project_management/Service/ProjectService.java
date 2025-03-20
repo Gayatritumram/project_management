@@ -19,5 +19,7 @@ public interface ProjectService {
 
     void deleteProject(Long id);
 
+    ProjectDTO assignProjectToTeam(Long projectId, Long teamId);
+
 
 }
