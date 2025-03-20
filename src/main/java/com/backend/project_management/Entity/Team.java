@@ -17,6 +17,5 @@ public class Team {
     private String branch;
     private String department;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Project assignProject;
+
 }
