@@ -1,130 +1,50 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.ProjectAdminDTO;
-import com.backend.project_management.DTO.TaskDTO;
-import com.backend.project_management.DTO.TeamMemberDTO;
 import com.backend.project_management.Entity.ProjectAdmin;
-import com.backend.project_management.Entity.Task;
-import com.backend.project_management.Entity.TeamMember;
-import com.backend.project_management.Exception.RequestNotFound;
-import com.backend.project_management.Mapper.ProjectAdminMapper;
-import com.backend.project_management.Mapper.TeamMemberMapper;
 import com.backend.project_management.Repository.ProjectAdminRepo;
-import com.backend.project_management.Repository.TaskRepository;
-import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Service.ProjectAdminService;
 import com.backend.project_management.Util.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
 @Service
 public class ProjectAdminServiceImpl implements ProjectAdminService {
+    private final ProjectAdminRepo adminRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private ProjectAdminRepo adminRepo;
-
-    @Autowired
-    private TeamMemberRepository memberRepository;
-
-    private final TeamMemberMapper teamMemberMapper;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-
-    public ProjectAdminServiceImpl(TeamMemberMapper teamMemberMapper) {
-        this.teamMemberMapper = teamMemberMapper;
+    public ProjectAdminServiceImpl(ProjectAdminRepo adminRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+        this.adminRepository = adminRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
-
 
     @Override
     public ProjectAdmin registerAdmin(ProjectAdminDTO adminDTO) {
-        if (!adminDTO.getPassword().equals(adminDTO.getCpassword())) {
-            throw new IllegalArgumentException("Passwords do not match!");
+        if (adminRepository.findByEmail(adminDTO.getEmail()).isPresent()) {
+            throw new RuntimeException("Email is already registered!");
         }
 
+        // Create new ProjectAdmin entity
         ProjectAdmin admin = new ProjectAdmin();
         admin.setName(adminDTO.getName());
         admin.setEmail(adminDTO.getEmail());
         admin.setPhone(adminDTO.getPhone());
-        admin.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
+        admin.setPassword(passwordEncoder.encode(adminDTO.getPassword())); // Encrypt password
 
-        return adminRepo.save(admin);
+        return adminRepository.save(admin);
     }
 
     @Override
     public String loginAdmin(String email, String password) {
-        Optional<ProjectAdmin> admin = adminRepo.findByEmail(email);
+        Optional<ProjectAdmin> admin = adminRepository.findByEmail(email);
 
         if (admin.isPresent() && passwordEncoder.matches(password, admin.get().getPassword())) {
-            return jwtUtil.generateToken(email);
-        } else {
-            throw new RuntimeException("Invalid email or password");
+            return jwtUtil.generateToken(email); // ✅ Generate and return JWT token
         }
-    }
-
-    @Override
-    public ProjectAdminDTO findAdminByEmail(String email) {
-        return ProjectAdminMapper.toDTO(adminRepo.findByEmail(email) .orElseThrow(() -> new RequestNotFound("ProjectAdmin not found with email: " + email)));
-    }
-
-    @Override
-    public TeamMember createTeamLeader(TeamMemberDTO teamMemberDTO) {
-        TeamMember leader = new TeamMember();
-        leader.setName(teamMemberDTO.getName());
-        leader.setEmail(teamMemberDTO.getEmail());
-        leader.setPhone(teamMemberDTO.getPhone());
-        leader.setRole("TEAM_LEADER");
-        leader.setPassword(passwordEncoder.encode(teamMemberDTO.getPassword()));
-
-        return memberRepository.save(leader);
-    }
-
-
-    @Override
-    public TeamMember createTeamMember(TeamMemberDTO teamMemberDTO) {
-        TeamMember member = new TeamMember();
-        member.setName(teamMemberDTO.getName());
-        member.setEmail(teamMemberDTO.getEmail());
-        member.setPhone(teamMemberDTO.getPhone());
-        member.setRole("TEAM_MEMBER");
-        member.setPassword(passwordEncoder.encode(teamMemberDTO.getPassword()));
-
-        return memberRepository.save(member);
-    }
-
-    @Override
-    public Task assignTask(TaskDTO taskDTO) {
-        Optional<TeamMember> assignedMember = memberRepository.findById(taskDTO.getAssignedTo());
-
-        if (assignedMember.isEmpty()) {
-            throw new RuntimeException("Assigned member not found!");
-        }
-
-        Task task = new Task();
-        task.setDescription(taskDTO.getDescription());
-        task.setProjectName(taskDTO.getProjectName());
-        task.setDays(taskDTO.getDays());
-        task.setHour(taskDTO.getHour());
-        task.setStatus("Assigned");
-        task.setStatusBar(taskDTO.getStatusBar());
-        task.setStartDate(taskDTO.getStartDate());
-        task.setEndDate(taskDTO.getEndDate());
-        task.setStartTime(taskDTO.getStartTime());
-        task.setEndTime(taskDTO.getEndTime());
-        task.setImageUrl(taskDTO.getImageUrl());
-        task.setDurationInMinutes(taskDTO.getDurationInMinutes());
-        task.setSubject(taskDTO.getSubject());
-        task.setAssignedTo(assignedMember.get()); // Set assigned member
-
-        return taskRepository.save(task);
+        throw new RuntimeException("Invalid credentials!");
     }
 }

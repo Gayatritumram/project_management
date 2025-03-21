@@ -22,55 +22,31 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/admin")
 public class ProjectAdminController {
-    @Autowired
-    private ProjectAdminService adminService;
+    private final ProjectAdminService adminService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public ProjectAdminController(ProjectAdminService adminService) {
+        this.adminService = adminService;
+    }
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private ProjectAdminMapper adminMapper;
-
-    @Autowired
-    private TeamMemberService teamService;
-
+    // ✅ Register a new Project Admin
     @PostMapping("/register")
-    public ResponseEntity<ProjectAdminDTO> register(@RequestBody ProjectAdminDTO adminDTO) {
-        ProjectAdmin admin = adminService.registerAdmin(adminDTO);
-        return ResponseEntity.ok(adminMapper.toDTO(admin));
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
-        ProjectAdminDTO admin = adminService.findAdminByEmail(email);
-
-        if (admin != null && passwordEncoder.matches(password, admin.getPassword())) {
-            String token = jwtUtil.generateToken(email);
-            return ResponseEntity.ok("Bearer " + token);
+    public ResponseEntity<?> register(@RequestBody ProjectAdminDTO adminDTO) {
+        try {
+            return ResponseEntity.ok(adminService.registerAdmin(adminDTO));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.status(401).body("Invalid credentials");
     }
 
-    @GetMapping("/{email}")
-    public ResponseEntity<ProjectAdminDTO> getAdminByEmail(@PathVariable String email) {
-        ProjectAdminDTO admin = adminService.findAdminByEmail(email);
-
-        return ResponseEntity.ok(admin);
-    }
-
-    @PostMapping("/create-team-leader")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TeamMemberDTO> createTeamLeader(@RequestBody TeamMemberDTO teamMemberDTO) {
-        return ResponseEntity.ok(teamService.createTeamMember(teamMemberDTO));
-    }
-
-    @PostMapping("/create-team-member")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TeamMemberDTO> createTeamMember(@RequestBody TeamMemberDTO teamMemberDTO) {
-        return ResponseEntity.ok(teamService.createTeamMember(teamMemberDTO));
+    // ✅ Login and Get JWT Token
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password) {
+        try {
+            String token = adminService.loginAdmin(email, password);
+            return ResponseEntity.ok("Bearer " + token);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
     }
 
 

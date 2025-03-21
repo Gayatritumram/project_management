@@ -12,8 +12,4 @@ import java.util.Optional;
 public interface ProjectAdminService {
     ProjectAdmin registerAdmin(ProjectAdminDTO adminDTO);
     String loginAdmin(String email, String password);
-    ProjectAdminDTO findAdminByEmail(String email);
-    TeamMember createTeamLeader(TeamMemberDTO teamMemberDTO);
-    TeamMember createTeamMember(TeamMemberDTO teamMemberDTO);
-    Task assignTask(TaskDTO taskDTO);
 }
