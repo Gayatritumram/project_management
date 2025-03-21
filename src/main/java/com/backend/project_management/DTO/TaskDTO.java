@@ -7,9 +7,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
-@Getter
-@Setter
 @NoArgsConstructor
+@Data
 
 public class TaskDTO {
     private Long id;

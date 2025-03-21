@@ -11,5 +11,4 @@ public class ProjectAdminDTO{
     private String password;
     private String cpassword;
 
-
 }

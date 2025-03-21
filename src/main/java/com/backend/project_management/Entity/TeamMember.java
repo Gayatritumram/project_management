@@ -4,12 +4,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
-@Entity
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Entity
 @Table(name = "TeamMember_table")
 public class TeamMember {
     @Id
