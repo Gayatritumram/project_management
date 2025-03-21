@@ -14,14 +14,6 @@ public class TeamMemberController {
     @Autowired
     private TeamMemberService service;
 
-    public TeamMemberController(TeamMemberService service) {
-        this.service = service;
-    }
-
-    @PostMapping("/createTeamMember")
-    public TeamMemberDTO create(@RequestBody TeamMemberDTO dto) {
-        return service.createTeamMember(dto);
-    }
 
     @GetMapping("/getByIdTeamMember/{id}")
     public TeamMemberDTO getById(@PathVariable Long id) {

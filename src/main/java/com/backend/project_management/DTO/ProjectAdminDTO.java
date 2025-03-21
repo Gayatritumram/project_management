@@ -1,9 +1,11 @@
 package com.backend.project_management.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProjectAdminDTO{
     private String name;
     private String email;

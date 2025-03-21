@@ -1,15 +1,13 @@
 package com.backend.project_management.DTO;
 
 import com.backend.project_management.Entity.Project;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
+
 public class TeamDTO {
     private Long id;
     private String teamName;

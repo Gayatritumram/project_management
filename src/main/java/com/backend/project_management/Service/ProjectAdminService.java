@@ -10,7 +10,7 @@ import com.backend.project_management.Entity.TeamMember;
 import java.util.Optional;
 
 public interface ProjectAdminService {
-    ProjectAdmin registerAdmin(ProjectAdminDTO adminDTO);
+    ProjectAdminDTO registerAdmin(ProjectAdminDTO adminDTO);
     String loginAdmin(String email, String password);
     ProjectAdminDTO findAdminByEmail(String email);
     TeamMember createTeamLeader(TeamMemberDTO teamMemberDTO);
