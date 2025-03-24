@@ -2,6 +2,7 @@ package com.backend.project_management.Controller;
 
 import com.backend.project_management.DTO.TeamDTO;
 import com.backend.project_management.Service.TeamService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -10,11 +11,11 @@ import java.util.List;
 @RequestMapping("/teams")
 @CrossOrigin(origins = "http://localhost:3000")
 public class TeamController {
-    private final TeamService teamService;
 
-    public TeamController(TeamService teamService) {
-        this.teamService = teamService;
-    }
+    @Autowired
+    private TeamService teamService;
+
+
 
     @PostMapping("/create")
     public ResponseEntity<TeamDTO> createTeam(@RequestBody TeamDTO teamDTO) {

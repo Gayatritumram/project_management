@@ -7,22 +7,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProjectAdminMapper {
 
-    public ProjectAdmin toEntity(ProjectAdminDTO adminDTO){
+    public static ProjectAdmin toEntity(ProjectAdminDTO adminDTO){
         ProjectAdmin admin = new ProjectAdmin();
         admin.setName(adminDTO.getName());
         admin.setEmail(adminDTO.getEmail());
         admin.setPhone(adminDTO.getPhone());
-        admin.setPassword(adminDTO.getPassword());
+        admin.setPassword(adminDTO.getPassword()); // Password is stored in DB
         return admin;
     }
 
-    public ProjectAdminDTO toDTO(ProjectAdmin admin){
+    public static ProjectAdminDTO toDTO(ProjectAdmin admin){
         ProjectAdminDTO dto = new ProjectAdminDTO();
         dto.setName(admin.getName());
         dto.setEmail(admin.getEmail());
         dto.setPhone(admin.getPhone());
-        dto.setPassword(admin.getPassword());
+        // Remove: dto.setPassword(admin.getPassword()); // Don't expose password!
         return dto;
     }
-
 }

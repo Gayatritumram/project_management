@@ -12,6 +12,8 @@ public class TeamMemberMapper {
         teamMember.setId(dto.getId());
         teamMember.setName(dto.getName());
         teamMember.setEmail(dto.getEmail());
+        teamMember.setPassword(dto.getPassword());
+        teamMember.setConfirmPassword(dto.getConfirmPassword());
         teamMember.setJoinDate(dto.getJoinDate());
         teamMember.setDepartment(dto.getDepartment());
         teamMember.setPhone(dto.getPhone());
@@ -24,20 +26,20 @@ public class TeamMemberMapper {
 
         }
 
-    public static TeamMemberDTO mapToTeamMemberDTO(TeamMember teamMember) {
-        return new TeamMemberDTO(
-                teamMember.getId(),
-                teamMember.getName(),
-                teamMember.getEmail(),
-                teamMember.getJoinDate(),
-                teamMember.getDepartment(),
-                teamMember.getPhone(),
-                teamMember.getAddress(),
-                teamMember.getRole(),
-                teamMember.getProjectName(),
-                teamMember.getBranch(),
-                teamMember.isLeader()
-        );
+    public static TeamMemberDTO mapToTeamMemberDTO(TeamMember team) {
+        TeamMemberDTO teamMember = new TeamMemberDTO();
+        teamMember.setId(team.getId());
+        teamMember.setName(team.getName());
+        teamMember.setEmail(team.getEmail());
+        teamMember.setJoinDate(team.getJoinDate());
+        teamMember.setDepartment(team.getDepartment());
+        teamMember.setPhone(team.getPhone());
+        teamMember.setAddress(team.getAddress());
+        teamMember.setRole(team.getRole());
+        teamMember.setProjectName(team.getProjectName());
+        teamMember.setBranch(team.getBranch());
+        teamMember.setLeader(team.isLeader());
+        return teamMember;
     }
 
     }
