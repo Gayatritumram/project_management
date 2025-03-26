@@ -2,10 +2,12 @@ package com.backend.project_management.ServiceImp;
 
 
 import com.backend.project_management.DTO.TeamMemberDTO;
+import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamMemberMapper;
 import com.backend.project_management.Repository.TeamMemberRepository;
+import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.TeamMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +23,16 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     private  TeamMemberRepository repository;
 
 
-    @Override
-    public TeamMemberDTO createTeamMember(TeamMemberDTO teamMemberDTO) {
-        TeamMember teamMember = TeamMemberMapper.mapToTeamMember(teamMemberDTO);
-        teamMember.setJoinDate(LocalDate.now());
-        return TeamMemberMapper.mapToTeamMemberDTO(repository.save(teamMember));
+    @Autowired
+    private TeamRepository teamRepository;
+
+    public TeamMemberDTO createTeamMember(TeamMemberDTO dto) {
+        Team team = teamRepository.findById(dto.getTeamId())
+                .orElseThrow(() -> new RuntimeException("Team not found"));
+
+        TeamMember teamMember = TeamMemberMapper.mapToTeamMember(dto, team);
+        teamMember = repository.save(teamMember);
+        return TeamMemberMapper.mapToTeamMemberDTO(teamMember);
     }
 
     @Override

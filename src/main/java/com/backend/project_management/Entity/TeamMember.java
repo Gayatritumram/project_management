@@ -32,5 +32,6 @@ public class TeamMember {
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
+
 }
 
