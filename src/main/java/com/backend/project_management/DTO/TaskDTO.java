@@ -1,16 +1,11 @@
 package com.backend.project_management.DTO;
 
-import jakarta.persistence.Table;
-import lombok.*;
-
+import com.backend.project_management.TaskPriority;
+import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@Getter
-@Setter
-@NoArgsConstructor
-
+@Data
 public class TaskDTO {
     private Long id;
     private String description;
@@ -26,6 +21,7 @@ public class TaskDTO {
     private String imageUrl;
     private long durationInMinutes;
     private String subject;
-
-    private Long assignedTo;
+    private TaskPriority priority;
+    private Long assignedToId;  // Instead of exposing TeamMember entity
+    private Long assignedBy;
 }

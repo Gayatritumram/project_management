@@ -16,30 +16,44 @@ import java.time.LocalDateTime;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
     private String description;
     private String projectName;
     private int days;
     private int hour;
     private String status;
+
     @Column(name = "statusBar", nullable = false)
-    private double statusBar =0;
+    private double statusBar = 0;
+
     private LocalDate startDate;
     private LocalDate endDate;
+
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+
     private String imageUrl;
     private long durationInMinutes;
     private String subject;
 
-    @Enumerated(EnumType.STRING) // Store as a String in the database
-    private TaskPriority priority; // Added priority field
+    @Enumerated(EnumType.STRING)
+    private TaskPriority priority;
 
-    @ManyToOne // Define relationship with TeamMember
+    @ManyToOne
     @JoinColumn(name = "assigned_to")
     private TeamMember assignedTo;
 
     private Long assignedBy;
 
+    @PrePersist
+    protected void onCreate() {
+        this.startDate = LocalDate.now(); // Auto-assign current date
+        this.startTime = LocalDateTime.now(); // Auto-assign current time
+        if (days > 0) {
+            this.endDate = this.startDate.plusDays(days); // Set endDate based on duration
+        }
+        if (hour > 0) {
+            this.endTime = this.startTime.plusHours(hour); // Set endTime based on hours
+        }
+    }
 }

@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
-@CrossOrigin(origins = "http://localhost:3000")
 public class TaskController {
 
     @Autowired
@@ -21,10 +20,14 @@ public class TaskController {
         return ResponseEntity.ok(taskService.createTask(taskDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long id) {
-        TaskDTO taskDTO = taskService.getTaskById(id);
-        return taskDTO != null ? ResponseEntity.ok(taskDTO) : ResponseEntity.notFound().build();
+    @PutMapping("/{taskId}")
+    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long taskId, @RequestBody TaskDTO taskDTO) {
+        return ResponseEntity.ok(taskService.updateTask(taskId, taskDTO));
+    }
+
+    @GetMapping("/{taskId}")
+    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long taskId) {
+        return ResponseEntity.ok(taskService.getTaskById(taskId));
     }
 
     @GetMapping
@@ -32,15 +35,9 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getAllTasks());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody TaskDTO taskDTO) {
-        TaskDTO updatedTask = taskService.updateTask(id, taskDTO);
-        return updatedTask != null ? ResponseEntity.ok(updatedTask) : ResponseEntity.notFound().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        taskService.deleteTask(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<String> deleteTask(@PathVariable Long taskId) {
+        taskService.deleteTask(taskId);
+        return ResponseEntity.ok("Task deleted successfully");
     }
 }
