@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TeamMemberMapper {
 
-    public static TeamMember mapToTeamMember(TeamMemberDTO dto, Team team) {
+    public static TeamMember mapToTeamMember(TeamMemberDTO dto) {
         TeamMember teamMember = new TeamMember();
         teamMember.setId(dto.getId());
         teamMember.setName(dto.getName());
@@ -23,10 +23,10 @@ public class TeamMemberMapper {
         teamMember.setProjectName(dto.getProjectName());
         teamMember.setBranch(dto.getBranch());
         teamMember.setLeader(dto.isLeader());
+        teamMember.setPassword(dto.getPassword());
+        teamMember.setTeamId(dto.getTeamId());
 
-        if (team != null) {
-            teamMember.setTeam(team);
-        }
+
 
         return teamMember;
     }
@@ -44,10 +44,9 @@ public class TeamMemberMapper {
         dto.setProjectName(teamMember.getProjectName());
         dto.setBranch(teamMember.getBranch());
         dto.setLeader(teamMember.isLeader());
+        dto.setPassword(teamMember.getPassword());
+        dto.setTeamId(teamMember.getTeamId());
 
-        if (teamMember.getTeam() != null) {
-            dto.setTeamId(teamMember.getTeam().getId());
-        }
 
         return dto;
     }

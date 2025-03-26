@@ -10,6 +10,7 @@ import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.TeamMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,13 +25,19 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
+
+    @Autowired
     private TeamRepository teamRepository;
 
     public TeamMemberDTO createTeamMember(TeamMemberDTO dto) {
-        Team team = teamRepository.findById(dto.getTeamId())
-                .orElseThrow(() -> new RuntimeException("Team not found"));
 
-        TeamMember teamMember = TeamMemberMapper.mapToTeamMember(dto, team);
+
+        TeamMember teamMember = TeamMemberMapper.mapToTeamMember(dto);
+
+        teamMember.setPassword(passwordEncoder.encode(dto.getPassword()));
         teamMember = repository.save(teamMember);
         return TeamMemberMapper.mapToTeamMemberDTO(teamMember);
     }

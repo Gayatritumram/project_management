@@ -1,5 +1,6 @@
 package com.backend.project_management.DTO;
 
+import com.backend.project_management.Entity.Team;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ public class TeamMemberDTO {
     private String projectName;
     private String branch;
     private boolean isLeader = false;
-    private Long teamId;
+    private Team teamId;
 
 
 }
