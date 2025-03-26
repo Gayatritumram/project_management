@@ -1,5 +1,6 @@
 package com.backend.project_management.Entity;
 
+import com.backend.project_management.TaskPriority;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,6 +32,9 @@ public class Task {
     private String imageUrl;
     private long durationInMinutes;
     private String subject;
+
+    @Enumerated(EnumType.STRING) // Store as a String in the database
+    private TaskPriority priority; // Added priority field
 
     @ManyToOne // Define relationship with TeamMember
     @JoinColumn(name = "assigned_to", referencedColumnName = "id")

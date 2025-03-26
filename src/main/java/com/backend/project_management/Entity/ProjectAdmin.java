@@ -27,6 +27,8 @@ public class ProjectAdmin implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+    @Transient
+    private String cpassword;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,5 +1,6 @@
 package com.backend.project_management.DTO;
 
+import com.backend.project_management.TaskPriority;
 import jakarta.persistence.Table;
 import lombok.*;
 
@@ -26,6 +27,7 @@ public class TaskDTO {
     private String imageUrl;
     private long durationInMinutes;
     private String subject;
+    private TaskPriority priority;
 
     private Long assignedTo;
 }
