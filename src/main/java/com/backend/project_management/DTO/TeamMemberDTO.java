@@ -14,7 +14,7 @@ public class TeamMemberDTO {
     private String name;
     private String email;
     private String password;
-    private String confirmPassword; // Kept here for validation purposes
+    private String confirmPassword;
     private LocalDate joinDate;
     private String department;
     private String phone;
@@ -23,5 +23,7 @@ public class TeamMemberDTO {
     private String projectName;
     private String branch;
     private boolean isLeader = false;
-    private Long teamId; // Correctly represents the team association
+    private Long teamId;
+
+
 }
