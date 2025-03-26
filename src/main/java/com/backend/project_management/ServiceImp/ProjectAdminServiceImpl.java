@@ -110,30 +110,5 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
         return memberRepository.save(member);
     }
 
-    @Override
-    public Task assignTask(TaskDTO taskDTO) {
-        Optional<TeamMember> assignedMember = memberRepository.findById(taskDTO.getAssignedTo());
 
-        if (assignedMember.isEmpty()) {
-            throw new RuntimeException("Assigned member not found!");
-        }
-
-        Task task = new Task();
-        task.setDescription(taskDTO.getDescription());
-        task.setProjectName(taskDTO.getProjectName());
-        task.setDays(taskDTO.getDays());
-        task.setHour(taskDTO.getHour());
-        task.setStatus("Assigned");
-        task.setStatusBar(taskDTO.getStatusBar());
-        task.setStartDate(taskDTO.getStartDate());
-        task.setEndDate(taskDTO.getEndDate());
-        task.setStartTime(taskDTO.getStartTime());
-        task.setEndTime(taskDTO.getEndTime());
-        task.setImageUrl(taskDTO.getImageUrl());
-        task.setDurationInMinutes(taskDTO.getDurationInMinutes());
-        task.setSubject(taskDTO.getSubject());
-        task.setAssignedTo(assignedMember.get()); // Set assigned member
-
-        return taskRepository.save(task);
-    }
 }

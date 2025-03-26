@@ -1,5 +1,6 @@
 package com.backend.project_management.DTO;
 
+import com.backend.project_management.Entity.TeamMember;
 import jakarta.persistence.Table;
 import lombok.*;
 
@@ -27,5 +28,6 @@ public class TaskDTO {
     private long durationInMinutes;
     private String subject;
 
-    private Long assignedTo;
+    private TeamMember assignedTo;
+    private Long assignedBy;
 }

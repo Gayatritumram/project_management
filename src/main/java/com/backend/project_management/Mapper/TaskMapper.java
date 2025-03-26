@@ -23,6 +23,8 @@ public class TaskMapper {
         dto.setImageUrl(task.getImageUrl());
         dto.setDurationInMinutes(task.getDurationInMinutes());
         dto.setSubject(task.getSubject());
+        dto.setAssignedTo(task.getAssignedTo());
+        dto.setAssignedBy(task.getAssignedBy());
         return dto;
     }
 
@@ -42,6 +44,8 @@ public class TaskMapper {
         task.setImageUrl(dto.getImageUrl());
         task.setDurationInMinutes(dto.getDurationInMinutes());
         task.setSubject(dto.getSubject());
+        task.setAssignedTo(dto.getAssignedTo());
+        task.setAssignedBy(dto.getAssignedBy());
         return task;
     }
 }
