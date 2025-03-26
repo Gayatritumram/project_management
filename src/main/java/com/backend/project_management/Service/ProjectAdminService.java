@@ -15,5 +15,5 @@ public interface ProjectAdminService {
     ProjectAdminDTO findAdminByEmail(String email);
     TeamMember createTeamLeader(TeamMemberDTO teamMemberDTO);
     TeamMember createTeamMember(TeamMemberDTO teamMemberDTO);
-    Task assignTask(TaskDTO taskDTO);
+
 }

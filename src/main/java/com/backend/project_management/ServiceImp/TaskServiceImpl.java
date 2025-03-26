@@ -3,6 +3,7 @@ package com.backend.project_management.ServiceImp;
 import com.backend.project_management.DTO.TaskDTO;
 import com.backend.project_management.Entity.Task;
 import com.backend.project_management.Mapper.TaskMapper;
+import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TaskRepository;
 import com.backend.project_management.Service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskMapper taskMapper;
+
+    @Autowired
+    private ProjectAdminRepo adminRepo;
 
     @Override
     public TaskDTO createTask(TaskDTO taskDTO) {

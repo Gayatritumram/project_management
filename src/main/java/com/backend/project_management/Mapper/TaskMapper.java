@@ -23,7 +23,6 @@ public class TaskMapper {
         dto.setImageUrl(task.getImageUrl());
         dto.setDurationInMinutes(task.getDurationInMinutes());
         dto.setSubject(task.getSubject());
-        dto.setPriority(task.getPriority());
         return dto;
     }
 
@@ -43,7 +42,6 @@ public class TaskMapper {
         task.setImageUrl(dto.getImageUrl());
         task.setDurationInMinutes(dto.getDurationInMinutes());
         task.setSubject(dto.getSubject());
-        task.setPriority(dto.getPriority());
         return task;
     }
 }

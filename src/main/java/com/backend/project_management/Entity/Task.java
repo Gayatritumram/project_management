@@ -37,7 +37,9 @@ public class Task {
     private TaskPriority priority; // Added priority field
 
     @ManyToOne // Define relationship with TeamMember
-    @JoinColumn(name = "assigned_to", referencedColumnName = "id")
+    @JoinColumn(name = "assigned_to")
     private TeamMember assignedTo;
+
+    private Long assignedBy;
 
 }
