@@ -23,8 +23,6 @@ public class ProjectMapper {
                 project.getBranch(),
                 project.getDepartment(),
                 project.getTeam()
-
-
         );
 
     }
@@ -43,9 +41,6 @@ public class ProjectMapper {
                 projectDTO.getBranch(),
                 projectDTO.getDepartment(),
                 projectDTO.getTeam()
-
-
-
                 );
     }
 

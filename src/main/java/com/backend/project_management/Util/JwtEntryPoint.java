@@ -19,3 +19,4 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
         printWriter.println("Access Denied !!"+authException.getMessage());
     }
 }
+//authentication
