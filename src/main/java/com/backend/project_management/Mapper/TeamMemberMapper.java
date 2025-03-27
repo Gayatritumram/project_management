@@ -24,7 +24,7 @@ public class TeamMemberMapper {
         teamMember.setBranch(dto.getBranch());
         teamMember.setLeader(dto.isLeader());
         teamMember.setPassword(dto.getPassword());
-        teamMember.setTeamId(dto.getTeamId());
+        teamMember.setTeam(dto.getTeamId());
 
 
 
@@ -45,7 +45,7 @@ public class TeamMemberMapper {
         dto.setBranch(teamMember.getBranch());
         dto.setLeader(teamMember.isLeader());
         dto.setPassword(teamMember.getPassword());
-        dto.setTeamId(teamMember.getTeamId());
+        dto.setTeamId(teamMember.getTeam());
 
 
         return dto;

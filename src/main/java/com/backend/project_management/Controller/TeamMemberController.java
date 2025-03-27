@@ -39,15 +39,30 @@ public class TeamMemberController {
 
 
 
+
+
     @GetMapping("/getByIdTeamMember/{id}")
     public TeamMemberDTO getById(@PathVariable Long id) {
         return service.getTeamMemberById(id);
     }
 
-    @GetMapping
-    public List<TeamMemberDTO> getAll() {
-        return service.getAllTeamMembers();
+    @GetMapping("/getAllTeamMember")
+    public ResponseEntity<List<TeamMemberDTO>> getAllTeamMember() {
+        return ResponseEntity.ok(service.getAllNonLeaderTeamMembers());
     }
+
+    @GetMapping("/getAllTeamLeader")
+    public ResponseEntity<List<TeamMemberDTO>> getAllTeamLeader() {
+        return ResponseEntity.ok(service.getAllLeaderTeamMembers());
+    }
+
+    @PutMapping("/make-leader/{id}")
+    public ResponseEntity<String> makeTeamLeader(@PathVariable Long id) {
+        service.makeTeamLeader(id);
+        return ResponseEntity.ok("Team member with ID " + id + " is now a Team Leader.");
+    }
+
+
 
     @PutMapping("updateTeamMember/{id}")
     public TeamMemberDTO update(@PathVariable Long id, @RequestBody TeamMemberDTO dto) {

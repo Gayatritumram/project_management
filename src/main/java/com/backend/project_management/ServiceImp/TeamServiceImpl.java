@@ -3,11 +3,11 @@ package com.backend.project_management.ServiceImp;
 import com.backend.project_management.DTO.TeamDTO;
 import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Mapper.TeamMapper;
+import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.TeamService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +19,9 @@ public class TeamServiceImpl implements TeamService {
     private  TeamRepository teamRepository;
     @Autowired
     private  TeamMapper teamMapper;
+
+    @Autowired
+    private TeamMemberRepository teamMemberrepository;
 
 
 
