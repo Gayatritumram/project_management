@@ -1,7 +1,6 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.ProjectDTO;
-import com.backend.project_management.DTO.TeamDTO;
 import com.backend.project_management.Entity.Project;
 import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Exception.RequestNotFound;

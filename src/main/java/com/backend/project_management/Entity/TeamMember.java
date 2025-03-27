@@ -36,7 +36,7 @@ public class TeamMember implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    private Team teamId;
+    private Team team;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -72,4 +72,3 @@ public class TeamMember implements UserDetails {
     }
 }
 
-//teamMember.setConfirmPassword(dto.getConfirmPassword());

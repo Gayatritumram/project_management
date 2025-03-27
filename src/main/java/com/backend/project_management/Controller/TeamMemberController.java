@@ -44,17 +44,17 @@ public class TeamMemberController {
         return service.getTeamMemberById(id);
     }
 
-    @GetMapping("/getAll")
+    @GetMapping
     public List<TeamMemberDTO> getAll() {
         return service.getAllTeamMembers();
     }
 
-    @PutMapping("/updateTeamMember/{id}")
+    @PutMapping("updateTeamMember/{id}")
     public TeamMemberDTO update(@PathVariable Long id, @RequestBody TeamMemberDTO dto) {
         return service.updateTeamMember(id, dto);
     }
 
-    @DeleteMapping("/deleteTeamMember/{id}")
+    @DeleteMapping("deleteTeamMember/{id}")
     public void delete(@PathVariable Long id) {
         service.deleteTeamMember(id);
     }

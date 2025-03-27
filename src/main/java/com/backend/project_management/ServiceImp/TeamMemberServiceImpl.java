@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,9 +50,25 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     }
 
     @Override
-    public List<TeamMemberDTO> getAllTeamMembers() {
-        return repository.findAll().stream().map(TeamMemberMapper::mapToTeamMemberDTO).collect(Collectors.toList());
+    public List<TeamMemberDTO> getAllNonLeaderTeamMembers() {
+       return repository.findAll().stream().filter(teamMember -> !(teamMember.isLeader())).map(TeamMemberMapper::mapToTeamMemberDTO).collect(Collectors.toList());
+
     }
+
+    @Override
+    public List<TeamMemberDTO> getAllLeaderTeamMembers() {
+        return repository.findAll().stream().filter(TeamMember::isLeader).map(TeamMemberMapper::mapToTeamMemberDTO).collect(Collectors.toList());
+
+    }
+
+    @Override
+    public  void makeTeamLeader(Long id) {
+        TeamMember teamMember = repository.findById(id).orElseThrow(() -> new RequestNotFound("Team Member not found"));
+        teamMember.setLeader(true);
+        repository.save(teamMember);
+    }
+
+
 
     @Override
     public TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO) {
