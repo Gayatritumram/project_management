@@ -19,7 +19,7 @@ public class BranchController {
         return ResponseEntity.ok(branchService.createBranch(branchDTO));
     }
 
-    @GetMapping("/GetAll")
+    @GetMapping("/getAll")
     public ResponseEntity<List<BranchDTO>> getAllBranches() {
         return ResponseEntity.ok(branchService.getAllBranches());
     }
