@@ -20,7 +20,7 @@ public class RoleController {
         return ResponseEntity.ok(roleService.createRole(roleDTO));
     }
 
-    @GetMapping("/GetAll")
+    @GetMapping("/getAll")
     public ResponseEntity<List<RoleDTO>> getAllRoles() {
         return ResponseEntity.ok(roleService.getAllRoles());
     }
