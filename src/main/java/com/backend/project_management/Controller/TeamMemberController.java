@@ -1,27 +1,16 @@
 package com.backend.project_management.Controller;
 
 import com.backend.project_management.DTO.TeamMemberDTO;
-import com.backend.project_management.Entity.TeamMember;
-import com.backend.project_management.Exception.RequestNotFound;
-import com.backend.project_management.Model.JwtRequest;
-import com.backend.project_management.Model.JwtResponse;
-import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Service.TeamMemberService;
-import com.backend.project_management.UserPermission.UserRole;
 import com.backend.project_management.Util.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/team-members")
@@ -80,8 +69,9 @@ public class TeamMemberController {
     }
 
     @DeleteMapping("deleteTeamMember/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         service.deleteTeamMember(id);
+        return ResponseEntity.ok("टीम मेंबर उडाला");
     }
 
 
