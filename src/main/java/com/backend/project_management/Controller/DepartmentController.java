@@ -20,7 +20,7 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentService.createDepartment(departmentDTO));
     }
 
-    @GetMapping("/GetAll")
+    @GetMapping("/getAll")
     public ResponseEntity<List<DepartmentDTO>> getAllDepartments() {
         return ResponseEntity.ok(departmentService.getAllDepartments());
     }
