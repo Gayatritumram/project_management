@@ -15,6 +15,7 @@ import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Service.ProjectAdminService;
 
 
+import com.backend.project_management.UserPermission.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -53,10 +54,15 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
     @Override
     public ProjectAdminDTO registerAdmin(ProjectAdminDTO adminDTO) {
         ProjectAdmin projectAdmin=ProjectAdminMapper.toEntity(adminDTO);
+        projectAdmin.setEmail(adminDTO.getEmail());
         projectAdmin.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
+
+        // Ensure userRole1 is not null
+        projectAdmin.setUserRole1(adminDTO.getUserRole1() != null ? adminDTO.getUserRole1() : UserRole.ADMIN);
+
+
         return ProjectAdminMapper.toDTO(adminRepo.save(projectAdmin));
     }
-
 
 
     @Override

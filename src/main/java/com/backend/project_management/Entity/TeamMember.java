@@ -1,10 +1,12 @@
 package com.backend.project_management.Entity;
 
+import com.backend.project_management.UserPermission.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
@@ -21,8 +23,10 @@ public class TeamMember implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Column(nullable = false, unique = true)
     private String email;
     private String password;
+    @Transient
     private String confirmPassword;
     private LocalDate joinDate;
     private String department;
@@ -34,21 +38,28 @@ public class TeamMember implements UserDetails {
     private boolean isLeader = false;
     //default value is false
 
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
+
+    public boolean isLeader() {
+        return this.userRole == UserRole.TEAM_LEADER;
+    }
+
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return userRole != null ?
+                List.of(new SimpleGrantedAuthority("ROLE_" + userRole.name())) :
+                List.of(new SimpleGrantedAuthority("ROLE_TEAM_MEMBER"));
     }
 
     @Override
     public String getUsername() {
-        if(isLeader){
+//
         return this.email;
-        }
-        return "You are not leader";
     }
 
     @Override
