@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/tasks")
 public class TaskController {
 
     @Autowired
@@ -32,6 +32,7 @@ public class TaskController {
 
     @GetMapping("/getAllTasks")
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
+        System.out.println("✅ /getAllTasks endpoint hit");
         return ResponseEntity.ok(taskService.getAllTasks());
     }
 
