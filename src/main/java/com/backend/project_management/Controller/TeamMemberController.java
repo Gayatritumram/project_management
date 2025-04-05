@@ -71,7 +71,7 @@ public class TeamMemberController {
     @DeleteMapping("deleteTeamMember/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         service.deleteTeamMember(id);
-        return ResponseEntity.ok("टीम मेंबर उडाला");
+        return ResponseEntity.ok("Team Member deleted Successfully  ");
     }
 
 
