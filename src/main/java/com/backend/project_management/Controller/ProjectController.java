@@ -48,7 +48,7 @@ public class ProjectController {
     @DeleteMapping("/deleteProject/{id}")
     public ResponseEntity<String> deleteProject(@PathVariable Long id) {
         projectService.deleteProject(id);
-        return ResponseEntity.ok("Project Deleted");
+        return ResponseEntity.ok("Project Completed");
     }
 
     @PutMapping("/assignProjectToTeam/{projectId}/assign/{teamId}")

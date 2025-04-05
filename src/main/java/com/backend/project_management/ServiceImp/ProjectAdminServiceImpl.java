@@ -40,9 +40,6 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-
-
     @Autowired
     private UserDetailsService userDetailsService;
 

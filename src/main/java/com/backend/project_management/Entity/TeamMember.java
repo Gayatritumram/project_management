@@ -1,6 +1,9 @@
 package com.backend.project_management.Entity;
 
 import com.backend.project_management.UserPermission.UserRole;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,6 +50,7 @@ public class TeamMember implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "team_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
     private Team team;
 
     @Override
