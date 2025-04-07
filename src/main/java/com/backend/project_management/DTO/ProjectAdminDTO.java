@@ -10,7 +10,6 @@ public class ProjectAdminDTO{
     private String email;
     private String phone;
     private String password;
-    private String cpassword;
     private UserRole userRole1;
 
 
