@@ -32,13 +32,13 @@ public class TaskController {
 
     @GetMapping("/getAllTasks")
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
-        System.out.println("✅ /getAllTasks endpoint hit");
+        System.out.println("/getAllTasks endpoint hit");
         return ResponseEntity.ok(taskService.getAllTasks());
     }
 
     @DeleteMapping("/{taskId}")
     public ResponseEntity<String> deleteTask(@PathVariable Long taskId) {
         taskService.deleteTask(taskId);
-        return ResponseEntity.ok("टास्क गेला कचऱ्यात");
+        return ResponseEntity.ok("Task Deleted Successfully");
     }
 }
