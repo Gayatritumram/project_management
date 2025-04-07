@@ -9,6 +9,8 @@ import com.backend.project_management.Mapper.TeamMemberMapper;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.TeamMemberService;
+import com.backend.project_management.UserPermission.UserRole;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,8 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Transactional
+    @Override
     public TeamMemberDTO createTeamMember(TeamMemberDTO dto) {
 
 
@@ -65,6 +69,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     public  void makeTeamLeader(Long id) {
         TeamMember teamMember = repository.findById(id).orElseThrow(() -> new RequestNotFound("Team Member not found"));
         teamMember.setLeader(true);
+        teamMember.setUserRole(UserRole.valueOf("TEAM_LEADER"));
         repository.save(teamMember);
     }
 

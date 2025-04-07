@@ -6,6 +6,7 @@ import com.backend.project_management.Service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,12 @@ import java.util.List;
 public class ProjectController {
     @Autowired
     private ProjectService projectService;
+
+    @PostMapping("/addProject")
+    public ResponseEntity<ProjectDTO> addProject1(@RequestBody ProjectDTO projectDTO){
+        ProjectDTO addProject = projectService.addProject(projectDTO);
+        return new ResponseEntity<ProjectDTO>(addProject, HttpStatus.CREATED);
+    }
 
     @GetMapping("/getProjectById/{id}")
     public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Long id) {
@@ -41,7 +48,7 @@ public class ProjectController {
     @DeleteMapping("/deleteProject/{id}")
     public ResponseEntity<String> deleteProject(@PathVariable Long id) {
         projectService.deleteProject(id);
-        return ResponseEntity.ok("Project Deleted");
+        return ResponseEntity.ok("Project Completed");
     }
 
     @PutMapping("/assignProjectToTeam/{projectId}/assign/{teamId}")

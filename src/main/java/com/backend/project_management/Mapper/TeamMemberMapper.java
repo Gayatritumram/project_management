@@ -14,7 +14,6 @@ public class TeamMemberMapper {
         teamMember.setName(dto.getName());
         teamMember.setEmail(dto.getEmail());
         teamMember.setPassword(dto.getPassword());
-        teamMember.setConfirmPassword(dto.getConfirmPassword());
         teamMember.setJoinDate(dto.getJoinDate());
         teamMember.setDepartment(dto.getDepartment());
         teamMember.setPhone(dto.getPhone());
@@ -25,6 +24,7 @@ public class TeamMemberMapper {
         teamMember.setLeader(dto.isLeader());
         teamMember.setPassword(dto.getPassword());
         teamMember.setTeam(dto.getTeamId());
+        teamMember.setUserRole(dto.getUserRole());
 
 
 
@@ -46,6 +46,7 @@ public class TeamMemberMapper {
         dto.setLeader(teamMember.isLeader());
         dto.setPassword(teamMember.getPassword());
         dto.setTeamId(teamMember.getTeam());
+        dto.setUserRole(teamMember.getUserRole());
 
 
         return dto;
