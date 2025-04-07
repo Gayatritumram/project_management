@@ -29,8 +29,6 @@ public class TeamMember implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
     private String password;
-    @Transient
-    private String confirmPassword;
     private LocalDate joinDate;
     private String department;
     private String phone;

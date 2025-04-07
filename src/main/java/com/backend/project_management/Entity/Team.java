@@ -19,10 +19,6 @@ public class Team {
     private String branch;
     private String department;
 
-    @OneToOne
-    @JoinColumn(name = "leader_id")
-    private TeamMember leader; // One leader
-
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TeamMember> members; // Multiple team members
 

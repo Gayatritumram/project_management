@@ -30,8 +30,7 @@ public class ProjectAdmin implements UserDetails {
 
     @Column(nullable = false)
     private String password;
-    @Transient
-    private String cpassword;
+
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole1;
