@@ -37,7 +37,7 @@ public class Task {
     private String subject;
 
     @Enumerated(EnumType.STRING)
-    private TaskPriority priority;
+        private TaskPriority priority;
 
     @ManyToOne
     @JoinColumn(name = "assigned_to")
