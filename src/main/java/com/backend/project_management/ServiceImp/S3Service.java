@@ -1,5 +1,4 @@
-package com.backend.project_management.Service;
-
+package com.backend.project_management.ServiceImp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +30,7 @@ public class S3Service {
 
     // ✅ Upload a single image to S3
     public String uploadImage(MultipartFile file) throws IOException {
-        String fileName = "hostel_gallery/" + Instant.now().getEpochSecond() + "_" + file.getOriginalFilename();
+        String fileName = "project_management/" + Instant.now().getEpochSecond() + "_" + file.getOriginalFilename();
 
         // Save the file temporarily
         java.nio.file.Path tempPath = Files.createTempFile("upload-", file.getOriginalFilename());
@@ -65,7 +64,7 @@ public class S3Service {
 
         DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
                 .bucket(bucketName)
-                .key("hostel_gallery/" + fileName)
+                .key("project_management/" + fileName)
                 .build();
 
         s3Client.deleteObject(deleteObjectRequest);
