@@ -1,12 +1,8 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.ProjectAdminDTO;
-import com.backend.project_management.DTO.TaskDTO;
-import com.backend.project_management.DTO.TeamMemberDTO;
 import com.backend.project_management.Entity.ProjectAdmin;
-import com.backend.project_management.Entity.Task;
-import com.backend.project_management.Entity.TeamMember;
-import com.backend.project_management.Exception.RequestNotFound;
+
 import com.backend.project_management.Mapper.ProjectAdminMapper;
 
 import com.backend.project_management.Repository.ProjectAdminRepo;
@@ -25,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ProjectAdminServiceImpl implements ProjectAdminService {
@@ -52,11 +47,9 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
     private OtpService otpService;
 
 
-
-
     @Override
     public ProjectAdminDTO registerAdmin(ProjectAdminDTO adminDTO) {
-        ProjectAdmin projectAdmin=ProjectAdminMapper.toEntity(adminDTO);
+        ProjectAdmin projectAdmin = ProjectAdminMapper.toEntity(adminDTO);
         projectAdmin.setEmail(adminDTO.getEmail());
         projectAdmin.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
 
@@ -119,8 +112,6 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
             throw new IllegalArgumentException("Admin email not found!");
         }
     }
-
-
 
 
 }
