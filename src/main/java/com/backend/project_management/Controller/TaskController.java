@@ -5,6 +5,7 @@ import com.backend.project_management.Service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -32,7 +33,6 @@ public class TaskController {
 
     @GetMapping("/getAllTasks")
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
-        System.out.println("/getAllTasks endpoint hit");
         return ResponseEntity.ok(taskService.getAllTasks());
     }
 
@@ -40,5 +40,16 @@ public class TaskController {
     public ResponseEntity<String> deleteTask(@PathVariable Long taskId) {
         taskService.deleteTask(taskId);
         return ResponseEntity.ok("Task Deleted Successfully");
+    }
+
+    @PostMapping("/{taskId}/upload-image")
+    public ResponseEntity<TaskDTO> uploadTaskImage(@PathVariable Long taskId,
+                                                   @RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(taskService.uploadTaskImage(taskId, file));
+    }
+
+    @DeleteMapping("/{taskId}/delete-image")
+    public ResponseEntity<TaskDTO> deleteTaskImage(@PathVariable Long taskId) {
+        return ResponseEntity.ok(taskService.deleteTaskImage(taskId));
     }
 }
