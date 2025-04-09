@@ -77,28 +77,5 @@ public class TeamMemberController {
     }
 
 
-    // Forgot Password
-    @PostMapping("/forgotPassword")
-    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
-        String message = service.forgotPassword(email);
-        return ResponseEntity.ok(message);
-    }
-
-    // Verify OTP
-    @PostMapping("/verifyOtp")
-    public ResponseEntity<String> verifyOtp(@RequestParam String email, @RequestParam int otp) {
-        String message = service.verifyOtp(email, otp);
-        return ResponseEntity.ok(message);
-    }
-
-    // Reset Password
-    @PostMapping("/resetPassword")
-    public ResponseEntity<String> resetPassword(@RequestParam String email, @RequestParam String newPassword, @RequestParam String confirmPassword) {
-        String message = service.resetPassword(email, newPassword, confirmPassword);
-        return ResponseEntity.ok(message);
-    }
-
-
-
 }
 

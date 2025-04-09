@@ -105,7 +105,7 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
         Optional<ProjectAdmin> optionalAdmin = adminRepo.findByEmail(email);
         if (optionalAdmin.isPresent()) {
             ProjectAdmin projectAdminDTO = optionalAdmin.get();
-            projectAdminDTO.setPassword(newPassword); // Consider encrypting the password before saving
+            projectAdminDTO.setPassword(passwordEncoder.encode(newPassword)); // Consider encrypting the password before saving
             adminRepo.save(projectAdminDTO);
             return "Password successfully reset.";
         } else {

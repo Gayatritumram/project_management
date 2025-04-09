@@ -45,13 +45,10 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Autowired
     private EmailService emailService;
 
-    @Transactional
+    //@Transactional
     @Override
     public TeamMemberDTO createTeamMember(TeamMemberDTO dto) {
-
-
         TeamMember teamMember = TeamMemberMapper.mapToTeamMember(dto);
-
         teamMember.setPassword(passwordEncoder.encode(dto.getPassword()));
         teamMember = repository.save(teamMember);
         return TeamMemberMapper.mapToTeamMemberDTO(teamMember);
@@ -136,7 +133,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         Optional<TeamMember> optionalAdmin = repository.findByEmail(email);
         if (optionalAdmin.isPresent()) {
             TeamMember teamMember = optionalAdmin.get();
-            teamMember.setPassword(newPassword); // Consider encrypting the password before saving
+            teamMember.setPassword(passwordEncoder.encode(newPassword)); // Consider encrypting the password before saving
             repository.save(teamMember);
             return "Password successfully reset.";
         } else {
