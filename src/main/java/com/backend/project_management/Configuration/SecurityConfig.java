@@ -116,6 +116,8 @@ public class SecurityConfig {
                         .requestMatchers(PUT,"/teams/**").hasAuthority(ADMIN_UPDATE.name())
                         .requestMatchers(DELETE,"/teams/**").hasAuthority(ADMIN_DELETE.name())
 
+                        .requestMatchers("/forgetPassword/**").permitAll()
+
 
 
 
