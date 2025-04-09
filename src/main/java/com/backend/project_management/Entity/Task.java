@@ -43,7 +43,9 @@ public class Task {
     @JoinColumn(name = "assigned_to")
     private TeamMember assignedTo;
 
-    private Long assignedBy;
+    @ManyToOne
+    @JoinColumn(name = "assigned_by")
+    private ProjectAdmin assignedBy;
 
     @PrePersist
     protected void onCreate() {
