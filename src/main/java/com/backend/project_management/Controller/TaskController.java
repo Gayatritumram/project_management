@@ -31,7 +31,7 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTaskById(taskId));
     }
 
-    @GetMapping("/getAllTasks")
+    @GetMapping("/getAll")
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
         return ResponseEntity.ok(taskService.getAllTasks());
     }
