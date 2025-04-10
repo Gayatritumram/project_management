@@ -19,11 +19,8 @@ public class TeamMapper {
         Team team = new Team();
         team.setId(teamDTO.getId());
         team.setTeamName(teamDTO.getTeamName());
-
-
         team.setBranch(teamDTO.getBranch());
         team.setDepartment(teamDTO.getDepartment());
-
         return team;
     }
 }
