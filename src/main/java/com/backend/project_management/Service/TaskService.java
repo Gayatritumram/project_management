@@ -1,6 +1,7 @@
 package com.backend.project_management.Service;
 
 import com.backend.project_management.DTO.TaskDTO;
+import com.backend.project_management.DTO.TaskReportDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface TaskService {
     void deleteTask(Long taskId);
     TaskDTO uploadTaskImage(Long taskId, MultipartFile file);
     TaskDTO deleteTaskImage(Long taskId);
+    TaskReportDTO generateReportForAdmin(Long adminId);
+    TaskReportDTO generateReportForMember(Long memberId);
 }
