@@ -1,6 +1,7 @@
 package com.backend.project_management.Controller;
 
 import com.backend.project_management.DTO.TaskDTO;
+import com.backend.project_management.DTO.TaskReportDTO;
 import com.backend.project_management.Service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -52,4 +53,16 @@ public class TaskController {
     public ResponseEntity<TaskDTO> deleteTaskImage(@PathVariable Long taskId) {
         return ResponseEntity.ok(taskService.deleteTaskImage(taskId));
     }
+
+    @GetMapping("/report/admin/{adminId}")
+    public ResponseEntity<TaskReportDTO> getReportForAdmin(@PathVariable Long adminId) {
+        return ResponseEntity.ok(taskService.generateReportForAdmin(adminId));
+    }
+
+    @GetMapping("/report/member/{memberId}")
+    public ResponseEntity<TaskReportDTO> getReportForMember(@PathVariable Long memberId) {
+        return ResponseEntity.ok(taskService.generateReportForMember(memberId));
+    }
+
+
 }
