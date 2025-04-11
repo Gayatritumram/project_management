@@ -40,11 +40,11 @@ public class Task {
         private TaskPriority priority;
 
     @ManyToOne
-    @JoinColumn(name = "assigned_to")
+    @JoinColumn(name = "assigned_to")// by name have to make changes
     private TeamMember assignedTo;
 
     @ManyToOne
-    @JoinColumn(name = "assigned_by")
+    @JoinColumn(name = "assigned_by")// by Id  have to make changes
     private ProjectAdmin assignedBy;
 
     @PrePersist
