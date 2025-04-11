@@ -50,7 +50,7 @@ public class TeamServiceImpl implements TeamService {
     public TeamDTO updateTeam(Long id,TeamDTO teamDTO) {
         Team existingTeam = teamRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
-        existingTeam.setTeamName(teamDTO.getTeamName());
+        existingTeam.setTeam(teamDTO.getTeamName());
         return teamMapper.toDTO(teamRepository.save(existingTeam));
     }
     @Override
