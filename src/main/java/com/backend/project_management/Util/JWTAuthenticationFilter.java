@@ -21,57 +21,78 @@ import java.io.IOException;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
-    private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
-
+    private Logger logger = LoggerFactory.getLogger(OncePerRequestFilter.class);
     @Autowired
     private JwtHelper jwtHelper;
+
 
     @Autowired
     private UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        //        try {
+//            Thread.sleep(500);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+        //Authorization
 
         String requestHeader = request.getHeader("Authorization");
-        logger.info("Received Authorization Header: {}", requestHeader);
-
+        //Bearer 2352345235sdfrsfgsdfsdf
+        logger.info(" Header :  {}", requestHeader);
         String username = null;
         String token = null;
-
-        if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
+        if (requestHeader != null && requestHeader.startsWith("Bearer")) {
+            //looking good
             token = requestHeader.substring(7);
             try {
+
                 username = this.jwtHelper.getUsernameFromToken(token);
+
             } catch (IllegalArgumentException e) {
-                logger.error("Illegal Argument while fetching the username from JWT: {}", e.getMessage(), e);
+                logger.info("Illegal Argument while fetching the username !!");
+                e.printStackTrace();
             } catch (ExpiredJwtException e) {
-                logger.error("JWT Token has expired: {}", e.getMessage(), e);
+                logger.info("Given jwt token is expired !!");
+                e.printStackTrace();
             } catch (MalformedJwtException e) {
-                logger.error("Invalid JWT Token: {}", e.getMessage(), e);
+                logger.info("Some changed has done in token !! Invalid Token");
+                e.printStackTrace();
             } catch (Exception e) {
-                logger.error("Unexpected JWT processing error: {}", e.getMessage(), e);
+                e.printStackTrace();
+
             }
+
+
         } else {
-            logger.warn("No Bearer Token found in Authorization Header.");
+            logger.info("Invalid Header Value !! ");
         }
 
+
+        //
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+
+            //fetch user detail from username
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            Boolean validateToken = this.jwtHelper.validateToken(token, userDetails);
+            if (validateToken) {
 
-            if (this.jwtHelper.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                //set the authentication
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                logger.info("JWT Authentication successful for user: {}", username);
+
+
             } else {
-                logger.warn("JWT Token validation failed for user: {}", username);
+                logger.info("Validation fails !!");
             }
+
+
         }
 
         filterChain.doFilter(request, response);
+
     }
-}
-//authentication
+}//authentication

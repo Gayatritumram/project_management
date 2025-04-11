@@ -97,4 +97,3 @@ public class AuthController {
                 .orElse(UserRole.ADMIN);
     }
 }
-//Authentication
