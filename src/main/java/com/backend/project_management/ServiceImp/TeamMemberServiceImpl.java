@@ -2,12 +2,15 @@ package com.backend.project_management.ServiceImp;
 
 
 import com.backend.project_management.DTO.TeamMemberDTO;
+import com.backend.project_management.Entity.ProjectAdmin;
 import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamMemberMapper;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Repository.TeamRepository;
+import com.backend.project_management.Service.EmailService;
+import com.backend.project_management.Service.OtpService;
 import com.backend.project_management.Service.TeamMemberService;
 import com.backend.project_management.UserPermission.UserRole;
 import jakarta.transaction.Transactional;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,13 +39,16 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Autowired
     private TeamRepository teamRepository;
 
-    @Transactional
+    @Autowired
+    private OtpService otpService;
+
+    @Autowired
+    private EmailService emailService;
+
+    //@Transactional
     @Override
     public TeamMemberDTO createTeamMember(TeamMemberDTO dto) {
-
-
         TeamMember teamMember = TeamMemberMapper.mapToTeamMember(dto);
-
         teamMember.setPassword(passwordEncoder.encode(dto.getPassword()));
         teamMember = repository.save(teamMember);
         return TeamMemberMapper.mapToTeamMemberDTO(teamMember);
@@ -95,5 +102,44 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     public void deleteTeamMember(Long id) {
         repository.deleteById(id);
     }
+
+    public String forgotPassword(String email) {
+        Optional<TeamMember> optionalAdmin = repository.findByEmail(email);
+        if (optionalAdmin.isPresent()) {
+            boolean otpSent = otpService.generateAndSendOTP(email);
+            if (otpSent) {
+                return "OTP has been sent to your email: " + email;
+            } else {
+                throw new IllegalArgumentException("Error in sending OTP. Please try again.");
+            }
+        } else {
+            throw new IllegalArgumentException("Admin email not found!");
+        }
+    }
+
+    public String verifyOtp(String email, int otp) {
+        boolean isOtpValid = otpService.verifyOTP(email, otp);
+        if (!isOtpValid) {
+            throw new IllegalArgumentException("Invalid or expired OTP!");
+        }
+        return "OTP is valid. You can now reset your password.";
+    }
+
+    public String resetPassword(String email, String newPassword, String confirmPassword) {
+        if (!newPassword.equals(confirmPassword)) {
+            throw new IllegalArgumentException("Passwords do not match!");
+        }
+
+        Optional<TeamMember> optionalAdmin = repository.findByEmail(email);
+        if (optionalAdmin.isPresent()) {
+            TeamMember teamMember = optionalAdmin.get();
+            teamMember.setPassword(passwordEncoder.encode(newPassword)); // Consider encrypting the password before saving
+            repository.save(teamMember);
+            return "Password successfully reset.";
+        } else {
+            throw new IllegalArgumentException("Admin email not found!");
+        }
+    }
+
 }
 

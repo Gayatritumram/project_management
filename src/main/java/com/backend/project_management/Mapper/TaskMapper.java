@@ -26,9 +26,8 @@ public class TaskMapper {
         dto.setSubject(task.getSubject());
         dto.setPriority(task.getPriority());
         dto.setAssignedBy(task.getAssignedBy());
-        if (task.getAssignedTo() != null) {
-            dto.setAssignedToId(task.getAssignedTo().getId());
-        }
+        dto.setAssignedToId(task.getAssignedTo());
+
         return dto;
     }
 
@@ -50,11 +49,7 @@ public class TaskMapper {
         task.setSubject(dto.getSubject());
         task.setPriority(dto.getPriority());
         task.setAssignedBy(dto.getAssignedBy());
-        if (dto.getAssignedToId() != null) {
-            TeamMember teamMember = new TeamMember();
-            teamMember.setId(dto.getAssignedToId());
-            task.setAssignedTo(teamMember);
-        }
+        task.setAssignedTo(dto.getAssignedToId());
         return task;
     }
 }

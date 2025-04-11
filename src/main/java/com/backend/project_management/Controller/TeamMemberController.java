@@ -1,17 +1,11 @@
 package com.backend.project_management.Controller;
 
 import com.backend.project_management.DTO.TeamMemberDTO;
-import com.backend.project_management.Model.JwtRequest;
-import com.backend.project_management.Model.JwtResponse;
 import com.backend.project_management.Service.TeamMemberService;
 import com.backend.project_management.Util.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +33,11 @@ public class TeamMemberController {
 
 
 
+
+    @PostMapping("/createTeamMember")
+    public TeamMemberDTO create(@RequestBody TeamMemberDTO dto) {
+        return service.createTeamMember(dto);
+    }
 
 
     @GetMapping("/getByIdTeamMember/{id}")
@@ -70,44 +69,12 @@ public class TeamMemberController {
     }
 
     @DeleteMapping("deleteTeamMember/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         service.deleteTeamMember(id);
+        return ResponseEntity.ok("Team Member deleted Successfully  ");
     }
 
 
-    @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
-
-        this.doAuthenticate(request.getEmail(), request.getPassword());
-
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-
-        String token = this.helper.generateToken(userDetails);
-
-        JwtResponse response = JwtResponse.builder()
-                .jwtToken(token)
-                .username(userDetails.getUsername()).build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    private void doAuthenticate(String email, String password) {
-
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
-        try {
-            manager.authenticate(authentication);
-
-
-        } catch (BadCredentialsException e) {
-            throw new BadCredentialsException(" Invalid Username or Password  !!");
-        }
-
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public String exceptionHandler() {
-        return "Credentials Invalid !!";
-    }
 
 
 }

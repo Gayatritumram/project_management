@@ -1,5 +1,7 @@
 package com.backend.project_management.DTO;
 
+import com.backend.project_management.Entity.ProjectAdmin;
+import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.TaskPriority;
 import lombok.Data;
 import java.time.LocalDate;
@@ -22,6 +24,6 @@ public class TaskDTO {
     private long durationInMinutes;
     private String subject;
     private TaskPriority priority;
-    private Long assignedToId;  // Instead of exposing TeamMember entity
-    private Long assignedBy;
+    private TeamMember assignedToId;  // Instead of exposing TeamMember entity
+    private ProjectAdmin assignedBy;
 }
