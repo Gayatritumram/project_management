@@ -74,6 +74,11 @@ public class TeamMemberController {
         return ResponseEntity.ok("Team Member deleted Successfully  ");
     }
 
+//    @GetMapping("/getAllTeamMember")
+//    public ResponseEntity<List<TeamMemberDTO>> getAllTeamMember1() {
+//        List<TeamMemberDTO> teamMemberDTO = service.getAllNonLeaderTeamMembers();
+//        return ResponseEntity.ok(service.getAllNonLeaderTeamMembers());
+//    }
 
 
 
