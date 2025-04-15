@@ -58,7 +58,7 @@ public class ProjectServiceImp implements ProjectService {
         projectDTO.setEndDate(project.getEndDate());
         projectDTO.setEstimatedDate(project.getEstimatedDate());
         projectDTO.setStatusDescription(project.getStatusDescription());
-        projectDTO.setBranch(project.getBranch());
+        projectDTO.setBranchName(project.getBranchName());
         projectDTO.setTeam(project.getTeam());
         projectDTO.setDepartment(project.getDepartment());
 

@@ -91,9 +91,9 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         teamMember.setDepartment(teamMemberDTO.getDepartment());
         teamMember.setPhone(teamMemberDTO.getPhone());
         teamMember.setAddress(teamMemberDTO.getAddress());
-        teamMember.setRole(teamMemberDTO.getRole());
+        teamMember.setRoleName(teamMemberDTO.getRoleName());
         teamMember.setProjectName(teamMemberDTO.getProjectName());
-        teamMember.setBranch(teamMemberDTO.getBranch());
+        teamMember.setBranchName(teamMemberDTO.getBranchName());
         teamMember.setLeader(teamMemberDTO.isLeader());
         return TeamMemberMapper.mapToTeamMemberDTO(repository.save(teamMember));
     }
