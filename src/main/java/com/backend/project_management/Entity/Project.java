@@ -26,7 +26,7 @@ public class Project {
     private LocalDate estimatedDate;
     private String statusDescription;
 
-    private String branch;
+    private String branchName;
     private String department;
 
     @ManyToOne

@@ -17,9 +17,9 @@ public class TeamMemberMapper {
         teamMember.setDepartment(dto.getDepartment());
         teamMember.setPhone(dto.getPhone());
         teamMember.setAddress(dto.getAddress());
-        teamMember.setRole(dto.getRole());
+        teamMember.setRoleName(dto.getRoleName());
         teamMember.setProjectName(dto.getProjectName());
-        teamMember.setBranch(dto.getBranch());
+        teamMember.setBranchName(dto.getBranchName());
         teamMember.setLeader(dto.isLeader());
         teamMember.setPassword(dto.getPassword());
         teamMember.setTeam(dto.getTeamId());
@@ -39,9 +39,9 @@ public class TeamMemberMapper {
         dto.setDepartment(teamMember.getDepartment());
         dto.setPhone(teamMember.getPhone());
         dto.setAddress(teamMember.getAddress());
-        dto.setRole(teamMember.getRole());
+        dto.setRoleName(teamMember.getRoleName());
         dto.setProjectName(teamMember.getProjectName());
-        dto.setBranch(teamMember.getBranch());
+        dto.setBranchName(teamMember.getBranchName());
         dto.setLeader(teamMember.isLeader());
         dto.setPassword(teamMember.getPassword());
         dto.setTeamId(teamMember.getTeam());

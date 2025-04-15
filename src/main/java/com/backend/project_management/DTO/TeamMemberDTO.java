@@ -23,7 +23,7 @@ public class TeamMemberDTO {
     private String role;
     private String projectName;
     private String branch;
-    private boolean isLeader;
+    private boolean isLeader = false;
     private Team teamId;
     private UserRole userRole;
 

@@ -32,9 +32,9 @@ public class TeamMember implements UserDetails {
     private String department;
     private String phone;
     private String address;
-    private String role;
+    private String roleName;
     private String projectName;
-    private String branch;
+    private String branchName;
     private boolean isLeader = false;
     //default value is false
 
