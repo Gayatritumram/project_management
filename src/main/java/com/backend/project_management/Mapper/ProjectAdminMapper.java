@@ -13,6 +13,7 @@ public class ProjectAdminMapper {
         admin.setEmail(adminDTO.getEmail());
         admin.setPhone(adminDTO.getPhone());
         admin.setPassword(adminDTO.getPassword());
+        admin.setUserRole1(adminDTO.getUserRole1());
         return admin;
     }
 
@@ -22,6 +23,7 @@ public class ProjectAdminMapper {
         dto.setEmail(admin.getEmail());
         dto.setPhone(admin.getPhone());
         dto.setPassword(admin.getPassword());
+        dto.setUserRole1(admin.getUserRole1());
         return dto;
     }
 }

@@ -20,9 +20,9 @@ public class TeamMemberDTO {
     private String department;
     private String phone;
     private String address;
-    private String roleName;
+    private String role;
     private String projectName;
-    private String branchName;
+    private String branch;
     private boolean isLeader = false;
     private Team teamId;
     private UserRole userRole;

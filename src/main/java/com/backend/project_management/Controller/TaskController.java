@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/task")
 public class TaskController {
 
     @Autowired
@@ -22,47 +22,44 @@ public class TaskController {
         return ResponseEntity.ok(taskService.createTask(taskDTO));
     }
 
-    @PutMapping("/{taskId}")
-    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long taskId, @RequestBody TaskDTO taskDTO) {
-        return ResponseEntity.ok(taskService.updateTask(taskId, taskDTO));
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody TaskDTO taskDTO) {
+        return ResponseEntity.ok(taskService.updateTask(id, taskDTO));
     }
 
-    @GetMapping("/{taskId}")
-    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long taskId) {
-        return ResponseEntity.ok(taskService.getTaskById(taskId));
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskDTO> getTask(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.getTaskById(id));
     }
 
-    @GetMapping("/getAllTasks")
+    @GetMapping
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
         return ResponseEntity.ok(taskService.getAllTasks());
     }
 
-    @DeleteMapping("/{taskId}")
-    public ResponseEntity<String> deleteTask(@PathVariable Long taskId) {
-        taskService.deleteTask(taskId);
-        return ResponseEntity.ok("Task Deleted Successfully");
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return ResponseEntity.ok("Task deleted successfully");
     }
 
     @PostMapping("/{taskId}/upload-image")
-    public ResponseEntity<TaskDTO> uploadTaskImage(@PathVariable Long taskId,
-                                                   @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<TaskDTO> uploadImage(@PathVariable Long taskId, @RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(taskService.uploadTaskImage(taskId, file));
     }
 
     @DeleteMapping("/{taskId}/delete-image")
-    public ResponseEntity<TaskDTO> deleteTaskImage(@PathVariable Long taskId) {
+    public ResponseEntity<TaskDTO> deleteImage(@PathVariable Long taskId) {
         return ResponseEntity.ok(taskService.deleteTaskImage(taskId));
     }
 
     @GetMapping("/report/admin/{adminId}")
-    public ResponseEntity<TaskReportDTO> getReportForAdmin(@PathVariable Long adminId) {
+    public ResponseEntity<TaskReportDTO> generateReportForAdmin(@PathVariable Long adminId) {
         return ResponseEntity.ok(taskService.generateReportForAdmin(adminId));
     }
 
     @GetMapping("/report/member/{memberId}")
-    public ResponseEntity<TaskReportDTO> getReportForMember(@PathVariable Long memberId) {
+    public ResponseEntity<TaskReportDTO> generateReportForMember(@PathVariable Long memberId) {
         return ResponseEntity.ok(taskService.generateReportForMember(memberId));
     }
-
-
 }

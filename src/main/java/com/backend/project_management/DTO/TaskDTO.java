@@ -1,29 +1,32 @@
 package com.backend.project_management.DTO;
 
-import com.backend.project_management.Entity.ProjectAdmin;
-import com.backend.project_management.Entity.TeamMember;
-import com.backend.project_management.TaskPriority;
-import lombok.Data;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+@Getter
+@Setter
 public class TaskDTO {
     private Long id;
+    private String subject;
     private String description;
     private String projectName;
+    private String priority;
+    private String status;
+    private String statusBar;
     private int days;
     private int hour;
-    private String status;
-    private double statusBar;
+    private int durationInMinutes;
+    private String imageUrl;
+
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private String imageUrl;
-    private long durationInMinutes;
-    private String subject;
-    private TaskPriority priority;
-    private TeamMember assignedToId;  // Instead of exposing TeamMember entity
-    private ProjectAdmin assignedBy;
+    private LocalTime startTime;
+    private LocalTime endTime;
+
+    private Long assignedByAdminId;
+    private Long assignedByLeaderId;
+    private Long assignedToId;
 }

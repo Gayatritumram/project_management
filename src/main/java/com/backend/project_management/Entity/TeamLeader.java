@@ -1,8 +1,6 @@
 package com.backend.project_management.Entity;
 
 import com.backend.project_management.UserPermission.UserRole;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,53 +14,48 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@Table(name = "TeamMember_table")
-public class TeamMember implements UserDetails {
+@Table(name = "TeamLeader_table")
+public class TeamLeader implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private String password;
-    private LocalDate joinDate;
-    private String department;
+
     private String phone;
     private String address;
-    private String roleName;
-    private String projectName;
-    private String branchName;
-    private boolean isLeader = false;
-    //default value is false
+    private String department;
+    private String branch;
+    private LocalDate joinDate;
+    private String role = "TEAM_LEADER";
 
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
-
-    public boolean isLeader() {
-        return this.userRole == UserRole.TEAM_LEADER;
-    }
+    private UserRole userRole = UserRole.TEAM_LEADER;
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
     private Team team;
 
-    @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "assignedByLeader", cascade = CascadeType.ALL)
     private List<Task> assignedTasks;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return userRole != null ?
-                List.of(new SimpleGrantedAuthority("ROLE_" + userRole.name())) :
-                List.of(new SimpleGrantedAuthority("ROLE_TEAM_MEMBER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + userRole.name()));
     }
 
     @Override
     public String getUsername() {
-//
         return this.email;
     }
 
@@ -86,4 +79,3 @@ public class TeamMember implements UserDetails {
         return UserDetails.super.isEnabled();
     }
 }
-

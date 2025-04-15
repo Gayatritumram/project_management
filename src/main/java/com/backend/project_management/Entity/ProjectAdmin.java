@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,7 +32,10 @@ public class ProjectAdmin implements UserDetails {
 
 
     @Enumerated(EnumType.STRING)
-    private UserRole userRole1;
+    private UserRole userRole1 = UserRole.ADMIN;
+
+    @OneToMany(mappedBy = "assignedByAdmin", cascade = CascadeType.ALL)
+    private List<Task> assignedTasks;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

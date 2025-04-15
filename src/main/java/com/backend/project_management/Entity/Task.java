@@ -1,61 +1,48 @@
 package com.backend.project_management.Entity;
 
-import com.backend.project_management.TaskPriority;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 public class Task {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String subject;
     private String description;
     private String projectName;
+    private String priority;
+    private String status;
+    private String statusBar;
     private int days;
     private int hour;
-    private String status;
-
-    @Column(name = "statusBar", nullable = false)
-    private double statusBar = 0;
+    private int durationInMinutes;
+    private String imageUrl;
 
     private LocalDate startDate;
     private LocalDate endDate;
-
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-
-    private String imageUrl;
-    private long durationInMinutes;
-    private String subject;
-
-    @Enumerated(EnumType.STRING)
-        private TaskPriority priority;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
     @ManyToOne
-    @JoinColumn(name = "assigned_to")// by name have to make changes
+    @JoinColumn(name = "assigned_by_admin_id")
+    private ProjectAdmin assignedByAdmin;
+
+    @ManyToOne
+    @JoinColumn(name = "assigned_by_leader_id")
+    private TeamLeader assignedByLeader;
+
+    @ManyToOne
+    @JoinColumn(name = "assigned_to_id")
     private TeamMember assignedTo;
 
-    @ManyToOne
-    @JoinColumn(name = "assigned_by")// by Id  have to make changes
-    private ProjectAdmin assignedBy;
-
-    @PrePersist
-    protected void onCreate() {
-        this.startDate = LocalDate.now(); // Auto-assign current date
-        this.startTime = LocalDateTime.now(); // Auto-assign current time
-        if (days > 0) {
-            this.endDate = this.startDate.plusDays(days); // Set endDate based on duration
-        }
-        if (hour > 0) {
-            this.endTime = this.startTime.plusHours(hour); // Set endTime based on hours
-        }
-    }
+    // If not using Lombok, add getters and setters manually
 }

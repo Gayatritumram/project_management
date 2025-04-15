@@ -1,16 +1,14 @@
 package com.backend.project_management.Entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.*;//.
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
-
+import java.util.List;//.
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +17,6 @@ public class Team {
     private String branchName;
     private String department;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TeamMember> members; // Multiple team members
-
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY) //.
+    private List<TeamMember> members;
 }

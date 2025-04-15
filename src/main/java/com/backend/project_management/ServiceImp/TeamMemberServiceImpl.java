@@ -1,9 +1,6 @@
 package com.backend.project_management.ServiceImp;
 
-
 import com.backend.project_management.DTO.TeamMemberDTO;
-import com.backend.project_management.Entity.ProjectAdmin;
-import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamMemberMapper;
@@ -13,13 +10,10 @@ import com.backend.project_management.Service.EmailService;
 import com.backend.project_management.Service.OtpService;
 import com.backend.project_management.Service.TeamMemberService;
 import com.backend.project_management.UserPermission.UserRole;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,13 +22,10 @@ import java.util.stream.Collectors;
 public class TeamMemberServiceImpl implements TeamMemberService {
 
     @Autowired
-    private  TeamMemberRepository repository;
-
+    private TeamMemberRepository repository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-
 
     @Autowired
     private TeamRepository teamRepository;
@@ -45,7 +36,6 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Autowired
     private EmailService emailService;
 
-    //@Transactional
     @Override
     public TeamMemberDTO createTeamMember(TeamMemberDTO dto) {
         TeamMember teamMember = TeamMemberMapper.mapToTeamMember(dto);
@@ -56,45 +46,52 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
     @Override
     public TeamMemberDTO getTeamMemberById(Long id) {
-        TeamMember teamMember = repository.findById(id).orElseThrow(() -> new RequestNotFound("Team Member not found"));
+        TeamMember teamMember = repository.findById(id)
+                .orElseThrow(() -> new RequestNotFound("Team Member not found"));
         return TeamMemberMapper.mapToTeamMemberDTO(teamMember);
     }
 
     @Override
     public List<TeamMemberDTO> getAllNonLeaderTeamMembers() {
-       return repository.findAll().stream().filter(teamMember -> !(teamMember.isLeader())).map(TeamMemberMapper::mapToTeamMemberDTO).collect(Collectors.toList());
-
+        return repository.findAll().stream()
+                .filter(teamMember -> !teamMember.isLeader())
+                .map(TeamMemberMapper::mapToTeamMemberDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<TeamMemberDTO> getAllLeaderTeamMembers() {
-        return repository.findAll().stream().filter(TeamMember::isLeader).map(TeamMemberMapper::mapToTeamMemberDTO).collect(Collectors.toList());
-
+        return repository.findAll().stream()
+                .filter(TeamMember::isLeader)
+                .map(TeamMemberMapper::mapToTeamMemberDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public  void makeTeamLeader(Long id) {
-        TeamMember teamMember = repository.findById(id).orElseThrow(() -> new RequestNotFound("Team Member not found"));
+    public void makeTeamLeader(Long id) {
+        TeamMember teamMember = repository.findById(id)
+                .orElseThrow(() -> new RequestNotFound("Team Member not found"));
         teamMember.setLeader(true);
-        teamMember.setUserRole(UserRole.valueOf("TEAM_LEADER"));
+        teamMember.setUserRole(UserRole.TEAM_LEADER);
         repository.save(teamMember);
     }
 
-
-
     @Override
     public TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO) {
-        TeamMember teamMember = repository.findById(id).orElseThrow(() -> new RequestNotFound("Team Member not found"));
+        TeamMember teamMember = repository.findById(id)
+                .orElseThrow(() -> new RequestNotFound("Team Member not found"));
+
         teamMember.setName(teamMemberDTO.getName());
         teamMember.setEmail(teamMemberDTO.getEmail());
         teamMember.setJoinDate(teamMemberDTO.getJoinDate());
         teamMember.setDepartment(teamMemberDTO.getDepartment());
         teamMember.setPhone(teamMemberDTO.getPhone());
         teamMember.setAddress(teamMemberDTO.getAddress());
-        teamMember.setRoleName(teamMemberDTO.getRoleName());
+        teamMember.setRoleName(teamMemberDTO.getRole());
         teamMember.setProjectName(teamMemberDTO.getProjectName());
-        teamMember.setBranchName(teamMemberDTO.getBranchName());
+        teamMember.setBranchName(teamMemberDTO.getBranch());
         teamMember.setLeader(teamMemberDTO.isLeader());
+
         return TeamMemberMapper.mapToTeamMemberDTO(repository.save(teamMember));
     }
 
@@ -103,9 +100,10 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         repository.deleteById(id);
     }
 
+    @Override
     public String forgotPassword(String email) {
-        Optional<TeamMember> optionalAdmin = repository.findByEmail(email);
-        if (optionalAdmin.isPresent()) {
+        Optional<TeamMember> optionalMember = repository.findByEmail(email);
+        if (optionalMember.isPresent()) {
             boolean otpSent = otpService.generateAndSendOTP(email);
             if (otpSent) {
                 return "OTP has been sent to your email: " + email;
@@ -113,10 +111,11 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                 throw new IllegalArgumentException("Error in sending OTP. Please try again.");
             }
         } else {
-            throw new IllegalArgumentException("Admin email not found!");
+            throw new IllegalArgumentException("Team Member email not found!");
         }
     }
 
+    @Override
     public String verifyOtp(String email, int otp) {
         boolean isOtpValid = otpService.verifyOTP(email, otp);
         if (!isOtpValid) {
@@ -125,21 +124,20 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         return "OTP is valid. You can now reset your password.";
     }
 
+    @Override
     public String resetPassword(String email, String newPassword, String confirmPassword) {
         if (!newPassword.equals(confirmPassword)) {
             throw new IllegalArgumentException("Passwords do not match!");
         }
 
-        Optional<TeamMember> optionalAdmin = repository.findByEmail(email);
-        if (optionalAdmin.isPresent()) {
-            TeamMember teamMember = optionalAdmin.get();
-            teamMember.setPassword(passwordEncoder.encode(newPassword)); // Consider encrypting the password before saving
+        Optional<TeamMember> optionalMember = repository.findByEmail(email);
+        if (optionalMember.isPresent()) {
+            TeamMember teamMember = optionalMember.get();
+            teamMember.setPassword(passwordEncoder.encode(newPassword));
             repository.save(teamMember);
             return "Password successfully reset.";
         } else {
-            throw new IllegalArgumentException("Admin email not found!");
+            throw new IllegalArgumentException("Team Member email not found!");
         }
     }
-
 }
-
