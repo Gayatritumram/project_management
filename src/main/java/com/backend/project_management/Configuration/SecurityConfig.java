@@ -75,6 +75,15 @@ public class SecurityConfig {
                         .requestMatchers(PUT,"/tasks/**").hasAnyAuthority(ADMIN_UPDATE.name(),TEAM_LEADER_UPDATE.name())
                         .requestMatchers(DELETE,"/tasks/**").hasAnyAuthority(ADMIN_DELETE.name(),TEAM_LEADER_DELETE.name())
 
+                        //Team Leader
+
+                        .requestMatchers("/team-leader/**").hasAnyRole(ADMIN.name(),TEAM_LEADER.name(),TEAM_MEMBER.name())
+
+                        .requestMatchers(GET,"/team-leader/**").hasAnyAuthority(ADMIN_READ.name(),TEAM_LEADER_READ.name(),TEAM_MEMBER_READ.name())
+                        .requestMatchers(POST,"/team-leader/**").hasAnyAuthority(ADMIN_CREATE.name(), TEAM_LEADER_CREATE.name())
+                        .requestMatchers(PUT,"/team-leader/**").hasAnyAuthority(ADMIN_UPDATE.name(),TEAM_LEADER_UPDATE.name())
+                        .requestMatchers(DELETE,"/team-leader/**").hasAnyAuthority(ADMIN_DELETE.name(),TEAM_LEADER_DELETE.name())
+
                         //PROJECT
 
                         .requestMatchers("/Project/**").hasAnyRole(ADMIN.name(),TEAM_LEADER.name(),TEAM_MEMBER.name())

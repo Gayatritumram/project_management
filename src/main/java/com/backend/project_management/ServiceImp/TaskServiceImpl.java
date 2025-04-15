@@ -4,10 +4,12 @@ import com.backend.project_management.DTO.TaskDTO;
 import com.backend.project_management.DTO.TaskReportDTO;
 import com.backend.project_management.Entity.ProjectAdmin;
 import com.backend.project_management.Entity.Task;
+import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Mapper.TaskMapper;
 import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TaskRepository;
+import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,85 +18,90 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
 
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TaskMapper taskMapper;
-
-    @Autowired
-    private S3Service s3Service;
-
-    @Autowired
-    private ProjectAdminRepo projectAdminRepo;
-
-    @Autowired
-    private  TeamMemberRepository teamMemberRepository;
+    @Autowired private TaskRepository taskRepository;
+    @Autowired private TaskMapper taskMapper;
+    @Autowired private S3Service s3Service;
+    @Autowired private ProjectAdminRepo projectAdminRepo;
+    @Autowired private TeamLeaderRepository teamLeaderRepository;
+    @Autowired private TeamMemberRepository teamMemberRepository;
 
     @Override
     public TaskDTO createTask(TaskDTO taskDTO) {
         Task task = taskMapper.toEntity(taskDTO);
+
+        if (taskDTO.getAssignedByAdminId() != null) {
+            ProjectAdmin admin = projectAdminRepo.findById(taskDTO.getAssignedByAdminId())
+                    .orElseThrow(() -> new RuntimeException("Admin not found"));
+            task.setAssignedByAdmin(admin);
+        }
+
+        if (taskDTO.getAssignedByLeaderId() != null) {
+            TeamLeader leader = teamLeaderRepository.findById(taskDTO.getAssignedByLeaderId())
+                    .orElseThrow(() -> new RuntimeException("Leader not found"));
+            task.setAssignedByLeader(leader);
+        }
+
+        TeamMember assignedTo = teamMemberRepository.findById(taskDTO.getAssignedToId())
+                .orElseThrow(() -> new RuntimeException("Team member not found"));
+        task.setAssignedTo(assignedTo);
+
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
     }
 
     @Override
     public TaskDTO updateTask(Long taskId, TaskDTO taskDTO) {
-        Task existingTask = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
 
-        existingTask.setDescription(taskDTO.getDescription());
-        existingTask.setProjectName(taskDTO.getProjectName());
-        existingTask.setDays(taskDTO.getDays());
-        existingTask.setHour(taskDTO.getHour());
-        existingTask.setStatus(taskDTO.getStatus());
-        existingTask.setStatusBar(taskDTO.getStatusBar());
-        existingTask.setStartDate(taskDTO.getStartDate());
-        existingTask.setEndDate(taskDTO.getEndDate());
-        existingTask.setStartTime(taskDTO.getStartTime());
-        existingTask.setEndTime(taskDTO.getEndTime());
-        existingTask.setImageUrl(taskDTO.getImageUrl());
-        existingTask.setDurationInMinutes(taskDTO.getDurationInMinutes());
-        existingTask.setSubject(taskDTO.getSubject());
-        existingTask.setPriority(taskDTO.getPriority());
-        existingTask.setAssignedBy(taskDTO.getAssignedBy());
+        task.setDescription(taskDTO.getDescription());
+        task.setProjectName(taskDTO.getProjectName());
+        task.setDays(taskDTO.getDays());
+        task.setHour(taskDTO.getHour());
+        task.setStatus(taskDTO.getStatus());
+        task.setStatusBar(taskDTO.getStatusBar());
+        task.setStartDate(taskDTO.getStartDate());
+        task.setEndDate(taskDTO.getEndDate());
+        task.setStartTime(taskDTO.getStartTime());
+        task.setEndTime(taskDTO.getEndTime());
+        task.setSubject(taskDTO.getSubject());
+        task.setPriority(taskDTO.getPriority());
 
-        Task updatedTask = taskRepository.save(existingTask);
+        Task updatedTask = taskRepository.save(task);
         return taskMapper.toDto(updatedTask);
     }
 
     @Override
     public TaskDTO getTaskById(Long taskId) {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+                .orElseThrow(() -> new RuntimeException("Task not found"));
         return taskMapper.toDto(task);
     }
 
     @Override
     public List<TaskDTO> getAllTasks() {
-        List<Task> tasks = taskRepository.findAll();
-        return tasks.stream().map(taskMapper::toDto).collect(Collectors.toList());
+        return taskRepository.findAll().stream()
+                .map(taskMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void deleteTask(Long taskId) {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+                .orElseThrow(() -> new RuntimeException("Task not found"));
         taskRepository.delete(task);
     }
 
     @Override
     public TaskDTO uploadTaskImage(Long taskId, MultipartFile file) {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+                .orElseThrow(() -> new RuntimeException("Task not found"));
         try {
             String imageUrl = s3Service.uploadImage(file);
             task.setImageUrl(imageUrl);
@@ -107,18 +114,17 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskDTO deleteTaskImage(Long taskId) {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
-
-        if (task.getImageUrl() != null && !task.getImageUrl().isEmpty()) {
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+        if (task.getImageUrl() != null) {
             s3Service.deleteImage(task.getImageUrl());
             task.setImageUrl(null);
             taskRepository.save(task);
         }
-
         return taskMapper.toDto(task);
-    } @Override
+    }
+
+    @Override
     public TaskReportDTO generateReportForAdmin(Long adminId) {
-        // Using the injected instance, not a static call
         ProjectAdmin admin = projectAdminRepo.findById(adminId)
                 .orElseThrow(() -> new RuntimeException("Admin not found"));
 
@@ -132,14 +138,12 @@ public class TaskServiceImpl implements TaskService {
         tasksByDateRange.put("Today", taskRepository.countByDateRangeForAdmin(admin, today, today));
         tasksByDateRange.put("Last 7 Days", taskRepository.countByDateRangeForAdmin(admin, today.minusDays(6), today));
         tasksByDateRange.put("Last 30 Days", taskRepository.countByDateRangeForAdmin(admin, today.minusDays(29), today));
-        tasksByDateRange.put("Last 365 Days", taskRepository.countByDateRangeForAdmin(admin, today.minusDays(364), today));
 
         return new TaskReportDTO(tasksByDateRange, taskByStatus);
     }
 
     @Override
     public TaskReportDTO generateReportForMember(Long memberId) {
-        // Using the injected instance, not a static call
         TeamMember member = teamMemberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("Member not found"));
 
@@ -153,10 +157,7 @@ public class TaskServiceImpl implements TaskService {
         tasksByDateRange.put("Today", taskRepository.countByDateRangeForMember(member, today, today));
         tasksByDateRange.put("Last 7 Days", taskRepository.countByDateRangeForMember(member, today.minusDays(6), today));
         tasksByDateRange.put("Last 30 Days", taskRepository.countByDateRangeForMember(member, today.minusDays(29), today));
-        tasksByDateRange.put("Last 365 Days", taskRepository.countByDateRangeForMember(member, today.minusDays(364), today));
 
         return new TaskReportDTO(tasksByDateRange, taskByStatus);
     }
-
-
 }

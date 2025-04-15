@@ -1,7 +1,6 @@
 package com.backend.project_management.Mapper;
 
 import com.backend.project_management.DTO.TeamMemberDTO;
-import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamMember;
 import org.springframework.stereotype.Component;
 

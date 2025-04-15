@@ -2,7 +2,6 @@ package com.backend.project_management.Entity;
 
 import com.backend.project_management.UserPermission.UserRole;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -50,6 +49,9 @@ public class TeamMember implements UserDetails {
     @JoinColumn(name = "team_id")
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
     private Team team;
+
+    @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL)
+    private List<Task> assignedTasks;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
