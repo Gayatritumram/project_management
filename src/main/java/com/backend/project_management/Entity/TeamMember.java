@@ -48,7 +48,7 @@ public class TeamMember implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "team_id")
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
-    private Team team;
+    private Team teamId;
 
     @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL)
     private List<Task> assignedTasks;
