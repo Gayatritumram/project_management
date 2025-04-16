@@ -44,5 +44,29 @@ public class Task {
     @JoinColumn(name = "assigned_to_id")
     private TeamMember assignedTo;
 
+    @PrePersist
+    protected void onCreate() {
+        // Set default start date and time
+        if (this.startDate == null) {
+            this.startDate = LocalDate.now();
+        }
+
+        if (this.startTime == null) {
+            this.startTime = LocalTime.now();
+        }
+
+        // Enforce minimum 7-day duration
+        if (this.days < 7) {
+            this.days = 7;
+        }
+        this.endDate = this.startDate.plusDays(this.days);
+
+        // Enforce minimum 34-hour duration
+        if (this.hour < 34) {
+            this.hour = 34;
+        }
+        this.endTime = this.startTime.plusHours(this.hour);
+    }
+
     // If not using Lombok, add getters and setters manually
 }
