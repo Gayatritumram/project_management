@@ -25,7 +25,7 @@ public class forgetPassword1 {
             @RequestParam(required = false) String confirmPassword) {
 
         switch (role.toUpperCase()) {
-            case "PROJECT_ADMIN":
+            case "ADMIN":
                 return handleProjectAdminRecovery(email, otp, newPassword, confirmPassword);
 
             case "TEAM_MEMBER":
