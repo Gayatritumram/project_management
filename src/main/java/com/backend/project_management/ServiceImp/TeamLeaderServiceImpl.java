@@ -32,7 +32,7 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
         if (dto.getTeamId() != null) {
             Team team = teamRepository.findById(dto.getTeamId())
                     .orElseThrow(() -> new RuntimeException("Team not found with ID: " + dto.getTeamId()));
-            leader.setTeam(team);
+            leader.setTeamId(team);
         }
 
         TeamLeader saved = teamLeaderRepository.save(leader);

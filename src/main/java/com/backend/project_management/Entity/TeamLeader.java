@@ -44,7 +44,7 @@ public class TeamLeader implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    private Team team;
+    private Team teamId;
 
     @OneToMany(mappedBy = "assignedByLeader", cascade = CascadeType.ALL)
     private List<Task> assignedTasks;

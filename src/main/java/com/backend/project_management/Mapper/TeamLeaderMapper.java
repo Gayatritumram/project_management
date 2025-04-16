@@ -18,7 +18,7 @@ public class TeamLeaderMapper {
         dto.setDepartment(leader.getDepartment());
         dto.setBranch(leader.getBranch());
         dto.setJoinDate(leader.getJoinDate());
-        dto.setTeamId(leader.getTeam() != null ? leader.getTeam().getId() : null);
+        dto.setTeamId(leader.getTeamId() != null ? leader.getTeamId().getId() : null);
         dto.setUserRole(leader.getUserRole());
         return dto;
     }

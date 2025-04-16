@@ -59,7 +59,7 @@ public class ProjectServiceImp implements ProjectService {
         projectDTO.setEstimatedDate(project.getEstimatedDate());
         projectDTO.setStatusDescription(project.getStatusDescription());
         projectDTO.setBranchName(project.getBranchName());
-        projectDTO.setTeam(project.getTeam());
+        projectDTO.setTeamName(project.getTeamName());
         projectDTO.setDepartment(project.getDepartment());
 
         Project project1 = ProjectMapper.mapToProject(projectDTO);
@@ -76,7 +76,7 @@ public class ProjectServiceImp implements ProjectService {
         ProjectDTO project = getProjectById(projectId);
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
-        project.setTeam(team);
+        project.setTeamName(team);
         Project project1 = ProjectMapper.mapToProject(project); // Assign team to project
         return ProjectMapper.mapToProjectDTO(projectRepository.save(project1));
     }
