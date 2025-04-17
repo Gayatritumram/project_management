@@ -6,11 +6,15 @@ import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Mapper.TeamLeaderMapper;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamRepository;
+import com.backend.project_management.Service.EmailService;
+import com.backend.project_management.Service.OtpService;
 import com.backend.project_management.Service.TeamLeaderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,9 +29,19 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    private OtpService otpService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public TeamLeaderDTO createTeamLeader(TeamLeaderDTO dto) {
         TeamLeader leader = teamLeaderMapper.toEntity(dto);
+        leader.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         if (dto.getTeamId() != null) {
             Team team = teamRepository.findById(dto.getTeamId())
@@ -39,7 +53,6 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
         return teamLeaderMapper.toDto(saved);
     }
 
-
     @Override
     public TeamLeaderDTO updateTeamLeader(Long id, TeamLeaderDTO dto) {
         TeamLeader leader = teamLeaderRepository.findById(id)
@@ -47,8 +60,15 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
         leader.setName(dto.getName());
         leader.setEmail(dto.getEmail());
-        leader.setPassword(dto.getPassword()); // Optional: encode password if using security
+
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            leader.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
         leader.setPhone(dto.getPhone());
+        leader.setAddress(dto.getAddress());
+        leader.setDepartment(dto.getDepartment());
+        leader.setBranchName(dto.getBranchName());
 
         TeamLeader updated = teamLeaderRepository.save(leader);
         return teamLeaderMapper.toDto(updated);
@@ -64,9 +84,9 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
     @Override
     public TeamLeaderDTO getTeamLeaderById(Long id) {
-        TeamLeader leader = teamLeaderRepository.findById(id)
+        return teamLeaderRepository.findById(id)
+                .map(teamLeaderMapper::toDto)
                 .orElseThrow(() -> new RuntimeException("TeamLeader not found with id: " + id));
-        return teamLeaderMapper.toDto(leader);
     }
 
     @Override
@@ -79,8 +99,48 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
     @Override
     public TeamLeaderDTO getTeamLeaderByEmail(String email) {
-        TeamLeader leader = teamLeaderRepository.findByEmail(email)
+        return teamLeaderRepository.findByEmail(email)
+                .map(teamLeaderMapper::toDto)
                 .orElseThrow(() -> new RuntimeException("TeamLeader not found with email: " + email));
-        return teamLeaderMapper.toDto(leader);
+    }
+
+    @Override
+    public String forgotPassword(String email) {
+        Optional<TeamLeader> optionalTeamLeader = teamLeaderRepository.findByEmail(email);
+        if (optionalTeamLeader.isPresent()) {
+            boolean otpSent = otpService.generateAndSendOTP(email);
+            if (otpSent) {
+                return "OTP has been sent to your email: " + email;
+            } else {
+                throw new IllegalArgumentException("Error in sending OTP. Please try again.");
+            }
+        } else {
+            throw new IllegalArgumentException("Team Leader email not found!");
+        }
+    }
+
+    @Override
+    public String verifyOtp(String email, int otp) {
+        if (otpService.verifyOTP(email, otp)) {
+            return "OTP is valid. You can now reset your password.";
+        }
+        throw new IllegalArgumentException("Invalid or expired OTP!");
+    }
+
+    @Override
+    public String resetPassword(String email, String newPassword, String confirmPassword) {
+        if (!newPassword.equals(confirmPassword)) {
+            throw new IllegalArgumentException("Passwords do not match!");
+        }
+
+        Optional<TeamLeader> optionalLeader = teamLeaderRepository.findByEmail(email);
+        if (optionalLeader.isPresent()) {
+            TeamLeader teamLeader = optionalLeader.get();
+            teamLeader.setPassword(passwordEncoder.encode(newPassword));
+            teamLeaderRepository.save(teamLeader);
+            return "Password successfully reset.";
+        } else {
+            throw new IllegalArgumentException("Team Leader email not found!");
+        }
     }
 }
