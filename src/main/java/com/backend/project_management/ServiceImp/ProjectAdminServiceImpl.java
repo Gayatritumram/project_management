@@ -69,8 +69,6 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
         ProjectAdminDTO projectAdminDTO = new ProjectAdminDTO();
         projectAdminDTO.setEmail(email1);
         projectAdminDTO.setPassword(password);
-
-
         return projectAdminDTO;
 
     }

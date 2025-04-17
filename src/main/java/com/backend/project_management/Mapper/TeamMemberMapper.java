@@ -19,10 +19,10 @@ public class TeamMemberMapper {
         teamMember.setAddress(dto.getAddress());
         teamMember.setRoleName(dto.getRole());
         teamMember.setProjectName(dto.getProjectName());
-        teamMember.setBranchName(dto.getBranch());
+        teamMember.setBranchName(dto.getBranchName());
         teamMember.setLeader(dto.isLeader());
         teamMember.setPassword(dto.getPassword());
-        teamMember.setTeam(dto.getTeamId());
+        teamMember.setTeamId(dto.getTeamId());
         teamMember.setUserRole(dto.getUserRole());
 
 
@@ -41,10 +41,10 @@ public class TeamMemberMapper {
         dto.setAddress(teamMember.getAddress());
         dto.setRole(teamMember.getRoleName());
         dto.setProjectName(teamMember.getProjectName());
-        dto.setBranch(teamMember.getBranchName());
+        dto.setBranchName(teamMember.getBranchName());
         dto.setLeader(teamMember.isLeader());
         dto.setPassword(teamMember.getPassword());
-        dto.setTeamId(teamMember.getTeam());
+        dto.setTeamId(teamMember.getTeamId());
         dto.setUserRole(teamMember.getUserRole());
 
 
