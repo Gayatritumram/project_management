@@ -31,5 +31,5 @@ public class Project {
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    private Team team;
+    private Team teamName;
 }

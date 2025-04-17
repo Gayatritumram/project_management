@@ -35,7 +35,7 @@ public class TeamLeader implements UserDetails {
     private String phone;
     private String address;
     private String department;
-    private String branch;
+    private String branchName;
     private LocalDate joinDate;
     private String role = "TEAM_LEADER";
 

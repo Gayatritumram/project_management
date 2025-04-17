@@ -22,7 +22,7 @@ public class ProjectMapper {
                 project.getStatusDescription(),
                 project.getBranchName(),
                 project.getDepartment(),
-                project.getTeam()
+                project.getTeamName()
         );
 
     }
@@ -40,7 +40,7 @@ public class ProjectMapper {
                 projectDTO.getStatusDescription(),
                 projectDTO.getBranchName(),
                 projectDTO.getDepartment(),
-                projectDTO.getTeam()
+                projectDTO.getTeamName()
                 );
     }
 

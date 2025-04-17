@@ -29,9 +29,7 @@ public class ProjectDTO {
     private String statusDescription;
     private String branchName;
     private String department;
-
-
-    private Team team;
+    private Team teamName;
 }
 
 
