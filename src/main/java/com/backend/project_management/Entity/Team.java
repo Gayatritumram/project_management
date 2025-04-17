@@ -17,6 +17,6 @@ public class Team {
     private String branchName;
     private String department;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY) //.
+    @OneToMany(mappedBy = "teamId", cascade = CascadeType.ALL, fetch = FetchType.LAZY) //.
     private List<TeamMember> members;
 }
