@@ -54,7 +54,8 @@ public class SecurityConfig {
 
                         //ADMIN
                         .requestMatchers("/admin/**").hasRole(ADMIN.name())
-
+                        // Allow actuator endpoints (example: health, info)
+                        .requestMatchers("/actuator/**").permitAll()
 
                         .requestMatchers(GET,"/admin/**").hasAuthority(ADMIN_READ.name())
                         .requestMatchers(POST,"/admin/**").hasAuthority(ADMIN_CREATE.name())

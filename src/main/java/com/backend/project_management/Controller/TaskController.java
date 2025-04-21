@@ -53,13 +53,13 @@ public class TaskController {
         return ResponseEntity.ok(taskService.deleteTaskImage(taskId));
     }
 
-    @GetMapping("/report/admin/{adminId}")
-    public ResponseEntity<TaskReportDTO> generateReportForAdmin(@PathVariable Long adminId) {
-        return ResponseEntity.ok(taskService.generateReportForAdmin(adminId));
-    }
-
-    @GetMapping("/report/member/{memberId}")
-    public ResponseEntity<TaskReportDTO> generateReportForMember(@PathVariable Long memberId) {
-        return ResponseEntity.ok(taskService.generateReportForMember(memberId));
-    }
+//    @GetMapping("/report/admin/{adminId}")
+//    public ResponseEntity<TaskReportDTO> generateReportForAdmin(@PathVariable Long adminId) {
+//        return ResponseEntity.ok(taskService.generateReportForAdmin(adminId));
+//    }
+//
+//    @GetMapping("/report/member/{memberId}")
+//    public ResponseEntity<TaskReportDTO> generateReportForMember(@PathVariable Long memberId) {
+//        return ResponseEntity.ok(taskService.generateReportForMember(memberId));
+//    }
 }
