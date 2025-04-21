@@ -17,5 +17,5 @@ public class TeamLeaderDTO {
     private String branchName;
     private LocalDate joinDate;
     private Long teamId;
-    private UserRole userRole;
+    //private UserRole userRole;
 }

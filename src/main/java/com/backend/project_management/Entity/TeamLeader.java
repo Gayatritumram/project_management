@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "TeamLeader_table")
+@Table(name = "PMTeamLeader_table")
 public class TeamLeader implements UserDetails {
 
     @Id
@@ -52,7 +52,7 @@ public class TeamLeader implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return userRole != null ?
-                List.of(new SimpleGrantedAuthority("ROLE_" + userRole.name())) :
+                List.of(new SimpleGrantedAuthority("ROLE_" + userRole)):
                 List.of(new SimpleGrantedAuthority("ROLE_TEAM_LEADER"));
     }
 

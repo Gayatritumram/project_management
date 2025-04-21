@@ -10,6 +10,7 @@ import java.time.LocalTime;
 @Entity
 @Getter
 @Setter
+@Table(name = "PMTask")
 public class Task {
 
     @Id

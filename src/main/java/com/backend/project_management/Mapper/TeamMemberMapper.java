@@ -22,7 +22,7 @@ public class TeamMemberMapper {
         teamMember.setBranchName(dto.getBranchName());
         teamMember.setPassword(dto.getPassword());
         teamMember.setTeamId(dto.getTeamId());
-        teamMember.setUserRole(dto.getUserRole());
+        //teamMember.setUserRole(dto.getUserRole());
 
 
 
@@ -43,7 +43,7 @@ public class TeamMemberMapper {
         dto.setBranchName(teamMember.getBranchName());
         dto.setPassword(teamMember.getPassword());
         dto.setTeamId(teamMember.getTeamId());
-        dto.setUserRole(teamMember.getUserRole());
+       // dto.setUserRole(teamMember.getUserRole());
 
 
         return dto;

@@ -19,7 +19,7 @@ public class TeamLeaderMapper {
         dto.setBranchName(leader.getBranchName());
         dto.setJoinDate(leader.getJoinDate());
         dto.setTeamId(leader.getTeamId() != null ? leader.getTeamId().getId() : null);
-        dto.setUserRole(leader.getUserRole());
+        //dto.setUserRole(leader.getUserRole());
         return dto;
     }
 
@@ -35,7 +35,7 @@ public class TeamLeaderMapper {
         leader.setBranchName(dto.getBranchName());
         leader.setJoinDate(dto.getJoinDate());
         // ❗Set team object separately in ServiceImpl using teamId
-        leader.setUserRole(dto.getUserRole());
+        //leader.setUserRole(dto.getUserRole());
         return leader;
     }
 }

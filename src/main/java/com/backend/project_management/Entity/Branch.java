@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "branch")
+@Table(name = "PMBranch")
 public class Branch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

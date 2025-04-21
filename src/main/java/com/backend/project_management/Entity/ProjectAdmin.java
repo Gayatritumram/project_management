@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 
 @Entity
-@Table(name = "Project_admin")
+@Table(name = "PMProject_admin")
 public class ProjectAdmin implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

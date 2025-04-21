@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Table(name = "TeamMember_table")
+@Table(name = "PMTeamMember_table")
 public class TeamMember implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +39,7 @@ public class TeamMember implements UserDetails {
     //default value is false
 
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private UserRole userRole = UserRole.TEAM_MEMBER;
 
     @ManyToOne
     @JoinColumn(name = "team_id")
@@ -52,7 +52,7 @@ public class TeamMember implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return userRole != null ?
-                List.of(new SimpleGrantedAuthority("ROLE_" + userRole.name())) :
+                List.of(new SimpleGrantedAuthority("ROLE_" + userRole) ):
                 List.of(new SimpleGrantedAuthority("ROLE_TEAM_MEMBER"));
     }
 
