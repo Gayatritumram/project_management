@@ -37,7 +37,7 @@ public class TeamLeader implements UserDetails {
     private String department;
     private String branchName;
     private LocalDate joinDate;
-    private String role = "TEAM_LEADER";
+    private String role;
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole = UserRole.TEAM_LEADER;
@@ -51,7 +51,9 @@ public class TeamLeader implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + userRole.name()));
+        return userRole != null ?
+                List.of(new SimpleGrantedAuthority("ROLE_" + userRole.name())) :
+                List.of(new SimpleGrantedAuthority("ROLE_TEAM_LEADER"));
     }
 
     @Override

@@ -34,12 +34,6 @@ public class TeamMemberController {
         return ResponseEntity.ok(service.getAllNonLeaderTeamMembers());
     }
 
-    // Get all leader Team Members
-    @GetMapping("/leaders")
-    public ResponseEntity<List<TeamMemberDTO>> getAllTeamLeaders() {
-        return ResponseEntity.ok(service.getAllLeaderTeamMembers());
-    }
-
     // Promote a Team Member to Team Leader
     @PutMapping("/promote/{id}")
     public ResponseEntity<String> promoteToLeader(@PathVariable Long id) {

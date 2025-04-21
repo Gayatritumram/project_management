@@ -8,7 +8,7 @@ public interface TeamMemberService {
     TeamMemberDTO createTeamMember(TeamMemberDTO teamMemberDTO);
     TeamMemberDTO getTeamMemberById(Long id);
     List<TeamMemberDTO> getAllNonLeaderTeamMembers();
-     List<TeamMemberDTO> getAllLeaderTeamMembers() ;
+
      void makeTeamLeader(Long id);
     TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO);
     void deleteTeamMember(Long id);

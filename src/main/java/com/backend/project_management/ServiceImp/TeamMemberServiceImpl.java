@@ -1,9 +1,11 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.TeamMemberDTO;
+import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamMemberMapper;
+import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.EmailService;
@@ -36,6 +38,9 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private TeamLeaderRepository teamLeaderRepository;
+
     @Override
     public TeamMemberDTO createTeamMember(TeamMemberDTO dto) {
         TeamMember teamMember = TeamMemberMapper.mapToTeamMember(dto);
@@ -54,15 +59,6 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Override
     public List<TeamMemberDTO> getAllNonLeaderTeamMembers() {
         return repository.findAll().stream()
-                .filter(teamMember -> !teamMember.isLeader())
-                .map(TeamMemberMapper::mapToTeamMemberDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<TeamMemberDTO> getAllLeaderTeamMembers() {
-        return repository.findAll().stream()
-                .filter(TeamMember::isLeader)
                 .map(TeamMemberMapper::mapToTeamMemberDTO)
                 .collect(Collectors.toList());
     }
@@ -71,11 +67,29 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     public void makeTeamLeader(Long id) {
         TeamMember teamMember = repository.findById(id)
                 .orElseThrow(() -> new RequestNotFound("Team Member not found"));
-        teamMember.setLeader(true);
-        teamMember.setUserRole(UserRole.TEAM_LEADER);
-        repository.save(teamMember);
-    }
 
+        // Convert to TeamLeader
+        TeamLeader teamLeader = new TeamLeader();
+        teamLeader.setId(teamMember.getId()); // optional, you can also let JPA auto-generate
+        teamLeader.setName(teamMember.getName());
+        teamLeader.setEmail(teamMember.getEmail());
+        teamLeader.setPassword(teamMember.getPassword());
+        teamLeader.setTeamId(teamMember.getTeamId());
+        teamLeader.setBranchName(teamMember.getBranchName());
+        teamLeader.setRole(teamMember.getRoleName());
+        teamLeader.setJoinDate(teamMember.getJoinDate());
+        teamMember.setDepartment(teamMember.getDepartment());
+        teamMember.setAddress(teamLeader.getAddress());
+        teamMember.setPhone(teamLeader.getPhone());
+        teamLeader.setUserRole(UserRole.TEAM_LEADER);
+
+
+        // Save to teamLeader repository
+        teamLeaderRepository.save(teamLeader);
+
+        // Remove from teamMember repository
+        repository.delete(teamMember);
+    }
     @Override
     public TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO) {
         TeamMember teamMember = repository.findById(id)
@@ -90,7 +104,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         teamMember.setRoleName(teamMemberDTO.getRole());
         teamMember.setProjectName(teamMemberDTO.getProjectName());
         teamMember.setBranchName(teamMemberDTO.getBranchName());
-        teamMember.setLeader(teamMemberDTO.isLeader());
+
 
         return TeamMemberMapper.mapToTeamMemberDTO(repository.save(teamMember));
     }
