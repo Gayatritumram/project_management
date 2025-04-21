@@ -9,6 +9,8 @@ public interface TeamLeaderService {
     void deleteTeamLeader(Long id);
     TeamLeaderDTO getTeamLeaderById(Long id);
     List<TeamLeaderDTO> getAllTeamLeaders();
-
     TeamLeaderDTO getTeamLeaderByEmail(String email);
+    String forgotPassword(String email);
+    String verifyOtp(String email, int otp);
+    String resetPassword(String email, String newPassword, String confirmPassword);
 }

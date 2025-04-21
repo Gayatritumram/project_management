@@ -4,6 +4,8 @@ import com.backend.project_management.DTO.ProjectAdminDTO;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Model.JwtRequest;
 import com.backend.project_management.Model.JwtResponse;
+import com.backend.project_management.Repository.ProjectAdminRepo;
+import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Service.ProjectAdminService;
 
@@ -17,6 +19,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +44,11 @@ public class AuthController {
 
     @Autowired
     private TeamMemberRepository teamMemberRepository;
+    @Autowired
+    private TeamLeaderRepository teamLeaderRepository;
+    @Autowired
+    private ProjectAdminRepo projectAdminRepo;
+
 
     /**
      * Register a new Admin
@@ -51,7 +59,7 @@ public class AuthController {
     }
 
     /**
-     * Unified Login Endpoint for Admins and Team Members
+     * Unified Login Endpoint for Admins and Team Members and team leader
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody JwtRequest request) {
@@ -92,8 +100,18 @@ public class AuthController {
      * Determine User Role dynamically based on TeamMember data
      */
     private UserRole determineUserRole(String email) {
-        return teamMemberRepository.findByEmail(email)
-                .map(teamMember -> teamMember.isLeader() ? UserRole.TEAM_LEADER : UserRole.TEAM_MEMBER)
-                .orElse(UserRole.ADMIN);
+        if (teamLeaderRepository.findByEmail(email).isPresent()) {
+            return UserRole.TEAM_LEADER;
+        }
+
+        if (teamMemberRepository.findByEmail(email).isPresent()) {
+            return UserRole.TEAM_MEMBER;
+        }
+
+        if (projectAdminRepo.findByEmail(email).isPresent()) {
+            return UserRole.ADMIN;
+        }
+
+        throw new UsernameNotFoundException("User not found with email: " + email);
     }
 }

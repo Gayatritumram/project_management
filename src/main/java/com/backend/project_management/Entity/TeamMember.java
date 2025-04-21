@@ -35,15 +35,11 @@ public class TeamMember implements UserDetails {
     private String roleName;
     private String projectName;
     private String branchName;
-    private boolean isLeader = false;
+
     //default value is false
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
-
-    public boolean isLeader() {
-        return this.userRole == UserRole.TEAM_LEADER;
-    }
 
     @ManyToOne
     @JoinColumn(name = "team_id")

@@ -1,8 +1,10 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.Entity.ProjectAdmin;
+import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Repository.ProjectAdminRepo;
+import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,25 +23,38 @@ public class CustomProjectAdmin implements UserDetailsService {
     @Autowired
     private TeamMemberRepository teamMemberRepository;
 
+
+    @Autowired
+    private TeamLeaderRepository teamLeaderRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        ProjectAdmin user = projectAdminRepo.findByEmail(username).orElse(null);
-        if (user != null) {
-            if (user.getUserRole1() == null) {
-                throw new UsernameNotFoundException("User role is missing for: " + username);
+        // Check ProjectAdmin
+        ProjectAdmin admin = projectAdminRepo.findByEmail(username).orElse(null);
+        if (admin != null) {
+            if (admin.getUserRole1() == null) {
+                throw new UsernameNotFoundException("Project Admin role is missing: " + username);
             }
-            return user; // Ensure user has a role
+            return admin;
         }
 
-        // Try to find in TeamMember repository
-        TeamMember teamMember = teamMemberRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
-
-        if (teamMember.getUserRole() == null) {
-            throw new UsernameNotFoundException("User role is missing for team member: " + username);
+        // Check TeamLeader
+        TeamLeader leader = teamLeaderRepository.findByEmail(username).orElse(null);
+        if (leader != null) {
+            if (leader.getUserRole() == null) {
+                throw new UsernameNotFoundException("Team Leader role is missing: " + username);
+            }
+            return leader;
         }
 
-        return teamMember;
+        // Check TeamMember
+        TeamMember member = teamMemberRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        if (member.getUserRole() == null) {
+            throw new UsernameNotFoundException("Team Member role is missing: " + username);
+        }
+
+        return member;
     }
 }
 

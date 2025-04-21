@@ -15,40 +15,53 @@ public class TeamLeaderController {
     @Autowired
     private TeamLeaderService teamLeaderService;
 
-    // Create Team Leader
     @PostMapping("/create")
-    public ResponseEntity<TeamLeaderDTO> createTeamLeader(@RequestBody TeamLeaderDTO teamLeaderDTO) {
-        return ResponseEntity.ok(teamLeaderService.createTeamLeader(teamLeaderDTO));
+    public ResponseEntity<TeamLeaderDTO> createTeamLeader(@RequestBody TeamLeaderDTO dto) {
+        return ResponseEntity.ok(teamLeaderService.createTeamLeader(dto));
     }
 
-    // Get all Team Leaders
     @GetMapping("/all")
-    public ResponseEntity<List<TeamLeaderDTO>> getAllTeamLeaders() {
+    public ResponseEntity<List<TeamLeaderDTO>> getAll() {
         return ResponseEntity.ok(teamLeaderService.getAllTeamLeaders());
     }
 
-    // Get Team Leader by ID
     @GetMapping("/{id}")
-    public ResponseEntity<TeamLeaderDTO> getTeamLeaderById(@PathVariable Long id) {
+    public ResponseEntity<TeamLeaderDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(teamLeaderService.getTeamLeaderById(id));
     }
 
-    // Get Team Leader by Email
     @GetMapping("/email")
-    public ResponseEntity<TeamLeaderDTO> getTeamLeaderByEmail(@RequestParam String email) {
+    public ResponseEntity<TeamLeaderDTO> getByEmail(@RequestParam String email) {
         return ResponseEntity.ok(teamLeaderService.getTeamLeaderByEmail(email));
     }
 
-    // Update Team Leader
     @PutMapping("/update/{id}")
-    public ResponseEntity<TeamLeaderDTO> updateTeamLeader(@PathVariable Long id, @RequestBody TeamLeaderDTO teamLeaderDTO) {
-        return ResponseEntity.ok(teamLeaderService.updateTeamLeader(id, teamLeaderDTO));
+    public ResponseEntity<TeamLeaderDTO> update(@PathVariable Long id, @RequestBody TeamLeaderDTO dto) {
+        return ResponseEntity.ok(teamLeaderService.updateTeamLeader(id, dto));
     }
 
-    // Delete Team Leader
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteTeamLeader(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         teamLeaderService.deleteTeamLeader(id);
         return ResponseEntity.ok("Team Leader with ID " + id + " deleted successfully.");
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
+        return ResponseEntity.ok(teamLeaderService.forgotPassword(email));
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<String> verifyOtp(@RequestParam String email, @RequestParam int otp) {
+        return ResponseEntity.ok(teamLeaderService.verifyOtp(email, otp));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(
+            @RequestParam String email,
+            @RequestParam String newPassword,
+            @RequestParam String confirmPassword
+    ) {
+        return ResponseEntity.ok(teamLeaderService.resetPassword(email, newPassword, confirmPassword));
     }
 }
