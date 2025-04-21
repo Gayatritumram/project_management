@@ -5,6 +5,7 @@ import com.backend.project_management.Entity.ProjectAdmin;
 
 import com.backend.project_management.Mapper.ProjectAdminMapper;
 
+import com.backend.project_management.Mapper.TeamMemberMapper;
 import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TaskRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
@@ -20,7 +21,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectAdminServiceImpl implements ProjectAdminService {
@@ -71,6 +74,12 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
         projectAdminDTO.setPassword(password);
         return projectAdminDTO;
 
+    }
+
+    @Override
+    public List<ProjectAdminDTO> findAllAdmin() {
+        List<ProjectAdmin> projectAdmin = adminRepo.findAll();
+        return  projectAdmin.stream().map( ProjectAdminMapper::toDTO).collect(Collectors.toList());
     }
 
     public String forgotPassword(String email) {
