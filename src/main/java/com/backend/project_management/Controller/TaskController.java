@@ -1,7 +1,6 @@
 package com.backend.project_management.Controller;
 
 import com.backend.project_management.DTO.TaskDTO;
-import com.backend.project_management.DTO.TaskReportDTO;
 import com.backend.project_management.Service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

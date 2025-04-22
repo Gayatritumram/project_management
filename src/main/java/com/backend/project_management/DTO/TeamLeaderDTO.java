@@ -1,6 +1,5 @@
 package com.backend.project_management.DTO;
 
-import com.backend.project_management.UserPermission.UserRole;
 import lombok.Data;
 
 import java.time.LocalDate;
