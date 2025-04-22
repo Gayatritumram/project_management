@@ -58,7 +58,7 @@ public class TeamMember implements UserDetails {
 
     @Override
     public String getUsername() {
-//
+
         return this.email;
     }
 

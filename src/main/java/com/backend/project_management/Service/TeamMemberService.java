@@ -8,9 +8,9 @@ public interface TeamMemberService {
     TeamMemberDTO createTeamMember(TeamMemberDTO teamMemberDTO);
     TeamMemberDTO getTeamMemberById(Long id);
     List<TeamMemberDTO> getAllNonLeaderTeamMembers();
-
-     void makeTeamLeader(Long id);
-    TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO);
+//
+//     void makeTeamLeader(Long id);
+  TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO);
     void deleteTeamMember(Long id);
     String forgotPassword(String email);
 

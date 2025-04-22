@@ -35,11 +35,11 @@ public class TeamMemberController {
     }
 
     // Promote a Team Member to Team Leader
-    @PutMapping("/promote/{id}")
-    public ResponseEntity<String> promoteToLeader(@PathVariable Long id) {
-        service.makeTeamLeader(id);
-        return ResponseEntity.ok("Team member with ID " + id + " is now a Team Leader.");
-    }
+//    @PutMapping("/promote/{id}")
+//    public ResponseEntity<String> promoteToLeader(@PathVariable Long id) {
+//        service.makeTeamLeader(id);
+//        return ResponseEntity.ok("Team member with ID " + id + " is now a Team Leader.");
+//    }
 
     // Update Team Member
     @PutMapping("/update/{id}")
