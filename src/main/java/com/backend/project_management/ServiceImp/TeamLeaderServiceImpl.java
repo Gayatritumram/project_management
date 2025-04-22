@@ -5,7 +5,6 @@ import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Mapper.TeamLeaderMapper;
 import com.backend.project_management.Repository.TeamLeaderRepository;
-import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.EmailService;
 import com.backend.project_management.Service.OtpService;
