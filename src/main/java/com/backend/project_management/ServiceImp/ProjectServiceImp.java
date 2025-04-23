@@ -83,13 +83,21 @@ public class ProjectServiceImp implements ProjectService {
         projectRepository.deleteById(id);
     }
 
-//    @Override
-//    public ProjectDTO assignProjectToTeam(Long projectId, Long teamId) {
-//        ProjectDTO project = getProjectById(projectId);
-//        Team team = teamRepository.findById(teamId)
-//                .orElseThrow(() -> new RuntimeException("Team not found"));
-//        project.setTeam1(project.getTeam1());
-//        Project project1 = ProjectMapper.mapToProject(project); // Assign team to project
-//        return ProjectMapper.mapToProjectDTO(projectRepository.save(project1));
-//    }
+    @Override
+    public ProjectDTO assignProjectToTeam(Long projectId, Long teamId) {
+
+
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("Team not found"));
+
+        project.setTeam1(team);
+        Project saved = projectRepository.save(project);
+
+
+        return ProjectMapper.mapToProjectDTO(saved);
+    }
+
 }

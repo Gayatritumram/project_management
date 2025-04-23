@@ -51,10 +51,10 @@ public class ProjectController {
         return ResponseEntity.ok("Project Completed");
     }
 
-//    @PutMapping("/assignProjectToTeam/{projectId}/assign/{teamId}")
-//    public ResponseEntity<ProjectDTO> assignProjectToTeam(@PathVariable Long projectId, @PathVariable Long teamId) {
-//        return ResponseEntity.ok(projectService.assignProjectToTeam(projectId, teamId));
-//    }
+    @PutMapping("/assignProjectToTeam/{projectId}/assign/{teamId}")
+    public ResponseEntity<ProjectDTO> assignProjectToTeam(@PathVariable Long projectId, @PathVariable Long teamId) {
+        return ResponseEntity.ok(projectService.assignProjectToTeam(projectId, teamId));
+    }
 
 
 
