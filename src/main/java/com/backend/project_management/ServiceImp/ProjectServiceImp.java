@@ -2,6 +2,8 @@ package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.ProjectDTO;
 import com.backend.project_management.Entity.Project;
+import com.backend.project_management.Entity.ProjectAdmin;
+import com.backend.project_management.Entity.Task;
 import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.ProjectMapper;
@@ -18,16 +20,26 @@ import java.util.stream.Collectors;
 public class ProjectServiceImp implements ProjectService {
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired
     private TeamRepository teamRepository;
+
 
 
 
     @Override
     public ProjectDTO addProject(ProjectDTO projectDTO) {
         Project project =ProjectMapper.mapToProject(projectDTO);
-        project.setEstimatedDate(LocalDate.now());
-        Project savedProject = projectRepository.save(project);
-        return ProjectMapper.mapToProjectDTO(savedProject);
+
+        if (projectDTO.getTeam1byID() != null) {
+            Team admin = teamRepository.findById(projectDTO.getTeam1byID())
+                    .orElseThrow(() -> new RuntimeException("Team not found"));
+            project.setTeam1(admin);
+
+        }
+        Project savedTask = projectRepository.save(project);
+
+
+        return ProjectMapper.mapToProjectDTO(savedTask);
     }
 
     @Override
@@ -59,7 +71,7 @@ public class ProjectServiceImp implements ProjectService {
         projectDTO.setEstimatedDate(project.getEstimatedDate());
         projectDTO.setStatusDescription(project.getStatusDescription());
         projectDTO.setBranchName(project.getBranchName());
-        projectDTO.setTeamName(project.getTeamName());
+        projectDTO.setTeam1byID(project.getTeam1byID());
         projectDTO.setDepartment(project.getDepartment());
 
         Project project1 = ProjectMapper.mapToProject(projectDTO);
@@ -71,13 +83,13 @@ public class ProjectServiceImp implements ProjectService {
         projectRepository.deleteById(id);
     }
 
-    @Override
-    public ProjectDTO assignProjectToTeam(Long projectId, Long teamId) {
-        ProjectDTO project = getProjectById(projectId);
-        Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new RuntimeException("Team not found"));
-        project.setTeamName(team);
-        Project project1 = ProjectMapper.mapToProject(project); // Assign team to project
-        return ProjectMapper.mapToProjectDTO(projectRepository.save(project1));
-    }
+//    @Override
+//    public ProjectDTO assignProjectToTeam(Long projectId, Long teamId) {
+//        ProjectDTO project = getProjectById(projectId);
+//        Team team = teamRepository.findById(teamId)
+//                .orElseThrow(() -> new RuntimeException("Team not found"));
+//        project.setTeam1(project.getTeam1());
+//        Project project1 = ProjectMapper.mapToProject(project); // Assign team to project
+//        return ProjectMapper.mapToProjectDTO(projectRepository.save(project1));
+//    }
 }

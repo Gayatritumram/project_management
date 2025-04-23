@@ -27,7 +27,7 @@ public class ProjectDTO {
     private String department;
 
 
-    private Team teamName;
+    private Long team1byID;
 }
 
 
