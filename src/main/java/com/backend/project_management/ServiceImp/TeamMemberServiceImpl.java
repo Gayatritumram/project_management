@@ -66,9 +66,11 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     }
 
     @Override
-    public List<TeamMemberDTO> getAllNonLeaderTeamMembers() {
-        return repository.findAll().stream()
+    public List<TeamMemberDTO> getAllTeamMembers() {
+        return repository.findAll()
+                .stream()
                 .map(TeamMemberMapper::mapToTeamMemberDTO)
+
                 .collect(Collectors.toList());
     }
 
