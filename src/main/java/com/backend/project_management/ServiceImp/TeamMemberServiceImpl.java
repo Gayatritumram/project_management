@@ -74,33 +74,33 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                 .collect(Collectors.toList());
     }
 
-//    @Override
-//    public void makeTeamLeader(Long id) {
-//        TeamMember teamMember = repository.findById(id)
-//                .orElseThrow(() -> new RequestNotFound("Team Member not found"));
-//
-//        // Convert to TeamLeader
-//        TeamLeader teamLeader = new TeamLeader();
-//        teamLeader.setId(teamMember.getId()); // optional, you can also let JPA auto-generate
-//        teamLeader.setName(teamMember.getName());
-//        teamLeader.setEmail(teamMember.getEmail());
-//        teamLeader.setPassword(teamMember.getPassword());
-//        teamLeader.setTeamId(teamMember.getTeamId());
-//        teamLeader.setBranchName(teamMember.getBranchName());
-//        teamLeader.setRoleName(teamMember.getRoleName());
-//        teamLeader.setJoinDate(teamMember.getJoinDate());
-//        teamMember.setDepartment(teamMember.getDepartment());
-//        teamMember.setAddress(teamLeader.getAddress());
-//        teamMember.setPhone(teamLeader.getPhone());
-//        teamLeader.setUserRole(UserRole.TEAM_LEADER);
-//
-//
-//        // Save to teamLeader repository
-//        teamLeaderRepository.save(teamLeader);
-//
-//        // Remove from teamMember repository
-//        repository.delete(teamMember);
-//    }
+    @Override
+    public void makeTeamLeader(Long id) {
+        TeamMember teamMember = repository.findById(id)
+                .orElseThrow(() -> new RequestNotFound("Team Member not found"));
+
+        // Convert to TeamLeader
+        TeamLeader teamLeader = new TeamLeader();
+        teamLeader.setId(teamMember.getId()); // optional, you can also let JPA auto-generate
+        teamLeader.setName(teamMember.getName());
+        teamLeader.setEmail(teamMember.getEmail());
+        teamLeader.setPassword(teamMember.getPassword());
+        teamLeader.setTeamId(teamMember.getTeamId());
+        teamLeader.setBranchName(teamMember.getBranchName());
+        teamLeader.setRoleName(teamMember.getRoleName());
+        teamLeader.setJoinDate(teamMember.getJoinDate());
+        teamMember.setDepartment(teamMember.getDepartment());
+        teamMember.setAddress(teamLeader.getAddress());
+        teamMember.setPhone(teamLeader.getPhone());
+        teamLeader.setUserRole(UserRole.TEAM_LEADER);
+
+
+        // Save to teamLeader repository
+        teamLeaderRepository.save(teamLeader);
+
+        // Remove from teamMember repository
+        repository.delete(teamMember);
+    }
     @Override
     public TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO) {
         TeamMember teamMember = repository.findById(id)

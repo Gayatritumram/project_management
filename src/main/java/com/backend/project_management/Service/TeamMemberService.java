@@ -9,7 +9,7 @@ public interface TeamMemberService {
     TeamMemberDTO getTeamMemberById(Long id);
     List<TeamMemberDTO> getAllTeamMembers();
 //
-//     void makeTeamLeader(Long id);
+     void makeTeamLeader(Long id);
   TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO);
     void deleteTeamMember(Long id);
     String forgotPassword(String email);
