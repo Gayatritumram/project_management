@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,9 +32,15 @@ public class TaskServiceImpl implements TaskService {
     @Autowired private TeamLeaderRepository teamLeaderRepository;
     @Autowired private TeamMemberRepository teamMemberRepository;
     @Autowired private JwtHelper jwtHelper;
+    @Autowired
+    private TeamLeaderRepository teamLeaderRepositorys;
+
 
     @Autowired
     private TeamMemberRepository repository;
+
+
+
 
     @Override
     public TaskDTO createTask(TaskDTO taskDTO, String token, Long id) {
@@ -56,12 +61,36 @@ public class TaskServiceImpl implements TaskService {
 
         TeamMember assignedTo = teamMemberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team member not found"));
-        task.setAssignedTo(assignedTo);
+
+        task.setAssignedToTeamMember(assignedTo);
 
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
     }
 
+    @Override
+    public TaskDTO createTaskForLeader(TaskDTO taskDTO, String token, Long leaderId) {
+        Task task = taskMapper.toEntity(taskDTO);
+
+        String username = jwtHelper.getUsernameFromToken(token);
+        String role = jwtHelper.getRoleFromToken(token);
+
+        if (role != null && role.contains("ADMIN")) {
+            ProjectAdmin currentAdmin = projectAdminRepo.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("Logged-in admin not found"));
+            task.setAssignedByAdmin(currentAdmin);
+
+            TeamLeader assignedLeader = teamLeaderRepository.findById(leaderId)
+                    .orElseThrow(() -> new RuntimeException("Team leader not found"));
+
+            task.setAssignedToTeamLeader(assignedLeader); // Add this field in Task entity
+        } else {
+            throw new RuntimeException("Only admins can assign tasks to leaders");
+        }
+
+        Task savedTask = taskRepository.save(task);
+        return taskMapper.toDto(savedTask);
+    }
 
 
     @Override
@@ -155,8 +184,14 @@ public class TaskServiceImpl implements TaskService {
         TeamMember member = teamMemberRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Team Member not found with email: " + email));
 
-        List<Task> tasks = taskRepository.findAllByAssignedTo_Id(member.getId());
+        List<Task> tasks = taskRepository.findAllByAssignedToTeamMember_Id(member.getId());
         return taskMapper.toDtoList(tasks);
+    }
+
+    @Override
+    public List<TaskDTO> getTodaysLeaderTasksByEmail(String email) {
+        List<Task> tasks = taskRepository.findTodaysLeaderTasksByMemberEmail(email);
+        return tasks.stream().map(taskMapper::toDto).collect(Collectors.toList());
     }
 
 }

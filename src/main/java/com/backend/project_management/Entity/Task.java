@@ -49,7 +49,11 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "assigned_to_id")
-    private TeamMember assignedTo;
+    private TeamMember assignedToTeamMember;
+
+    @ManyToOne
+    @JoinColumn(name = "assigned_to_leader_id")
+    private TeamLeader assignedToTeamLeader;
 
     @PrePersist
     protected void onCreate() {
@@ -75,5 +79,4 @@ public class Task {
         this.endTime = this.startTime.plusHours(this.hour);
     }
 
-    // If not using Lombok, add getters and setters manually
 }

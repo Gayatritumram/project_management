@@ -37,8 +37,12 @@ public class TaskMapper {
             dto.setAssignedByLeaderId(task.getAssignedByLeader().getId());
         }
 
-        if (task.getAssignedTo() != null) {
-            dto.setAssignedToId(task.getAssignedTo().getId());
+        if (task.getAssignedToTeamMember() != null) {
+            dto.setAssignedToTeamMember(task.getAssignedToTeamMember().getId());
+        }
+
+        if (task.getAssignedToTeamLeader() != null) {
+            dto.setAssignedToTeamLeader(task.getAssignedToTeamLeader().getId());
         }
 
         return dto;

@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface TaskService {
     public TaskDTO createTask(TaskDTO taskDTO , String token ,Long id);
+    public TaskDTO createTaskForLeader(TaskDTO taskDTO , String token ,Long id);
 
     TaskDTO updateTask(Long taskId, TaskDTO taskDTO);
 
@@ -25,4 +26,7 @@ public interface TaskService {
     List<TaskDTO> getTasksAssignedByLeaderEmail(String email);
 
     List<TaskDTO> getTasksAssignedToMemberEmail(String email);
+
+    public List<TaskDTO> getTodaysLeaderTasksByEmail(String email);
+
 }

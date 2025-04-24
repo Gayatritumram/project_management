@@ -49,6 +49,8 @@ public class TeamLeader implements UserDetails {
     @OneToMany(mappedBy = "assignedByLeader", cascade = CascadeType.ALL)
     private List<Task> assignedTasks;
 
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return userRole != null ?

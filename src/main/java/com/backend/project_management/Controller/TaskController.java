@@ -33,6 +33,20 @@ public class TaskController {
         return ResponseEntity.ok(taskService.createTask(taskDTO, token, id));
     }
 
+    @PostMapping("/create/Leader/{id}")
+    public ResponseEntity<TaskDTO> createTaskForLeader (@RequestBody TaskDTO taskDTO,
+                                              HttpServletRequest request,
+                                              @PathVariable Long id) {
+        String authHeader = request.getHeader("Authorization");
+        String token = null;
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7); // Remove "Bearer " prefix
+        }
+
+        return ResponseEntity.ok(taskService.createTaskForLeader(taskDTO, token, id));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody TaskDTO taskDTO) {
         return ResponseEntity.ok(taskService.updateTask(id, taskDTO));
@@ -77,5 +91,11 @@ public class TaskController {
     @GetMapping("/tasks/member/email/{email}")
     public ResponseEntity<List<TaskDTO>> getTasksByMemberEmail(@PathVariable String email) {
         return ResponseEntity.ok(taskService.getTasksAssignedToMemberEmail(email));
+    }
+
+    //todays task asssigned to leader
+    @GetMapping("/leader/today/{email}")
+    public ResponseEntity<List<TaskDTO>> getTodaysLeaderTasks(@PathVariable String email) {
+        return ResponseEntity.ok(taskService.getTodaysLeaderTasksByEmail(email));
     }
 }
