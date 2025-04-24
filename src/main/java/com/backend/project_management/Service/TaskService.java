@@ -19,4 +19,10 @@ public interface TaskService {
     TaskDTO uploadTaskImage(Long taskId, MultipartFile file);
 
     TaskDTO deleteTaskImage(Long taskId);
+
+    List<TaskDTO> getTasksAssignedByAdminEmail(String email);
+
+    List<TaskDTO> getTasksAssignedByLeaderEmail(String email);
+
+    List<TaskDTO> getTasksAssignedToMemberEmail(String email);
 }

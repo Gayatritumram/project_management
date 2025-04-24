@@ -6,7 +6,6 @@ import com.backend.project_management.Entity.Task;
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Mapper.TaskMapper;
-import com.backend.project_management.Model.JwtRequest;
 import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TaskRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
@@ -134,4 +133,32 @@ public class TaskServiceImpl implements TaskService {
         }
         return taskMapper.toDto(task);
     }
+
+    @Override
+    public List<TaskDTO> getTasksAssignedByAdminEmail(String email) {
+        ProjectAdmin admin = projectAdminRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Admin not found with email: " + email));
+
+        List<Task> tasks = taskRepository.findAllByAssignedByAdmin_Id(admin.getId());
+        return taskMapper.toDtoList(tasks);
+    }
+
+    @Override
+    public List<TaskDTO> getTasksAssignedByLeaderEmail(String email) {
+        TeamLeader leader = teamLeaderRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Team Leader not found with email: " + email));
+
+        List<Task> tasks = taskRepository.findAllByAssignedByLeader_Id(leader.getId());
+        return taskMapper.toDtoList(tasks);
+    }
+
+    @Override
+    public List<TaskDTO> getTasksAssignedToMemberEmail(String email) {
+        TeamMember member = teamMemberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Team Member not found with email: " + email));
+
+        List<Task> tasks = taskRepository.findAllByAssignedTo_Id(member.getId());
+        return taskMapper.toDtoList(tasks);
+    }
+
 }

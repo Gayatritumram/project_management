@@ -4,6 +4,9 @@ import com.backend.project_management.DTO.TaskDTO;
 import com.backend.project_management.Entity.Task;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class TaskMapper {
 
@@ -60,7 +63,12 @@ public class TaskMapper {
         task.setStartTime(dto.getStartTime());
         task.setEndTime(dto.getEndTime());
 
-        // Important: We don't set relationships here — those are set in the ServiceImpl
         return task;
+    }
+
+    public List<TaskDTO> toDtoList(List<Task> tasks) {
+        return tasks.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 }

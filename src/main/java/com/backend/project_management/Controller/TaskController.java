@@ -1,6 +1,7 @@
 package com.backend.project_management.Controller;
 
 import com.backend.project_management.DTO.TaskDTO;
+import com.backend.project_management.DTO.TaskReportDTO;
 import com.backend.project_management.Service.TaskService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,4 +61,18 @@ public class TaskController {
         return ResponseEntity.ok(taskService.deleteTaskImage(taskId));
     }
 
+    @GetMapping("/tasks/admin/email/{email}")
+    public ResponseEntity<List<TaskDTO>> getTasksByAdminEmail(@PathVariable String email) {
+        return ResponseEntity.ok(taskService.getTasksAssignedByAdminEmail(email));
+    }
+
+    @GetMapping("/tasks/leader/email/{email}")
+    public ResponseEntity<List<TaskDTO>> getTasksByLeaderEmail(@PathVariable String email) {
+        return ResponseEntity.ok(taskService.getTasksAssignedByLeaderEmail(email));
+    }
+
+    @GetMapping("/tasks/member/email/{email}")
+    public ResponseEntity<List<TaskDTO>> getTasksByMemberEmail(@PathVariable String email) {
+        return ResponseEntity.ok(taskService.getTasksAssignedToMemberEmail(email));
+    }
 }
