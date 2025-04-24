@@ -5,6 +5,7 @@ import com.backend.project_management.Entity.ProjectAdmin;
 import com.backend.project_management.Entity.Task;
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
+import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TaskMapper;
 import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TaskRepository;
@@ -32,11 +33,12 @@ public class TaskServiceImpl implements TaskService {
     @Autowired private TeamLeaderRepository teamLeaderRepository;
     @Autowired private TeamMemberRepository teamMemberRepository;
     @Autowired private JwtHelper jwtHelper;
+
     @Autowired
-    private HttpServletRequest request;
+    private TeamMemberRepository repository;
 
     @Override
-    public TaskDTO createTask(TaskDTO taskDTO, String token) {
+    public TaskDTO createTask(TaskDTO taskDTO, String token, Long id) {
         Task task = taskMapper.toEntity(taskDTO);
 
         String username = jwtHelper.getUsernameFromToken(token);
@@ -46,24 +48,20 @@ public class TaskServiceImpl implements TaskService {
             ProjectAdmin currentAdmin = projectAdminRepo.findByEmail(username)
                     .orElseThrow(() -> new RuntimeException("Logged-in admin not found"));
             task.setAssignedByAdmin(currentAdmin);
-
         } else if (role != null && role.contains("TEAM_LEADER")) {
             TeamLeader currentLeader = teamLeaderRepository.findByEmail(username)
                     .orElseThrow(() -> new RuntimeException("Logged-in team leader not found"));
             task.setAssignedByLeader(currentLeader);
         }
 
-        // ❌ REMOVE or comment this out unless needed for update scenario
-        // if (taskDTO.getAssignedByLeaderId() != null) { ... }
-        // if (taskDTO.getAssignedByAdminId() != null) { ... }
-
-        TeamMember assignedTo = teamMemberRepository.findById(taskDTO.getAssignedToId())
+        TeamMember assignedTo = teamMemberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team member not found"));
         task.setAssignedTo(assignedTo);
 
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
     }
+
 
 
     @Override

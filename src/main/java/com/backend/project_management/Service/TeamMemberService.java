@@ -17,4 +17,6 @@ public interface TeamMemberService {
     String verifyOtp(String email, int otp);
 
     String resetPassword(String email, String newPassword, String confirmPassword);
+
+
 }

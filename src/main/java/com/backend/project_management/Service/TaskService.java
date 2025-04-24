@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface TaskService {
-    public TaskDTO createTask(TaskDTO taskDTO , String token);
+    public TaskDTO createTask(TaskDTO taskDTO , String token ,Long id);
 
     TaskDTO updateTask(Long taskId, TaskDTO taskDTO);
 
