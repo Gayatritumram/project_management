@@ -7,7 +7,7 @@ import java.util.List;
 public interface TeamMemberService {
     TeamMemberDTO createTeamMember(TeamMemberDTO teamMemberDTO);
     TeamMemberDTO getTeamMemberById(Long id);
-    List<TeamMemberDTO> getAllNonLeaderTeamMembers();
+    List<TeamMemberDTO> getAllTeamMembers();
 //
      void makeTeamLeader(Long id);
   TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO);

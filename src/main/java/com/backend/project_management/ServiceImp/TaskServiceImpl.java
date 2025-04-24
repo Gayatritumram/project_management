@@ -6,14 +6,18 @@ import com.backend.project_management.Entity.Task;
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Mapper.TaskMapper;
+import com.backend.project_management.Model.JwtRequest;
 import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TaskRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Service.TaskService;
+import com.backend.project_management.Util.JwtHelper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import java.io.IOException;
 import java.util.*;
@@ -28,22 +32,31 @@ public class TaskServiceImpl implements TaskService {
     @Autowired private ProjectAdminRepo projectAdminRepo;
     @Autowired private TeamLeaderRepository teamLeaderRepository;
     @Autowired private TeamMemberRepository teamMemberRepository;
+    @Autowired private JwtHelper jwtHelper;
+    @Autowired
+    private HttpServletRequest request;
 
     @Override
-    public TaskDTO createTask(TaskDTO taskDTO) {
+    public TaskDTO createTask(TaskDTO taskDTO, String token) {
         Task task = taskMapper.toEntity(taskDTO);
 
-        if (taskDTO.getAssignedByAdminId() != null) {
-            ProjectAdmin admin = projectAdminRepo.findById(taskDTO.getAssignedByAdminId())
-                    .orElseThrow(() -> new RuntimeException("Admin not found"));
-            task.setAssignedByAdmin(admin);
+        String username = jwtHelper.getUsernameFromToken(token);
+        String role = jwtHelper.getRoleFromToken(token);
+
+        if (role != null && role.contains("ADMIN")) {
+            ProjectAdmin currentAdmin = projectAdminRepo.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("Logged-in admin not found"));
+            task.setAssignedByAdmin(currentAdmin);
+
+        } else if (role != null && role.contains("TEAM_LEADER")) {
+            TeamLeader currentLeader = teamLeaderRepository.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("Logged-in team leader not found"));
+            task.setAssignedByLeader(currentLeader);
         }
 
-        if (taskDTO.getAssignedByLeaderId() != null) {
-            TeamLeader leader = teamLeaderRepository.findById(taskDTO.getAssignedByLeaderId())
-                    .orElseThrow(() -> new RuntimeException("Leader not found"));
-            task.setAssignedByLeader(leader);
-        }
+        // ❌ REMOVE or comment this out unless needed for update scenario
+        // if (taskDTO.getAssignedByLeaderId() != null) { ... }
+        // if (taskDTO.getAssignedByAdminId() != null) { ... }
 
         TeamMember assignedTo = teamMemberRepository.findById(taskDTO.getAssignedToId())
                 .orElseThrow(() -> new RuntimeException("Team member not found"));
@@ -52,6 +65,7 @@ public class TaskServiceImpl implements TaskService {
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
     }
+
 
     @Override
     public TaskDTO updateTask(Long taskId, TaskDTO taskDTO) {

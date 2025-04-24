@@ -22,8 +22,8 @@ public class TeamMemberDTO {
     private String role;
     private String projectName;
     private String branchName;
-    private boolean isLeader = false;
-    private Team teamId;
+
+    private Long teamId;
     //private UserRole userRole;
 
 
