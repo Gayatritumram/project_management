@@ -17,16 +17,19 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @PostMapping("/create")
-    public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO taskDTO, HttpServletRequest request) {
+
+    @PostMapping("/create/{id}")
+    public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO taskDTO,
+                                              HttpServletRequest request,
+                                              @PathVariable Long id) {
         String authHeader = request.getHeader("Authorization");
         String token = null;
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7); // remove "Bearer "
+            token = authHeader.substring(7); // Remove "Bearer " prefix
         }
 
-        return ResponseEntity.ok(taskService.createTask(taskDTO, token));  // 🔁 updated method
+        return ResponseEntity.ok(taskService.createTask(taskDTO, token, id));
     }
 
     @PutMapping("/{id}")

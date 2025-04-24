@@ -78,4 +78,8 @@ public class TeamMemberController {
         String response = service.resetPassword(email, newPassword, confirmPassword);
         return ResponseEntity.ok(response);
     }
+
+
+
+
 }
