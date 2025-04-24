@@ -87,7 +87,6 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         teamLeader.setPassword(teamMember.getPassword());
         teamLeader.setTeamId(teamMember.getTeamId());
         teamLeader.setBranchName(teamMember.getBranchName());
-        teamLeader.setRoleName(teamMember.getRoleName());
         teamLeader.setJoinDate(teamMember.getJoinDate());
         teamMember.setDepartment(teamMember.getDepartment());
         teamMember.setAddress(teamLeader.getAddress());
