@@ -33,6 +33,12 @@ public class Task {
     private LocalTime startTime;//
     private LocalTime endTime;//
 
+
+
+
+
+
+
     @ManyToOne
     @JoinColumn(name = "assigned_by_admin_id")
     private ProjectAdmin assignedByAdmin;
