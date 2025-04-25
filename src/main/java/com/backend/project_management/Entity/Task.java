@@ -55,6 +55,7 @@ public class Task {
     @JoinColumn(name = "assigned_to_leader_id")
     private TeamLeader assignedToTeamLeader;
 
+
     @PrePersist
     protected void onCreate() {
         // Set default start date and time

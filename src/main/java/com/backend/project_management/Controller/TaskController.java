@@ -100,6 +100,21 @@ public class TaskController {
     public ResponseEntity<List<TaskDTO>> getTodaysLeaderTasks(@PathVariable String email) {
         return ResponseEntity.ok(taskService.getTodaysLeaderTasksByEmail(email));
     }
+    @GetMapping("/assigned-to/member/{id}")
+    public ResponseEntity<List<TaskDTO>> getTasksAssignedToMember(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.getTasksAssignedToMemberById(id));
+    }
+
+    @GetMapping("/assigned-by/leader/{id}")
+    public ResponseEntity<List<TaskDTO>> getTasksAssignedByLeader(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.getTasksAssignedByLeaderId(id));
+    }
+
+    @GetMapping("/assigned-by/admin/{id}")
+    public ResponseEntity<List<TaskDTO>> getTasksAssignedByAdmin(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.getTasksAssignedByAdminId(id));
+    }
+
 
 
 }

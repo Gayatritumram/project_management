@@ -22,6 +22,13 @@ public interface TaskService {
 
     TaskDTO deleteTaskImage(Long taskId);
 
+    List<TaskDTO> getTasksAssignedToMemberById(Long id);
+
+    List<TaskDTO> getTasksAssignedByLeaderId(Long id);
+
+    List<TaskDTO> getTasksAssignedByAdminId(Long id);
+
+
     List<TaskDTO> getTasksAssignedByAdminEmail(String email);
 
     List<TaskDTO> getTasksAssignedByLeaderEmail(String email);
