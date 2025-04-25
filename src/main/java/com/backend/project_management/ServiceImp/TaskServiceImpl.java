@@ -32,8 +32,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired private TeamLeaderRepository teamLeaderRepository;
     @Autowired private TeamMemberRepository teamMemberRepository;
     @Autowired private JwtHelper jwtHelper;
-    @Autowired
-    private TeamLeaderRepository teamLeaderRepositorys;
+
 
 
     @Autowired
@@ -41,9 +40,8 @@ public class TaskServiceImpl implements TaskService {
 
 
 
-
     @Override
-    public TaskDTO createTask(TaskDTO taskDTO, String token, Long id) {
+    public TaskDTO createTask(TaskDTO taskDTO, String token, Long id,MultipartFile file) throws IOException  {
         Task task = taskMapper.toEntity(taskDTO);
 
         String username = jwtHelper.getUsernameFromToken(token);
@@ -62,14 +60,24 @@ public class TaskServiceImpl implements TaskService {
         TeamMember assignedTo = teamMemberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team member not found"));
 
+
+        //Image
         task.setAssignedToTeamMember(assignedTo);
+        if (file != null && !file.isEmpty()) {
+            try {
+                task.setImageUrl(s3Service.uploadImage(file));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
     }
 
+
     @Override
-    public TaskDTO createTaskForLeader(TaskDTO taskDTO, String token, Long leaderId) {
+    public TaskDTO createTaskForLeader(TaskDTO taskDTO, String token, Long id, MultipartFile file) throws IOException {
         Task task = taskMapper.toEntity(taskDTO);
 
         String username = jwtHelper.getUsernameFromToken(token);
@@ -79,18 +87,31 @@ public class TaskServiceImpl implements TaskService {
             ProjectAdmin currentAdmin = projectAdminRepo.findByEmail(username)
                     .orElseThrow(() -> new RuntimeException("Logged-in admin not found"));
             task.setAssignedByAdmin(currentAdmin);
+        } else if (role != null && role.contains("TEAM_LEADER")) {
+            TeamLeader currentLeader = teamLeaderRepository.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("Logged-in team leader not found"));
+            task.setAssignedByLeader(currentLeader);
+        }
 
-            TeamLeader assignedLeader = teamLeaderRepository.findById(leaderId)
-                    .orElseThrow(() -> new RuntimeException("Team leader not found"));
+        TeamLeader assignedTo = teamLeaderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Team Leader not found"));
 
-            task.setAssignedToTeamLeader(assignedLeader); // Add this field in Task entity
-        } else {
-            throw new RuntimeException("Only admins can assign tasks to leaders");
+
+        //Image
+        task.setAssignedToTeamLeader(assignedTo);
+        if (file != null && !file.isEmpty()) {
+            try {
+                task.setImageUrl(s3Service.uploadImage(file));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
     }
+
+
 
 
     @Override

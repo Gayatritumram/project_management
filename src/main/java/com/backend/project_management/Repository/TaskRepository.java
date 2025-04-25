@@ -26,6 +26,5 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findTodaysTasksAssignedToLeader(@Param("email") String email);
 
 
-
 }
 
