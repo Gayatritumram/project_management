@@ -2,6 +2,7 @@ package com.backend.project_management.Entity;
 
 import com.backend.project_management.UserPermission.UserRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,8 @@ public class ProjectAdmin implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Numbers are not allowed in name. Please use only letters and spaces.")
+
     private String name;
     @Column(nullable = false, unique = true)
     private String email;

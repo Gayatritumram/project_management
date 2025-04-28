@@ -9,6 +9,7 @@ import com.backend.project_management.Mapper.TeamMemberMapper;
 import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TaskRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
+import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Service.EmailService;
 import com.backend.project_management.Service.OtpService;
 import com.backend.project_management.Service.ProjectAdminService;
@@ -25,6 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.backend.project_management.Exception.EmailAlreadyExistsException;
+
 @Service
 public class ProjectAdminServiceImpl implements ProjectAdminService {
 
@@ -36,6 +39,9 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private TeamLeaderRepository teamLeaderRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -52,13 +58,24 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
 
     @Override
     public ProjectAdminDTO registerAdmin(ProjectAdminDTO adminDTO) {
+        String email = adminDTO.getEmail();
+        
+        // Check if email already exists in any user table
+        if (adminRepo.findByEmail(email).isPresent() || 
+            memberRepository.findByEmail(email).isPresent() ||
+            teamLeaderRepository.findByEmail(email).isPresent()) {
+            throw new EmailAlreadyExistsException("Email is already registered, please use a different email");
+        }
+        
         ProjectAdmin projectAdmin = ProjectAdminMapper.toEntity(adminDTO);
-        projectAdmin.setEmail(adminDTO.getEmail());
+        
+        // Set password (encryption happens here)
         projectAdmin.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
-
-        // Ensure userRole1 is not null
-        projectAdmin.setUserRole1(adminDTO.getUserRole1() != null ? adminDTO.getUserRole1() : UserRole.ADMIN);
-
+        
+        // Set role if null
+        if (projectAdmin.getUserRole1() == null) {
+            projectAdmin.setUserRole1(UserRole.ADMIN);
+        }
 
         return ProjectAdminMapper.toDTO(adminRepo.save(projectAdmin));
     }

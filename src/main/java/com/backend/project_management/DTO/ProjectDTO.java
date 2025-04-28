@@ -21,7 +21,7 @@ public class ProjectDTO {
     private Long id;
     private String projectName;
     private String projectCategory;
-    private double statusBar=0;
+    private double statusBar = 0;
     private String status;
     private LocalDate startDate;
     private LocalDate endDate;

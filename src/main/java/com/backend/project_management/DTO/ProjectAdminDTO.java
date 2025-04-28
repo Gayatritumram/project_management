@@ -1,8 +1,12 @@
 package com.backend.project_management.DTO;
 
 import com.backend.project_management.UserPermission.UserRole;
-import lombok.Data;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class ProjectAdminDTO{
     private String name;
@@ -10,6 +14,7 @@ public class ProjectAdminDTO{
     private String phone;
     private String password;
     private UserRole userRole1;
-
-
+    
+    
+    
 }
