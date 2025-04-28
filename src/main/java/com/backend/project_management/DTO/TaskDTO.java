@@ -28,5 +28,7 @@ public class TaskDTO {
 
     private Long assignedByAdminId;
     private Long assignedByLeaderId;
-    private Long assignedToId;
+    private Long assignedToTeamMember;
+    private Long assignedToTeamLeader;
+
 }

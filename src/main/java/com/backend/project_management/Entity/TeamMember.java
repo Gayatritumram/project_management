@@ -46,7 +46,7 @@ public class TeamMember implements UserDetails {
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
     private Team teamId;
 
-    @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "assignedToTeamMember", cascade = CascadeType.ALL)
     private List<Task> assignedTasks;
 
     @Override
@@ -58,7 +58,7 @@ public class TeamMember implements UserDetails {
 
     @Override
     public String getUsername() {
-//
+
         return this.email;
     }
 

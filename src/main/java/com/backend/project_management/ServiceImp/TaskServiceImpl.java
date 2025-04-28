@@ -1,23 +1,24 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.TaskDTO;
-import com.backend.project_management.DTO.TaskReportDTO;
 import com.backend.project_management.Entity.ProjectAdmin;
 import com.backend.project_management.Entity.Task;
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
+import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TaskMapper;
 import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TaskRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Service.TaskService;
+import com.backend.project_management.Util.JwtHelper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,30 +31,88 @@ public class TaskServiceImpl implements TaskService {
     @Autowired private ProjectAdminRepo projectAdminRepo;
     @Autowired private TeamLeaderRepository teamLeaderRepository;
     @Autowired private TeamMemberRepository teamMemberRepository;
+    @Autowired private JwtHelper jwtHelper;
+
+
+
+    @Autowired
+    private TeamMemberRepository repository;
+
+
 
     @Override
-    public TaskDTO createTask(TaskDTO taskDTO) {
+    public TaskDTO createTask(TaskDTO taskDTO, String token, Long id,MultipartFile file) throws IOException  {
         Task task = taskMapper.toEntity(taskDTO);
 
-        if (taskDTO.getAssignedByAdminId() != null) {
-            ProjectAdmin admin = projectAdminRepo.findById(taskDTO.getAssignedByAdminId())
-                    .orElseThrow(() -> new RuntimeException("Admin not found"));
-            task.setAssignedByAdmin(admin);
+        String username = jwtHelper.getUsernameFromToken(token);
+        String role = jwtHelper.getRoleFromToken(token);
+
+        if (role != null && role.contains("ADMIN")) {
+            ProjectAdmin currentAdmin = projectAdminRepo.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("Logged-in admin not found"));
+            task.setAssignedByAdmin(currentAdmin);
+        } else if (role != null && role.contains("TEAM_LEADER")) {
+            TeamLeader currentLeader = teamLeaderRepository.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("Logged-in team leader not found"));
+            task.setAssignedByLeader(currentLeader);
         }
 
-        if (taskDTO.getAssignedByLeaderId() != null) {
-            TeamLeader leader = teamLeaderRepository.findById(taskDTO.getAssignedByLeaderId())
-                    .orElseThrow(() -> new RuntimeException("Leader not found"));
-            task.setAssignedByLeader(leader);
-        }
-
-        TeamMember assignedTo = teamMemberRepository.findById(taskDTO.getAssignedToId())
+        TeamMember assignedTo = teamMemberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team member not found"));
-        task.setAssignedTo(assignedTo);
+
+
+        //Image
+        task.setAssignedToTeamMember(assignedTo);
+        if (file != null && !file.isEmpty()) {
+            try {
+                task.setImageUrl(s3Service.uploadImage(file));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
     }
+
+
+    @Override
+    public TaskDTO createTaskForLeader(TaskDTO taskDTO, String token, Long id, MultipartFile file) throws IOException {
+        Task task = taskMapper.toEntity(taskDTO);
+
+        String username = jwtHelper.getUsernameFromToken(token);
+        String role = jwtHelper.getRoleFromToken(token);
+
+        if (role != null && role.contains("ADMIN")) {
+            ProjectAdmin currentAdmin = projectAdminRepo.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("Logged-in admin not found"));
+            task.setAssignedByAdmin(currentAdmin);
+        } else if (role != null && role.contains("TEAM_LEADER")) {
+            TeamLeader currentLeader = teamLeaderRepository.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("Logged-in team leader not found"));
+            task.setAssignedByLeader(currentLeader);
+        }
+
+        TeamLeader assignedTo = teamLeaderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Team Leader not found"));
+
+
+        //Image
+        task.setAssignedToTeamLeader(assignedTo);
+        if (file != null && !file.isEmpty()) {
+            try {
+                task.setImageUrl(s3Service.uploadImage(file));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        Task savedTask = taskRepository.save(task);
+        return taskMapper.toDto(savedTask);
+    }
+
+
+
 
     @Override
     public TaskDTO updateTask(Long taskId, TaskDTO taskDTO) {
@@ -124,40 +183,54 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskReportDTO generateReportForAdmin(Long adminId) {
-        ProjectAdmin admin = projectAdminRepo.findById(adminId)
-                .orElseThrow(() -> new RuntimeException("Admin not found"));
+    public List<TaskDTO> getTasksAssignedByAdminEmail(String email) {
+        ProjectAdmin admin = projectAdminRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Admin not found with email: " + email));
 
-        Map<String, Long> taskByStatus = new HashMap<>();
-        for (Object[] result : taskRepository.countByStatusForAdmin(admin)) {
-            taskByStatus.put(result[0].toString(), (Long) result[1]);
-        }
-
-        LocalDate today = LocalDate.now();
-        Map<String, Long> tasksByDateRange = new HashMap<>();
-        tasksByDateRange.put("Today", taskRepository.countByDateRangeForAdmin(admin, today, today));
-        tasksByDateRange.put("Last 7 Days", taskRepository.countByDateRangeForAdmin(admin, today.minusDays(6), today));
-        tasksByDateRange.put("Last 30 Days", taskRepository.countByDateRangeForAdmin(admin, today.minusDays(29), today));
-
-        return new TaskReportDTO(tasksByDateRange, taskByStatus);
+        List<Task> tasks = taskRepository.findAllByAssignedByAdmin_Id(admin.getId());
+        return taskMapper.toDtoList(tasks);
     }
 
     @Override
-    public TaskReportDTO generateReportForMember(Long memberId) {
-        TeamMember member = teamMemberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+    public List<TaskDTO> getTasksAssignedByLeaderEmail(String email) {
+        TeamLeader leader = teamLeaderRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Team Leader not found with email: " + email));
 
-        Map<String, Long> taskByStatus = new HashMap<>();
-        for (Object[] result : taskRepository.countByStatusForMember(member)) {
-            taskByStatus.put(result[0].toString(), (Long) result[1]);
-        }
-
-        LocalDate today = LocalDate.now();
-        Map<String, Long> tasksByDateRange = new HashMap<>();
-        tasksByDateRange.put("Today", taskRepository.countByDateRangeForMember(member, today, today));
-        tasksByDateRange.put("Last 7 Days", taskRepository.countByDateRangeForMember(member, today.minusDays(6), today));
-        tasksByDateRange.put("Last 30 Days", taskRepository.countByDateRangeForMember(member, today.minusDays(29), today));
-
-        return new TaskReportDTO(tasksByDateRange, taskByStatus);
+        List<Task> tasks = taskRepository.findAllByAssignedByLeader_Id(leader.getId());
+        return taskMapper.toDtoList(tasks);
     }
+
+    @Override
+    public List<TaskDTO> getTasksAssignedToMemberEmail(String email) {
+        TeamMember member = teamMemberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Team Member not found with email: " + email));
+
+        List<Task> tasks = taskRepository.findAllByAssignedToTeamMember_Id(member.getId());
+        return taskMapper.toDtoList(tasks);
+    }
+
+    @Override
+    public List<TaskDTO> getTodaysLeaderTasksByEmail(String email) {
+        List<Task> tasks = taskRepository.findTodaysLeaderTasksByMemberEmail(email);
+        return tasks.stream().map(taskMapper::toDto).collect(Collectors.toList());
+    }
+    @Override
+    public List<TaskDTO> getTasksAssignedToMemberById(Long id) {
+        List<Task> tasks = taskRepository.findAllByAssignedToTeamMember_Id(id);
+        return taskMapper.toDtoList(tasks);
+    }
+
+    @Override
+    public List<TaskDTO> getTasksAssignedByLeaderId(Long id) {
+        List<Task> tasks = taskRepository.findAllByAssignedByLeader_Id(id);
+        return taskMapper.toDtoList(tasks);
+    }
+
+    @Override
+    public List<TaskDTO> getTasksAssignedByAdminId(Long id) {
+        List<Task> tasks = taskRepository.findAllByAssignedByAdmin_Id(id);
+        return taskMapper.toDtoList(tasks);
+    }
+
+
 }

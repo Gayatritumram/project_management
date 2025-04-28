@@ -3,12 +3,12 @@ package com.backend.project_management.Util;
 import com.backend.project_management.UserPermission.UserRole;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +40,16 @@ public class JwtHelper {
         return claimsResolver.apply(claims);
     }
 
+    public String getRoleFromToken(String token) {
+        // Get the single role from the "role" claim (assumed that only one role is stored)
+        return Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))  // Ensure you use the correct secret key
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("userRole", String.class);  // Get the single role from the claim, assuming it's a single string
+    }
+
     // Retrieve claims from token
     public Claims getAllClaimsFromToken(String token) {
         return Jwts.parserBuilder()
@@ -51,22 +61,27 @@ public class JwtHelper {
 
     // Check if the token has expired
     private Boolean isTokenExpired(String token) {
-        return getExpirationDateFromToken(token).before(new Date());
+        return getExpirationDateFromToken(token).before(Date.from(Instant.now()));
     }
 
     // Generate token for user
     public String generateToken(UserDetails userDetails, UserRole role) {
-
         Map<String, Object> claims = new HashMap<>();
 
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-
-        claims.put("roles", roles); // Store all roles
-        claims.put("userRole", "ROLE_" + role.name());
+        // Get all roles (though you're only storing one here)
+        claims.put("userRole", "ROLE_" + role.name());  // Store only a single role
 
         return doGenerateToken(claims, userDetails.getUsername());
+//        Map<String, Object> claims = new HashMap<>();
+//
+//        List<String> roles = userDetails.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.toList());
+//
+//        claims.put("roles", roles); // Store all roles
+//        claims.put("userRole", "ROLE_" + role.name());
+//
+//        return doGenerateToken(claims, userDetails.getUsername());
     }
 
     // Create token

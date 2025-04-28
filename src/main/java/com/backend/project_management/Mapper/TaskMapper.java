@@ -4,6 +4,9 @@ import com.backend.project_management.DTO.TaskDTO;
 import com.backend.project_management.Entity.Task;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class TaskMapper {
 
@@ -34,8 +37,12 @@ public class TaskMapper {
             dto.setAssignedByLeaderId(task.getAssignedByLeader().getId());
         }
 
-        if (task.getAssignedTo() != null) {
-            dto.setAssignedToId(task.getAssignedTo().getId());
+        if (task.getAssignedToTeamMember() != null) {
+            dto.setAssignedToTeamMember(task.getAssignedToTeamMember().getId());
+        }
+
+        if (task.getAssignedToTeamLeader() != null) {
+            dto.setAssignedToTeamLeader(task.getAssignedToTeamLeader().getId());
         }
 
         return dto;
@@ -60,7 +67,12 @@ public class TaskMapper {
         task.setStartTime(dto.getStartTime());
         task.setEndTime(dto.getEndTime());
 
-        // Important: We don't set relationships here — those are set in the ServiceImpl
         return task;
+    }
+
+    public List<TaskDTO> toDtoList(List<Task> tasks) {
+        return tasks.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 }

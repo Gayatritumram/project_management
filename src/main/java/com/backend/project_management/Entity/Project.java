@@ -1,12 +1,13 @@
 package com.backend.project_management.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -30,6 +31,6 @@ public class Project {
     private String department;
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team teamName;
+    @JoinColumn(name = "team1")
+    private Team team1;
 }

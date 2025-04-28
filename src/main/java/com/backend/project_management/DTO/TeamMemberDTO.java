@@ -1,7 +1,6 @@
 package com.backend.project_management.DTO;
 
 import com.backend.project_management.Entity.Team;
-import com.backend.project_management.UserPermission.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,8 +22,8 @@ public class TeamMemberDTO {
     private String role;
     private String projectName;
     private String branchName;
-    private boolean isLeader = false;
-    private Team teamId;
+
+    private Long teamId;
     //private UserRole userRole;
 
 

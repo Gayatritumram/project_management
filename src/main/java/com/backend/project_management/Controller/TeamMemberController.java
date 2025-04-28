@@ -31,7 +31,7 @@ public class TeamMemberController {
     // Get all non-leader Team Members
     @GetMapping("/members")
     public ResponseEntity<List<TeamMemberDTO>> getAllTeamMembers() {
-        return ResponseEntity.ok(service.getAllNonLeaderTeamMembers());
+        return ResponseEntity.ok(service.getAllTeamMembers());
     }
 
     // Promote a Team Member to Team Leader
@@ -78,4 +78,8 @@ public class TeamMemberController {
         String response = service.resetPassword(email, newPassword, confirmPassword);
         return ResponseEntity.ok(response);
     }
+
+
+
+
 }

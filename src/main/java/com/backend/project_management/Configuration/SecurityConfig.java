@@ -2,7 +2,6 @@ package com.backend.project_management.Configuration;
 
 import com.backend.project_management.Util.JWTAuthenticationFilter;
 import com.backend.project_management.Util.JwtEntryPoint;
-import com.backend.project_management.Util.CustomAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,8 +29,6 @@ public class SecurityConfig {
     private JwtEntryPoint point;
     @Autowired
     private JWTAuthenticationFilter filter;
-    @Autowired
-    private CustomAuthenticationFilter customAuthFilter;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -141,12 +138,11 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        
-        // Add the filters in order
-        http.addFilterBefore(customAuthFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
-        
+
         return http.build();
+
+
     }
 
 

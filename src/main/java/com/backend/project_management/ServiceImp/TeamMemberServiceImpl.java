@@ -1,6 +1,7 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.TeamMemberDTO;
+import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Exception.RequestNotFound;
@@ -45,6 +46,14 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     public TeamMemberDTO createTeamMember(TeamMemberDTO dto) {
         TeamMember teamMember = TeamMemberMapper.mapToTeamMember(dto);
         teamMember.setPassword(passwordEncoder.encode(dto.getPassword()));
+        if (dto.getTeamId() != null) {
+            Team admin = teamRepository.findById(dto.getTeamId())
+                    .orElseThrow(() -> new RuntimeException("Team not found"));
+            teamMember.setTeamId(admin);
+
+        }
+
+
         teamMember = repository.save(teamMember);
         return TeamMemberMapper.mapToTeamMemberDTO(teamMember);
     }
@@ -57,9 +66,11 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     }
 
     @Override
-    public List<TeamMemberDTO> getAllNonLeaderTeamMembers() {
-        return repository.findAll().stream()
+    public List<TeamMemberDTO> getAllTeamMembers() {
+        return repository.findAll()
+                .stream()
                 .map(TeamMemberMapper::mapToTeamMemberDTO)
+
                 .collect(Collectors.toList());
     }
 
@@ -76,7 +87,6 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         teamLeader.setPassword(teamMember.getPassword());
         teamLeader.setTeamId(teamMember.getTeamId());
         teamLeader.setBranchName(teamMember.getBranchName());
-        teamLeader.setRoleName(teamMember.getRoleName());
         teamLeader.setJoinDate(teamMember.getJoinDate());
         teamMember.setDepartment(teamMember.getDepartment());
         teamMember.setAddress(teamLeader.getAddress());
@@ -154,4 +164,6 @@ public class TeamMemberServiceImpl implements TeamMemberService {
             throw new IllegalArgumentException("Team Member email not found!");
         }
     }
+
+
 }
