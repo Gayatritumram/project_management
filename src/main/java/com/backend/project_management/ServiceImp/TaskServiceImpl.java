@@ -120,7 +120,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDescription(taskDTO.getDescription());
         task.setProjectName(taskDTO.getProjectName());
         task.setDays(taskDTO.getDays());
-        task.setHour(taskDTO.getHour());
+      //  task.setHour(taskDTO.getHour());
         task.setStatus(taskDTO.getStatus());
         task.setStatusBar(taskDTO.getStatusBar());
         task.setStartDate(taskDTO.getStartDate());
