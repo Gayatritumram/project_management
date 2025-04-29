@@ -5,7 +5,6 @@ import com.backend.project_management.Entity.ProjectAdmin;
 import com.backend.project_management.Entity.Task;
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
-import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TaskMapper;
 import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TaskRepository;
@@ -13,7 +12,6 @@ import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Service.TaskService;
 import com.backend.project_management.Util.JwtHelper;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -184,28 +182,19 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDTO> getTasksAssignedByAdminEmail(String email) {
-        ProjectAdmin admin = projectAdminRepo.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Admin not found with email: " + email));
-
-        List<Task> tasks = taskRepository.findAllByAssignedByAdmin_Id(admin.getId());
+        List<Task> tasks = taskRepository.findAllByAssignedByAdminEmail(email);
         return taskMapper.toDtoList(tasks);
     }
 
     @Override
     public List<TaskDTO> getTasksAssignedByLeaderEmail(String email) {
-        TeamLeader leader = teamLeaderRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Team Leader not found with email: " + email));
-
-        List<Task> tasks = taskRepository.findAllByAssignedByLeader_Id(leader.getId());
+        List<Task> tasks = taskRepository.findAllByAssignedByLeaderEmail(email);
         return taskMapper.toDtoList(tasks);
     }
 
     @Override
     public List<TaskDTO> getTasksAssignedToMemberEmail(String email) {
-        TeamMember member = teamMemberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Team Member not found with email: " + email));
-
-        List<Task> tasks = taskRepository.findAllByAssignedToTeamMember_Id(member.getId());
+        List<Task> tasks = taskRepository.findAllByAssignedToTeamMemberEmail(email);
         return taskMapper.toDtoList(tasks);
     }
 

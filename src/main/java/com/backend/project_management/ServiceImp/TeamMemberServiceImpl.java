@@ -13,6 +13,7 @@ import com.backend.project_management.Service.EmailService;
 import com.backend.project_management.Service.OtpService;
 import com.backend.project_management.Service.TeamMemberService;
 import com.backend.project_management.UserPermission.UserRole;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -75,29 +76,32 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     }
 
     @Override
+    @Transactional
     public void makeTeamLeader(Long id) {
         TeamMember teamMember = repository.findById(id)
                 .orElseThrow(() -> new RequestNotFound("Team Member not found"));
 
-        // Convert to TeamLeader
+        // Remove the member from TeamMember repository first
+        repository.delete(teamMember);
+
+        // Create a new TeamLeader without copying the ID
         TeamLeader teamLeader = new TeamLeader();
-        teamLeader.setId(teamMember.getId()); // optional, you can also let JPA auto-generate
         teamLeader.setName(teamMember.getName());
         teamLeader.setEmail(teamMember.getEmail());
         teamLeader.setPassword(teamMember.getPassword());
         teamLeader.setTeamId(teamMember.getTeamId());
         teamLeader.setBranchName(teamMember.getBranchName());
         teamLeader.setJoinDate(teamMember.getJoinDate());
-        teamMember.setDepartment(teamMember.getDepartment());
-        teamMember.setAddress(teamLeader.getAddress());
-        teamMember.setPhone(teamLeader.getPhone());
+        teamLeader.setDepartment(teamMember.getDepartment());
+        teamLeader.setAddress(teamMember.getAddress());
+        teamLeader.setPhone(teamMember.getPhone());
         teamLeader.setUserRole(UserRole.TEAM_LEADER);
 
-
-        // Save to teamLeader repository
+        // Save the TeamLeader (let JPA generate new ID)
         teamLeaderRepository.save(teamLeader);
 
-        // Remove from teamMember repository
+
+    // Remove from teamMember repository
         repository.delete(teamMember);
     }
     @Override
