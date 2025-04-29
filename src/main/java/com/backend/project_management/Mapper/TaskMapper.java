@@ -26,8 +26,8 @@ public class TaskMapper {
 
         dto.setStartDate(task.getStartDate());
         dto.setEndDate(task.getEndDate());
-        dto.setStartTime(task.getStartTime());
-        dto.setEndTime(task.getEndTime());
+       // dto.setStartTime(task.getStartTime());
+        //dto.setEndTime(task.getEndTime());
 
         if (task.getAssignedByAdmin() != null) {
             dto.setAssignedByAdminId(task.getAssignedByAdmin().getId());
@@ -64,8 +64,8 @@ public class TaskMapper {
 
         task.setStartDate(dto.getStartDate());
         task.setEndDate(dto.getEndDate());
-        task.setStartTime(dto.getStartTime());
-        task.setEndTime(dto.getEndTime());
+     //   task.setStartTime(dto.getStartTime());
+       // task.setEndTime(dto.getEndTime());
 
         return task;
     }

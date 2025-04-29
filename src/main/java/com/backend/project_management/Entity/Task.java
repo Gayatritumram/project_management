@@ -30,8 +30,8 @@ public class Task {
 
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalTime startTime;//
-    private LocalTime endTime;//
+   // private LocalTime startTime;//
+   // private LocalTime endTime;//
 
 
 
@@ -63,9 +63,9 @@ public class Task {
             this.startDate = LocalDate.now();
         }
 
-        if (this.startTime == null) {
-            this.startTime = LocalTime.now();
-        }
+     //   if (this.startTime == null) {
+       //     this.startTime = LocalTime.now();
+        //}
 
         // Enforce minimum 7-day duration
         if (this.days < 7) {

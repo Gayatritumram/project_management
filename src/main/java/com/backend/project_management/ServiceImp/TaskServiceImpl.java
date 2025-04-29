@@ -125,8 +125,8 @@ public class TaskServiceImpl implements TaskService {
         task.setStatusBar(taskDTO.getStatusBar());
         task.setStartDate(taskDTO.getStartDate());
         task.setEndDate(taskDTO.getEndDate());
-        task.setStartTime(taskDTO.getStartTime());
-        task.setEndTime(taskDTO.getEndTime());
+      //  task.setStartTime(taskDTO.getStartTime());
+        //task.setEndTime(taskDTO.getEndTime());
         task.setSubject(taskDTO.getSubject());
         task.setPriority(taskDTO.getPriority());
 
