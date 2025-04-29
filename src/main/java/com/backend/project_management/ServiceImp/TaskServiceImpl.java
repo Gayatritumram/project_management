@@ -232,5 +232,72 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.toDtoList(tasks);
     }
 
+    @Override
+    public List<TaskDTO> getTasksAssignedByAdminToMember(Long adminId, Long memberId) {
+        List<Task> tasks = taskRepository.findTasksAssignedByAdminToMember(adminId, memberId);
+        return taskMapper.toDtoList(tasks);
+    }
 
+    @Override
+    public List<TaskDTO> getTodaysTasksAssignedByAdminToMember(Long adminId, Long memberId) {
+        List<Task> tasks = taskRepository.findTodaysTasksAssignedByAdminToMember(adminId, memberId);
+        return taskMapper.toDtoList(tasks);
+    }
+
+    @Override
+    public List<TaskDTO> getTasksAssignedByLeaderToMember(Long leaderId, Long memberId) {
+        List<Task> tasks = taskRepository.findTasksAssignedByLeaderToMember(leaderId, memberId);
+        return taskMapper.toDtoList(tasks);
+    }
+
+    @Override
+    public List<TaskDTO> getTodaysTasksAssignedByLeaderToMember(Long leaderId, Long memberId) {
+        List<Task> tasks = taskRepository.findTodaysTasksAssignedByLeaderToMember(leaderId, memberId);
+        return taskMapper.toDtoList(tasks);
+    }
+
+    // new method for Leader assigns task to member
+    @Override
+    public TaskDTO assignTaskFromLeaderToMember(TaskDTO taskDTO, String token, Long leaderId, Long memberId, MultipartFile file) throws IOException {
+        Task task = taskMapper.toEntity(taskDTO);
+
+        // Verify token and get leader info
+        String username = jwtHelper.getUsernameFromToken(token);
+        String role = jwtHelper.getRoleFromToken(token);
+
+        // Ensure the user is a team leader
+        if (role == null || !role.contains("TEAM_LEADER")) {
+            throw new RuntimeException("You must be a team leader to assign tasks to members");
+        }
+
+        // Find the team leader
+        TeamLeader teamLeader = teamLeaderRepository.findById(leaderId)
+                .orElseThrow(() -> new RuntimeException("Team leader not found"));
+
+        // Verify the authenticated user is the same leader who's assigning the task
+        if (!teamLeader.getEmail().equals(username)) {
+            throw new RuntimeException("You can only assign tasks on your own behalf");
+        }
+
+        // Find the team member
+        TeamMember teamMember = teamMemberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Team member not found"));
+
+        // Set the assigner and assignee
+        task.setAssignedByLeader(teamLeader);
+        task.setAssignedToTeamMember(teamMember);
+
+        // Handle file attachment if provided
+        if (file != null && !file.isEmpty()) {
+            try {
+                task.setImageUrl(s3Service.uploadImage(file));
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to upload file attachment", e);
+            }
+        }
+
+        // Save the task
+        Task savedTask = taskRepository.save(task);
+        return taskMapper.toDto(savedTask);
+    }
 }

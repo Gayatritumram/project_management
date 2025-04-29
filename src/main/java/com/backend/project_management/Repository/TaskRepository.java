@@ -1,12 +1,14 @@
 package com.backend.project_management.Repository;
 
-import com.backend.project_management.Entity.Task;
+import java.util.List;
+import java.time.LocalDate;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.backend.project_management.Entity.Task;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
@@ -24,7 +26,19 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query("SELECT t FROM Task t WHERE t.assignedToTeamLeader.email = :email AND t.startDate = CURRENT_DATE")
     List<Task> findTodaysTasksAssignedToLeader(@Param("email") String email);
-
-
+    
+    // New methods for admin-assigned tasks to a specific member
+    @Query("SELECT t FROM Task t WHERE t.assignedByAdmin.id = :adminId AND t.assignedToTeamMember.id = :memberId")
+    List<Task> findTasksAssignedByAdminToMember(@Param("adminId") Long adminId, @Param("memberId") Long memberId);
+    
+    @Query("SELECT t FROM Task t WHERE t.assignedByAdmin.id = :adminId AND t.assignedToTeamMember.id = :memberId AND t.startDate = CURRENT_DATE")
+    List<Task> findTodaysTasksAssignedByAdminToMember(@Param("adminId") Long adminId, @Param("memberId") Long memberId);
+    
+    // New methods for leader-assigned tasks to a specific member
+    @Query("SELECT t FROM Task t WHERE t.assignedByLeader.id = :leaderId AND t.assignedToTeamMember.id = :memberId")
+    List<Task> findTasksAssignedByLeaderToMember(@Param("leaderId") Long leaderId, @Param("memberId") Long memberId);
+    
+    @Query("SELECT t FROM Task t WHERE t.assignedByLeader.id = :leaderId AND t.assignedToTeamMember.id = :memberId AND t.startDate = CURRENT_DATE")
+    List<Task> findTodaysTasksAssignedByLeaderToMember(@Param("leaderId") Long leaderId, @Param("memberId") Long memberId);
 }
 

@@ -38,6 +38,16 @@ public interface TaskService {
     public List<TaskDTO> getTodaysLeaderTasksByEmail(String email);
     public TaskDTO createTaskForLeader(TaskDTO taskDTO, String token, Long id,MultipartFile file)throws IOException  ;
 
+    // New methods for admin-assigned tasks to a specific member
+    List<TaskDTO> getTasksAssignedByAdminToMember(Long adminId, Long memberId);
+    
+    List<TaskDTO> getTodaysTasksAssignedByAdminToMember(Long adminId, Long memberId);
+    
+    // New methods for leader-assigned tasks to a specific member
+    List<TaskDTO> getTasksAssignedByLeaderToMember(Long leaderId, Long memberId);
+    
+    List<TaskDTO> getTodaysTasksAssignedByLeaderToMember(Long leaderId, Long memberId);
 
-
+    // new method for Leader assigns task to member
+    TaskDTO assignTaskFromLeaderToMember(TaskDTO taskDTO, String token, Long leaderId, Long memberId, MultipartFile file) throws IOException;
 }
