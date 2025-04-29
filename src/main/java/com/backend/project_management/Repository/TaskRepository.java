@@ -1,7 +1,6 @@
 package com.backend.project_management.Repository;
 
 import java.util.List;
-import java.time.LocalDate;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -40,5 +39,11 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     
     @Query("SELECT t FROM Task t WHERE t.assignedByLeader.id = :leaderId AND t.assignedToTeamMember.id = :memberId AND t.startDate = CURRENT_DATE")
     List<Task> findTodaysTasksAssignedByLeaderToMember(@Param("leaderId") Long leaderId, @Param("memberId") Long memberId);
+
+    List<Task> findAllByAssignedByAdminEmail(String email);
+
+    List<Task> findAllByAssignedByLeaderEmail(String email);
+
+    List<Task> findAllByAssignedToTeamMemberEmail(String email);
 }
 
