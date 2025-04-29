@@ -48,7 +48,7 @@ public class Task {
     private TeamLeader assignedByLeader;
 
     @ManyToOne
-    @JoinColumn(name = "assigned_to_id")
+    @JoinColumn(name = "assigned_to_member_id")
     private TeamMember assignedToTeamMember;
 
     @ManyToOne

@@ -78,15 +78,6 @@ public class TaskController {
         return ResponseEntity.ok("Task deleted successfully");
     }
 
-//    @PostMapping("/{taskId}/upload-image")
-//    public ResponseEntity<TaskDTO> uploadImage(@PathVariable Long taskId, @RequestParam("file") MultipartFile file) {
-//        return ResponseEntity.ok(taskService.uploadTaskImage(taskId, file));
-//    }
-
-//    @DeleteMapping("/{taskId}/delete-image")
-//    public ResponseEntity<TaskDTO> deleteImage(@PathVariable Long taskId) {
-//        return ResponseEntity.ok(taskService.deleteTaskImage(taskId));
-//    }
 
     @GetMapping("/tasks/admin/email/{email}")
     public ResponseEntity<List<TaskDTO>> getTasksByAdminEmail(@PathVariable String email) {
