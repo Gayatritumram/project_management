@@ -24,14 +24,14 @@ public class Task {
     private String status;
     private String statusBar;
     private int days;
-    private int hour;//
-    private int durationInMinutes;//
+   // private int hour;//
+    //private int durationInMinutes;//
     private String imageUrl;
 
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalTime startTime;//
-    private LocalTime endTime;//
+   // private LocalTime startTime;//
+   // private LocalTime endTime;//
 
 
 
@@ -63,9 +63,9 @@ public class Task {
             this.startDate = LocalDate.now();
         }
 
-        if (this.startTime == null) {
-            this.startTime = LocalTime.now();
-        }
+     //   if (this.startTime == null) {
+       //     this.startTime = LocalTime.now();
+        //}
 
         // Enforce minimum 7-day duration
         if (this.days < 7) {
@@ -73,11 +73,11 @@ public class Task {
         }
         this.endDate = this.startDate.plusDays(this.days);
 
-        // Enforce minimum 34-hour duration
-        if (this.hour < 34) {
-            this.hour = 34;
+//        // Enforce minimum 34-hour duration
+//        if (this.hour < 34) {
+//            this.hour = 34;
+//        }
+//        this.endTime = this.startTime.plusHours(this.hour);
         }
-        this.endTime = this.startTime.plusHours(this.hour);
-    }
 
 }
