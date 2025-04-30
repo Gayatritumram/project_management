@@ -41,13 +41,14 @@ public class JwtHelper {
     }
 
     public String getRoleFromToken(String token) {
-        // Get the single role from the "role" claim (assumed that only one role is stored)
-        return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))  // Ensure you use the correct secret key
+        List<String> roles = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get("userRole", String.class);  // Get the single role from the claim, assuming it's a single string
+                .get("userRole", List.class);
+
+        return roles != null && !roles.isEmpty() ? roles.get(0) : null;  // Get the single role from the claim, assuming it's a single string
     }
 
     // Retrieve claims from token
@@ -68,20 +69,17 @@ public class JwtHelper {
     public String generateToken(UserDetails userDetails, UserRole role) {
         Map<String, Object> claims = new HashMap<>();
 
-        // Get all roles (though you're only storing one here)
-        claims.put("userRole", "ROLE_" + role.name());  // Store only a single role
+        List<String> rolesAndPermissions = role.getPermissions()
+                .stream()
+                .map(Enum::name)
+                .collect(Collectors.toList());
+
+        rolesAndPermissions.add("ROLE_" + role.name()); // add role also
+
+        claims.put("userRole", rolesAndPermissions);  // now contains both ROLE and PERMISSIONS
 
         return doGenerateToken(claims, userDetails.getUsername());
-//        Map<String, Object> claims = new HashMap<>();
-//
-//        List<String> roles = userDetails.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.toList());
-//
-//        claims.put("roles", roles); // Store all roles
-//        claims.put("userRole", "ROLE_" + role.name());
-//
-//        return doGenerateToken(claims, userDetails.getUsername());
+
     }
 
     // Create token
