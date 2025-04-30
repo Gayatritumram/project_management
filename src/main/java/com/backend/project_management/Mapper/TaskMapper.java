@@ -2,6 +2,12 @@ package com.backend.project_management.Mapper;
 
 import com.backend.project_management.DTO.TaskDTO;
 import com.backend.project_management.Entity.Task;
+import com.backend.project_management.Repository.ProjectAdminRepo;
+import com.backend.project_management.Repository.TeamLeaderRepository;
+import com.backend.project_management.Repository.TeamMemberRepository;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,7 +16,16 @@ import java.util.stream.Collectors;
 @Component
 public class TaskMapper {
 
-    public TaskDTO toDto(Task task) {
+    @Autowired
+    ProjectAdminRepo projectAdminRepository;
+
+    @Autowired
+    TeamLeaderRepository teamLeaderRepository;
+
+    @Autowired
+    TeamMemberRepository teamMemberRepository;
+
+    public TaskDTO toDto(@org.jetbrains.annotations.NotNull Task task) {
         TaskDTO dto = new TaskDTO();
         dto.setId(task.getId());
         dto.setSubject(task.getSubject());
@@ -20,35 +35,21 @@ public class TaskMapper {
         dto.setStatus(task.getStatus());
         dto.setStatusBar(task.getStatusBar());
         dto.setDays(task.getDays());
-    //    dto.setHour(task.getHour());
-      //  dto.setDurationInMinutes(task.getDurationInMinutes());
         dto.setImageUrl(task.getImageUrl());
-
         dto.setStartDate(task.getStartDate());
         dto.setEndDate(task.getEndDate());
-       // dto.setStartTime(task.getStartTime());
-        //dto.setEndTime(task.getEndTime());
 
-        if (task.getAssignedByAdmin() != null) {
-            dto.setAssignedByAdminId(task.getAssignedByAdmin().getId());
-        }
 
-        if (task.getAssignedByLeader() != null) {
-            dto.setAssignedByLeaderId(task.getAssignedByLeader().getId());
-        }
+        dto.setAssignedByAdminId(task.getAssignedByAdmin() != null ? task.getAssignedByAdmin().getId() : null);
+        dto.setAssignedByLeaderId(task.getAssignedByLeader() != null ? task.getAssignedByLeader().getId() : null);
+        dto.setAssignedToTeamMember(task.getAssignedToTeamMember() != null ? task.getAssignedToTeamMember().getId() : null);
+        dto.setAssignedToTeamLeader(task.getAssignedToTeamLeader() != null ? task.getAssignedToTeamLeader().getId() : null);
 
-        if (task.getAssignedToTeamMember() != null) {
-            dto.setAssignedToTeamMember(task.getAssignedToTeamMember().getId());
-        }
-
-        if (task.getAssignedToTeamLeader() != null) {
-            dto.setAssignedToTeamLeader(task.getAssignedToTeamLeader().getId());
-        }
 
         return dto;
     }
 
-    public Task toEntity(TaskDTO dto) {
+    public Task toEntity(@NotNull TaskDTO dto) {
         Task task = new Task();
         task.setId(dto.getId());
         task.setSubject(dto.getSubject());
@@ -58,14 +59,26 @@ public class TaskMapper {
         task.setStatus(dto.getStatus());
         task.setStatusBar(dto.getStatusBar());
         task.setDays(dto.getDays());
-       // task.setHour(dto.getHour());
-        //task.setDurationInMinutes(dto.getDurationInMinutes());
         task.setImageUrl(dto.getImageUrl());
-
         task.setStartDate(dto.getStartDate());
         task.setEndDate(dto.getEndDate());
-     //   task.setStartTime(dto.getStartTime());
-       // task.setEndTime(dto.getEndTime());
+        if (dto.getAssignedByAdminId() != null) {
+            task.setAssignedByAdmin(projectAdminRepository.findById(dto.getAssignedByAdminId()).orElse(null));
+        }
+
+        if (dto.getAssignedByLeaderId() != null) {
+            task.setAssignedByLeader(teamLeaderRepository.findById(dto.getAssignedByLeaderId()).orElse(null));
+        }
+
+        if (dto.getAssignedToTeamMember() != null) {
+            task.setAssignedToTeamMember(teamMemberRepository.findById(dto.getAssignedToTeamMember()).orElse(null));
+        }
+
+        if (dto.getAssignedToTeamLeader() != null) {
+            task.setAssignedToTeamLeader(teamLeaderRepository.findById(dto.getAssignedToTeamLeader()).orElse(null));
+        }
+
+
 
         return task;
     }

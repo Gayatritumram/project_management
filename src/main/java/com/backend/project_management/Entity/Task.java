@@ -24,14 +24,12 @@ public class Task {
     private String status;
     private String statusBar;
     private int days;
-   // private int hour;//
-    //private int durationInMinutes;//
+
     private String imageUrl;
 
     private LocalDate startDate;
     private LocalDate endDate;
-   // private LocalTime startTime;//
-   // private LocalTime endTime;//
+
 
 
 
