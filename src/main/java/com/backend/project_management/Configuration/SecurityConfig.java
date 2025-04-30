@@ -74,7 +74,7 @@ public class SecurityConfig {
                         .requestMatchers("/tasks/**").hasAnyRole(ADMIN.name(),TEAM_LEADER.name(),TEAM_MEMBER.name())
 
                         .requestMatchers(GET,"/tasks/**").hasAnyAuthority(ADMIN_READ.name(),TEAM_LEADER_READ.name(),TEAM_MEMBER_READ.name())
-                        .requestMatchers(POST,"/tasks/**").hasAnyAuthority(ADMIN_CREATE.name(), TEAM_LEADER_CREATE.name())
+                        .requestMatchers(POST,"/tasks/**").hasAnyRole(ADMIN_CREATE.name(), TEAM_LEADER_CREATE.name())
                         .requestMatchers(PUT,"/tasks/**").hasAnyAuthority(ADMIN_UPDATE.name(),TEAM_LEADER_UPDATE.name())
                         .requestMatchers(DELETE,"/tasks/**").hasAnyAuthority(ADMIN_DELETE.name(),TEAM_LEADER_DELETE.name())
 

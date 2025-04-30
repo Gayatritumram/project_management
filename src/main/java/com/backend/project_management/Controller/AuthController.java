@@ -25,6 +25,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import com.backend.project_management.Exception.DuplicateEmailHandler;
 
+
+@CrossOrigin(origins = "https://pjsofttech.in") // allow your frontend domain
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
