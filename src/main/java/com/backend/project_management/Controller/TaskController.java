@@ -3,19 +3,11 @@ package com.backend.project_management.Controller;
 import java.io.IOException;
 import java.util.List;
 
+import org.hibernate.boot.jaxb.Origin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.project_management.DTO.TaskDTO;
@@ -24,6 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/tasks")
+@CrossOrigin(origins = "http://localhost:3000")
+
 public class TaskController {
 
     @Autowired
@@ -38,22 +32,32 @@ public class TaskController {
             @RequestHeader("Authorization") String token
     ) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+        objectMapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
         TaskDTO taskDTO = objectMapper.readValue(taskJson, TaskDTO.class);
-        TaskDTO createdTask = taskService.createTask(taskDTO,    token.replace("Bearer ", ""), id, file);
+        TaskDTO createdTask = taskService.createTask(taskDTO, token.replace("Bearer ", ""), id, file);
+
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
+
     //
     @PostMapping("/create/Leader/{id}")
-    public ResponseEntity<TaskDTO> createTaskForLeader(
+
+    public ResponseEntity<TaskDTO> createTask2(
             @RequestParam("task") String taskJson,
             @RequestParam(value = "file", required = false) MultipartFile file,
             @PathVariable Long id,
             @RequestHeader("Authorization") String token
     ) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+        objectMapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
         TaskDTO taskDTO = objectMapper.readValue(taskJson, TaskDTO.class);
-        TaskDTO createdTask = taskService.createTaskForLeader(taskDTO,token.replace("Bearer ", ""), id, file);
+        TaskDTO createdTask = taskService.createTaskForLeader(taskDTO, token.replace("Bearer ", ""), id, file);
+
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 

@@ -5,9 +5,10 @@ import com.backend.project_management.Entity.Task;
 import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
+
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class TaskMapper {
     @Autowired
     TeamMemberRepository teamMemberRepository;
 
-    public TaskDTO toDto(@org.jetbrains.annotations.NotNull Task task) {
+    public TaskDTO toDto(@NotNull Task task) {
         TaskDTO dto = new TaskDTO();
         dto.setId(task.getId());
         dto.setSubject(task.getSubject());
