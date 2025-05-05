@@ -289,4 +289,11 @@ public class TaskServiceImpl implements TaskService {
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
     }
+
+    // Get all tasks assigned to a leader by their ID
+    @Override
+    public List<TaskDTO> getTasksAssignedToLeaderId(Long id) {
+        List<Task> tasks = taskRepository.findAllByAssignedToTeamLeader_Id(id);
+        return taskMapper.toDtoList(tasks);
+    }
 }

@@ -163,4 +163,10 @@ public class TaskController {
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
+    // Get all tasks assigned to a leader
+    @GetMapping("/assigned-to/leader/{id}")
+    public ResponseEntity<List<TaskDTO>> getTasksAssignedToLeader(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.getTasksAssignedToLeaderId(id));
+    }
+
 }

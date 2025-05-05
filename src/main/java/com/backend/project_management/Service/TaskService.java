@@ -50,4 +50,7 @@ public interface TaskService {
 
     // new method for Leader assigns task to member
     TaskDTO assignTaskFromLeaderToMember(TaskDTO taskDTO, String token, Long leaderId, Long memberId, MultipartFile file) throws IOException;
+
+    // Get all tasks assigned to a leader by their ID
+    List<TaskDTO> getTasksAssignedToLeaderId(Long id);
 }
