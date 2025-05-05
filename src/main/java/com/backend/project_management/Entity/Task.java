@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -16,26 +15,17 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String subject;
     private String description;
-    private String projectName;//
+    private String projectName;
     private String priority;
     private String status;
     private String statusBar;
     private int days;
-
     private String imageUrl;
 
     private LocalDate startDate;
     private LocalDate endDate;
-
-
-
-
-
-
-
 
     @ManyToOne
     @JoinColumn(name = "assigned_by_admin_id")
@@ -48,12 +38,7 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "assigned_to_member_id")
     private TeamMember assignedToTeamMember;
-
     @ManyToOne
     @JoinColumn(name = "assigned_to_leader_id")
     private TeamLeader assignedToTeamLeader;
-
-
-
-
 }
