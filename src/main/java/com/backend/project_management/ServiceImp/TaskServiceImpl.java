@@ -180,6 +180,8 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.toDto(task);
     }
 
+
+
     @Override
     public List<TaskDTO> getTasksAssignedByAdminEmail(String email) {
         List<Task> tasks = taskRepository.findAllByAssignedByAdminEmail(email);
@@ -200,7 +202,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDTO> getTodaysLeaderTasksByEmail(String email) {
-        List<Task> tasks = taskRepository.findTodaysLeaderTasksByMemberEmail(email);
+        List<Task> tasks = taskRepository.findTodaysTasksAssignedToLeader(email);
         return tasks.stream().map(taskMapper::toDto).collect(Collectors.toList());
     }
     @Override
@@ -296,4 +298,6 @@ public class TaskServiceImpl implements TaskService {
         List<Task> tasks = taskRepository.findAllByAssignedToTeamLeader_Id(id);
         return taskMapper.toDtoList(tasks);
     }
+
+
 }
