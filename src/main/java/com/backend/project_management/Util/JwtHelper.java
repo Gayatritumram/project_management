@@ -48,7 +48,15 @@ public class JwtHelper {
                 .getBody()
                 .get("userRole", List.class);
 
-        return roles != null && !roles.isEmpty() ? roles.get(0) : null;  // Get the single role from the claim, assuming it's a single string
+        if (roles != null && !roles.isEmpty()) {
+            if (roles.contains("ROLE_ADMIN")) {
+                return "ADMIN";
+            } else if (roles.stream().anyMatch(r -> r.startsWith("TEAM_LEADER"))) {
+                return "TEAM_LEADER";
+            }
+        }
+
+        return null; // or return "UNKNOWN";  // Get the single role from the claim, assuming it's a single string
     }
 
     // Retrieve claims from token

@@ -51,12 +51,13 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
         TeamLeader leader = new TeamLeader();
         leader.setName(dto.getName());
         leader.setEmail(dto.getEmail());
-        leader.setPassword(dto.getPassword()); // Hash if needed
+        leader.setPassword(passwordEncoder.encode(dto.getPassword())); // Hash if needed
         leader.setPhone(dto.getPhone());
         leader.setAddress(dto.getAddress());
         leader.setDepartment(dto.getDepartment());
         leader.setBranchName(dto.getBranchName());
         leader.setJoinDate(dto.getJoinDate());
+
 
         if (dto.getTeamId() != null) {
             Team team = teamRepository.findById(dto.getTeamId())

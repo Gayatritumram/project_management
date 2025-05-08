@@ -44,15 +44,17 @@ public class TaskServiceImpl implements TaskService {
 
         String username = jwtHelper.getUsernameFromToken(token);
         String role = jwtHelper.getRoleFromToken(token);
-
+        System.out.println("role:::::: " + role);
         try {
             if (role != null && role.contains("ADMIN")) {
                 ProjectAdmin currentAdmin = projectAdminRepo.findByEmail(username)
                         .orElseThrow(() -> new RuntimeException("Logged-in admin not found"));
+                System.out.println("currentAdmin: " + currentAdmin);
                 task.setAssignedByAdmin(currentAdmin);
             } else if (role != null && role.contains("TEAM_LEADER")) {
                 TeamLeader currentLeader = teamLeaderRepository.findByEmail(username)
                         .orElseThrow(() -> new RuntimeException("Logged-in team leader not found"));
+                System.out.println("currentLeader: " + currentLeader);
                 task.setAssignedByLeader(currentLeader);
             }
         } catch (RuntimeException e) {
