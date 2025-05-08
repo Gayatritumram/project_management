@@ -17,7 +17,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,8 +45,14 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @Autowired
     private TeamLeaderRepository teamLeaderRepository;
 
+    @Autowired private S3Service s3Service;
+
+
+
+
+
     @Override
-    public TeamMemberDTO createTeamMember(TeamMemberDTO dto) {
+    public TeamMember createTeamMember(TeamMemberDTO dto, MultipartFile imageFile) throws IOException {
         TeamMember teamMember = TeamMemberMapper.mapToTeamMember(dto);
         teamMember.setPassword(passwordEncoder.encode(dto.getPassword()));
         if (dto.getTeamId() != null) {
@@ -54,9 +62,13 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
         }
 
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = s3Service.uploadImage(imageFile); // S3 or local path
+            teamMember.setImageUrl(imageUrl);
+        }
 
-        teamMember = repository.save(teamMember);
-        return TeamMemberMapper.mapToTeamMemberDTO(teamMember);
+
+        return repository.save(teamMember);
     }
 
     @Override
@@ -115,7 +127,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         teamMember.setDepartment(teamMemberDTO.getDepartment());
         teamMember.setPhone(teamMemberDTO.getPhone());
         teamMember.setAddress(teamMemberDTO.getAddress());
-        teamMember.setRoleName(teamMemberDTO.getRole());
+        teamMember.setRoleName(teamMemberDTO.getRoleName());
         teamMember.setProjectName(teamMemberDTO.getProjectName());
         teamMember.setBranchName(teamMemberDTO.getBranchName());
 

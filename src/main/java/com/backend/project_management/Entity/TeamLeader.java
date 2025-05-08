@@ -37,6 +37,7 @@ public class TeamLeader implements UserDetails {
     private String department;
     private String branchName;
     private LocalDate joinDate;
+    private String imageUrl;
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole = UserRole.TEAM_LEADER;

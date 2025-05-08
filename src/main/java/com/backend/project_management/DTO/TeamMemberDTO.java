@@ -19,9 +19,10 @@ public class TeamMemberDTO {
     private String department;
     private String phone;
     private String address;
-    private String role;
+    private String roleName;
     private String projectName;
     private String branchName;
+    private String imageUrl;
 
     private Long teamId;
     //private UserRole userRole;

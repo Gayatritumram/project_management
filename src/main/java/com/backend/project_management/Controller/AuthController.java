@@ -26,7 +26,8 @@ import org.springframework.web.bind.annotation.*;
 import com.backend.project_management.Exception.DuplicateEmailHandler;
 
 
-@CrossOrigin(origins = "https://pjsofttech.in") // allow your frontend domain
+@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "https://pjsofttech.in")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {

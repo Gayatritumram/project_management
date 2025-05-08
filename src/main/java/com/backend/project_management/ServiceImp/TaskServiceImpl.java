@@ -45,14 +45,18 @@ public class TaskServiceImpl implements TaskService {
         String username = jwtHelper.getUsernameFromToken(token);
         String role = jwtHelper.getRoleFromToken(token);
 
-        if (role != null && role.contains("ADMIN")) {
-            ProjectAdmin currentAdmin = projectAdminRepo.findByEmail(username)
-                    .orElseThrow(() -> new RuntimeException("Logged-in admin not found"));
-            task.setAssignedByAdmin(currentAdmin);
-        } else if (role != null && role.contains("TEAM_LEADER")) {
-            TeamLeader currentLeader = teamLeaderRepository.findByEmail(username)
-                    .orElseThrow(() -> new RuntimeException("Logged-in team leader not found"));
-            task.setAssignedByLeader(currentLeader);
+        try {
+            if (role != null && role.contains("ADMIN")) {
+                ProjectAdmin currentAdmin = projectAdminRepo.findByEmail(username)
+                        .orElseThrow(() -> new RuntimeException("Logged-in admin not found"));
+                task.setAssignedByAdmin(currentAdmin);
+            } else if (role != null && role.contains("TEAM_LEADER")) {
+                TeamLeader currentLeader = teamLeaderRepository.findByEmail(username)
+                        .orElseThrow(() -> new RuntimeException("Logged-in team leader not found"));
+                task.setAssignedByLeader(currentLeader);
+            }
+        } catch (RuntimeException e) {
+            System.err.println("Warning: " + e.getMessage()); // log and continue
         }
 
         TeamMember assignedTo = teamMemberRepository.findById(id)
@@ -81,33 +85,33 @@ public class TaskServiceImpl implements TaskService {
         String username = jwtHelper.getUsernameFromToken(token);
         String role = jwtHelper.getRoleFromToken(token);
 
-        if (role != null && role.contains("ADMIN")) {
-            ProjectAdmin currentAdmin = projectAdminRepo.findByEmail(username)
-                    .orElseThrow(() -> new RuntimeException("Logged-in admin not found"));
-            task.setAssignedByAdmin(currentAdmin);
-        } else if (role != null && role.contains("TEAM_LEADER")) {
-            TeamLeader currentLeader = teamLeaderRepository.findByEmail(username)
-                    .orElseThrow(() -> new RuntimeException("Logged-in team leader not found"));
-            task.setAssignedByLeader(currentLeader);
+        try {
+            if (role != null && role.contains("ADMIN")) {
+                ProjectAdmin currentAdmin = projectAdminRepo.findByEmail(username)
+                        .orElseThrow(() -> new RuntimeException("Logged-in admin not found"));
+                task.setAssignedByAdmin(currentAdmin);
+            } else if (role != null && role.contains("TEAM_LEADER")) {
+                TeamLeader currentLeader = teamLeaderRepository.findByEmail(username)
+                        .orElseThrow(() -> new RuntimeException("Logged-in team leader not found"));
+                task.setAssignedByLeader(currentLeader);
+            }
+        } catch (RuntimeException e) {
+            System.err.println("Warning: " + e.getMessage()); // log and continue
         }
 
         TeamLeader assignedTo = teamLeaderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team Leader not found"));
 
-
-        //Image
         task.setAssignedToTeamLeader(assignedTo);
+
         if (file != null && !file.isEmpty()) {
-            try {
-                task.setImageUrl(s3Service.uploadImage(file));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            task.setImageUrl(s3Service.uploadImage(file));
         }
 
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
     }
+
 
 
 

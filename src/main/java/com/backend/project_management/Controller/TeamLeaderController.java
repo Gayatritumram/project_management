@@ -1,11 +1,17 @@
 package com.backend.project_management.Controller;
 
 import com.backend.project_management.DTO.TeamLeaderDTO;
+import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Service.TeamLeaderService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -15,9 +21,30 @@ public class TeamLeaderController {
     @Autowired
     private TeamLeaderService teamLeaderService;
 
+//    @PostMapping("/create")
+//    public ResponseEntity<TeamLeaderDTO> createTeamLeader(@RequestBody TeamLeaderDTO dto) {
+//        return ResponseEntity.ok(teamLeaderService.createTeamLeader(dto));
+//    }
+
+
     @PostMapping("/create")
-    public ResponseEntity<TeamLeaderDTO> createTeamLeader(@RequestBody TeamLeaderDTO dto) {
-        return ResponseEntity.ok(teamLeaderService.createTeamLeader(dto));
+    public ResponseEntity<TeamLeaderDTO> createTeamLeader(
+            @RequestParam("data") String dtoJson,
+            @RequestParam(value = "image", required = false) MultipartFile imageFile
+    ) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+        objectMapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        TeamLeaderDTO teamLeaderDTO = objectMapper.readValue(dtoJson, TeamLeaderDTO.class);
+
+        TeamLeader created = teamLeaderService.createTeamLeader(teamLeaderDTO, imageFile);
+
+        // Update DTO with saved values (id, imageUrl, etc.)
+        teamLeaderDTO.setId(created.getId());
+        teamLeaderDTO.setImageUrl(created.getImageUrl());
+
+        return new ResponseEntity<>(teamLeaderDTO, HttpStatus.CREATED);
     }
 
     @GetMapping("/all")

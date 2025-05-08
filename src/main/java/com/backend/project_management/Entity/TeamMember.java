@@ -35,7 +35,7 @@ public class TeamMember implements UserDetails {
     private String roleName;
     private String projectName;
     private String branchName;
-
+    private String imageUrl;
     //default value is false
 
     @Enumerated(EnumType.STRING)

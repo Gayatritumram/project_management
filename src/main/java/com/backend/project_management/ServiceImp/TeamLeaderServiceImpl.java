@@ -12,7 +12,9 @@ import com.backend.project_management.Service.TeamLeaderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,22 +40,38 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired private S3Service s3Service;
+
+
+
 
 
     @Override
-    public TeamLeaderDTO createTeamLeader(TeamLeaderDTO dto) {
-        TeamLeader leader = teamLeaderMapper.toEntity(dto);
-        leader.setPassword(passwordEncoder.encode(dto.getPassword()));
+    public TeamLeader createTeamLeader(TeamLeaderDTO dto, MultipartFile imageFile) throws IOException {
+        TeamLeader leader = new TeamLeader();
+        leader.setName(dto.getName());
+        leader.setEmail(dto.getEmail());
+        leader.setPassword(dto.getPassword()); // Hash if needed
+        leader.setPhone(dto.getPhone());
+        leader.setAddress(dto.getAddress());
+        leader.setDepartment(dto.getDepartment());
+        leader.setBranchName(dto.getBranchName());
+        leader.setJoinDate(dto.getJoinDate());
 
         if (dto.getTeamId() != null) {
             Team team = teamRepository.findById(dto.getTeamId())
-                    .orElseThrow(() -> new RuntimeException("Team not found with ID: " + dto.getTeamId()));
+                    .orElseThrow(() -> new RuntimeException("Team not found"));
             leader.setTeamId(team);
         }
 
-        TeamLeader saved = teamLeaderRepository.save(leader);
-        return teamLeaderMapper.toDto(saved);
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = s3Service.uploadImage(imageFile); // S3 or local path
+            leader.setImageUrl(imageUrl);
+        }
+
+        return teamLeaderRepository.save(leader);
     }
+
 
     @Override
     public TeamLeaderDTO updateTeamLeader(Long id, TeamLeaderDTO dto) {

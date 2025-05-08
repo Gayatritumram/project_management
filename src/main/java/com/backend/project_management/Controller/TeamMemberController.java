@@ -1,11 +1,19 @@
 package com.backend.project_management.Controller;
 
+import com.backend.project_management.DTO.TeamLeaderDTO;
 import com.backend.project_management.DTO.TeamMemberDTO;
+import com.backend.project_management.Entity.TeamLeader;
+import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Service.TeamMemberService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -16,11 +24,25 @@ public class TeamMemberController {
     @Autowired
     private TeamMemberService service;
 
-    // Create new Team Member
     @PostMapping("/create")
-    public ResponseEntity<TeamMemberDTO> create(@RequestBody TeamMemberDTO dto) {
-        return ResponseEntity.ok(service.createTeamMember(dto));
+    public ResponseEntity<TeamMemberDTO> createTeamMember(
+            @RequestParam("data") String dtoJson,
+            @RequestParam(value = "image", required = false) MultipartFile imageFile
+    ) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        TeamMemberDTO teamMDTO = objectMapper.readValue(dtoJson, TeamMemberDTO.class);
+
+        TeamMember created = service.createTeamMember(teamMDTO, imageFile);
+
+        teamMDTO.setId(created.getId());
+        teamMDTO.setImageUrl(created.getImageUrl());
+
+        return new ResponseEntity<>(teamMDTO, HttpStatus.CREATED);
     }
+
 
     // Get Team Member by ID
     @GetMapping("/{id}")

@@ -17,12 +17,12 @@ public class TeamMemberMapper {
         teamMember.setDepartment(dto.getDepartment());
         teamMember.setPhone(dto.getPhone());
         teamMember.setAddress(dto.getAddress());
-        teamMember.setRoleName(dto.getRole());
+        teamMember.setRoleName(dto.getRoleName());
         teamMember.setProjectName(dto.getProjectName());
         teamMember.setBranchName(dto.getBranchName());
         teamMember.setPassword(dto.getPassword());
-       // teamMember.setTeamId(dto.getTeamId());
-        //teamMember.setUserRole(dto.getUserRole());
+        teamMember.setImageUrl(dto.getImageUrl());
+
 
 
 
@@ -38,13 +38,14 @@ public class TeamMemberMapper {
         dto.setDepartment(teamMember.getDepartment());
         dto.setPhone(teamMember.getPhone());
         dto.setAddress(teamMember.getAddress());
-        dto.setRole(teamMember.getRoleName());
+        dto.setRoleName(teamMember.getRoleName());
         dto.setProjectName(teamMember.getProjectName());
         dto.setBranchName(teamMember.getBranchName());
         dto.setPassword(teamMember.getPassword());
+        dto.setImageUrl(teamMember.getImageUrl());
         if (teamMember.getTeamId() != null) {
             dto.setTeamId(teamMember.getTeamId().getId());
-        } // dto.setUserRole(teamMember.getUserRole());
+        }
 
 
         return dto;
