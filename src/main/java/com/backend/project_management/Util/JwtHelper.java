@@ -22,7 +22,7 @@ public class JwtHelper {
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60; // 5 hours
 
 
-   private String secret = "afafasfafafasfasfasfafacasdasfasxASFACASDFACASDFASFASFDAFASFASDAADSCSDFADCVSGCFVADXCcadwavfsfarvf";
+    private String secret = "afafasfafafasfasfasfafacasdasfasxASFACASDFACASDFASFASFDAFASFASDAADSCSDFADCVSGCFVADXCcadwavfsfarvf";
 
 
     // Retrieve username from JWT token
@@ -53,6 +53,8 @@ public class JwtHelper {
                 return "ADMIN";
             } else if (roles.stream().anyMatch(r -> r.startsWith("TEAM_LEADER"))) {
                 return "TEAM_LEADER";
+            } else if (roles.contains("ROLE_TEAM_MEMBER") || roles.stream().anyMatch(r -> r.startsWith("TEAM_MEMBER"))) {
+                return "TEAM_MEMBER";
             }
         }
 
