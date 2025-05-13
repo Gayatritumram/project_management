@@ -112,12 +112,16 @@ public class AuthController {
             // Determine user role dynamically
             UserRole assignedRole = determineUserRole(request.getEmail());
 
+            // Get user ID based on role
+            Long userId = getUserId(request.getEmail(), assignedRole);
+
             String token = this.helper.generateToken(userDetails, assignedRole);
 
             JwtResponse response = JwtResponse.builder()
                     .jwtToken(token)
                     .username(userDetails.getUsername())
                     .role(assignedRole.name())
+                    .id(userId)
                     .build();
 
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -153,6 +157,26 @@ public class AuthController {
             return UserRole.ADMIN;
         }
 
+        throw new UsernameNotFoundException("User not found with email: " + email);
+    }
+
+    /**
+     * Get user ID based on email and role
+     */
+    private Long getUserId(String email, UserRole role) {
+        if (role == UserRole.TEAM_LEADER) {
+            return teamLeaderRepository.findByEmail(email)
+                    .map(leader -> leader.getId())
+                    .orElseThrow(() -> new UsernameNotFoundException("Team Leader not found with email: " + email));
+        } else if (role == UserRole.TEAM_MEMBER) {
+            return teamMemberRepository.findByEmail(email)
+                    .map(member -> member.getId())
+                    .orElseThrow(() -> new UsernameNotFoundException("Team Member not found with email: " + email));
+        } else if (role == UserRole.ADMIN) {
+            return projectAdminRepo.findByEmail(email)
+                    .map(admin -> admin.getId())
+                    .orElseThrow(() -> new UsernameNotFoundException("Admin not found with email: " + email));
+        }
         throw new UsernameNotFoundException("User not found with email: " + email);
     }
 }

@@ -2,15 +2,14 @@ package com.backend.project_management.Model;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Builder
 public class JwtResponse {
     private String jwtToken;
     private String username;
     private String role;
+    private Long id;
 
 }
