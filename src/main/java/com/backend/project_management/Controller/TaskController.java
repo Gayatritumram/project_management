@@ -160,6 +160,9 @@ public class TaskController {
             @RequestHeader("Authorization") String token
     ) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
         TaskDTO taskDTO = objectMapper.readValue(taskJson, TaskDTO.class);
         TaskDTO createdTask = taskService.assignTaskFromLeaderToMember(taskDTO, token.replace("Bearer ", ""), leaderId, memberId, file);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
