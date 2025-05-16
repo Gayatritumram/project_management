@@ -69,6 +69,12 @@ public class TeamMemberController {
         return ResponseEntity.ok(service.updateTeamMember(id, dto));
     }
 
+    @PutMapping("/update-image-url/{id}")
+    public ResponseEntity<TeamMemberDTO> updateImageUrl(@PathVariable Long id, @RequestBody TeamMemberDTO teamMemberDTO) {
+        TeamMemberDTO updatedMember = service.updateImageUrl(id, teamMemberDTO.getImageUrl());
+        return ResponseEntity.ok(updatedMember);
+    }
+
     // Delete Team Member
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {

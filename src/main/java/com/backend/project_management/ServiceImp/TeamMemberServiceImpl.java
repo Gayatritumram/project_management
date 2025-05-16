@@ -136,6 +136,21 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     }
 
     @Override
+    public TeamMemberDTO updateImageUrl(Long memberId, String imageUrl) {
+        TeamMember teamMember = repository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Team member not found"));
+
+        teamMember.setImageUrl(imageUrl);
+        TeamMember updatedMember = repository.save(teamMember);
+
+        TeamMemberDTO teamMemberDTO = new TeamMemberDTO();
+        teamMemberDTO.setId(updatedMember.getId());
+        teamMemberDTO.setImageUrl(updatedMember.getImageUrl());
+
+        return teamMemberDTO;
+    }
+
+    @Override
     public void deleteTeamMember(Long id) {
         repository.deleteById(id);
     }

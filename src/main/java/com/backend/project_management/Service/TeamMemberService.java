@@ -10,13 +10,21 @@ import java.io.IOException;
 import java.util.List;
 
 public interface TeamMemberService {
-     TeamMember createTeamMember(TeamMemberDTO dto, MultipartFile imageFile) throws IOException;
+    TeamMember createTeamMember(TeamMemberDTO dto, MultipartFile imageFile) throws IOException;
+
     TeamMemberDTO getTeamMemberById(Long id);
+
     List<TeamMemberDTO> getAllTeamMembers();
-//
-     void makeTeamLeader(Long id);
-  TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO);
+
+    //
+    void makeTeamLeader(Long id);
+
+    TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO);
+
+    TeamMemberDTO updateImageUrl(Long memberId, String imageUrl);
+
     void deleteTeamMember(Long id);
+
     String forgotPassword(String email);
 
     String verifyOtp(String email, int otp);
