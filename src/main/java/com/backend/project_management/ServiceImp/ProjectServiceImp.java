@@ -59,24 +59,60 @@ public class ProjectServiceImp implements ProjectService {
         return projectRepository.findAll().stream().map(ProjectMapper::mapToProjectDTO).collect(Collectors.toList());
     }
 
-    @Override
-    public ProjectDTO updateProject(Long id, ProjectDTO project) {
-        ProjectDTO projectDTO = getProjectById(id);
-        projectDTO.setProjectName(project.getProjectName());
-        projectDTO.setProjectCategory(project.getProjectCategory());
-        projectDTO.setStatusBar(project.getStatusBar());
-        projectDTO.setStatus(project.getStatus());
-        projectDTO.setStartDate(project.getStartDate());
-        projectDTO.setEndDate(project.getEndDate());
-        projectDTO.setEstimatedDate(project.getEstimatedDate());
-        projectDTO.setStatusDescription(project.getStatusDescription());
-        projectDTO.setBranchName(project.getBranchName());
-        projectDTO.setTeam1byID(project.getTeam1byID());
-        projectDTO.setDepartment(project.getDepartment());
+//    @Override
+//    public ProjectDTO updateProject(Long id, ProjectDTO project) {
+//        ProjectDTO projectDTO = getProjectById(id);
+//        projectDTO.setProjectName(project.getProjectName());
+//        projectDTO.setProjectCategory(project.getProjectCategory());
+//        projectDTO.setStatusBar(project.getStatusBar());
+//        projectDTO.setStatus(project.getStatus());
+//        projectDTO.setStartDate(project.getStartDate());
+//        projectDTO.setEndDate(project.getEndDate());
+//        projectDTO.setEstimatedDate(project.getEstimatedDate());
+//        projectDTO.setStatusDescription(project.getStatusDescription());
+//        projectDTO.setBranchName(project.getBranchName());
+//        projectDTO.setTeam1byID(project.getTeam1byID());
+//        projectDTO.setDepartment(project.getDepartment());
+//        project.setTeam1byID(projectDTO.getTeam1byID());
+//
+//        Project project1 = ProjectMapper.mapToProject(projectDTO);
+//        return ProjectMapper.mapToProjectDTO(projectRepository.save(project1));
+//    }
 
-        Project project1 = ProjectMapper.mapToProject(projectDTO);
-        return ProjectMapper.mapToProjectDTO(projectRepository.save(project1));
+    @Override
+    public ProjectDTO updateProject(Long id, ProjectDTO projectDTO) {
+        // Fetch the existing Project from DB
+        Project existingProject = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        // Update fields from DTO
+        existingProject.setProjectName(projectDTO.getProjectName());
+        existingProject.setProjectCategory(projectDTO.getProjectCategory());
+        existingProject.setStatusBar(projectDTO.getStatusBar());
+        existingProject.setStatus(projectDTO.getStatus());
+        existingProject.setStartDate(projectDTO.getStartDate());
+        existingProject.setEndDate(projectDTO.getEndDate());
+        existingProject.setEstimatedDate(projectDTO.getEstimatedDate());
+        existingProject.setStatusDescription(projectDTO.getStatusDescription());
+        existingProject.setBranchName(projectDTO.getBranchName());
+        existingProject.setDepartment(projectDTO.getDepartment());
+
+        // 🔥 Important: Set the team by ID
+        if (projectDTO.getTeam1byID() != null) {
+            Team team = teamRepository.findById(projectDTO.getTeam1byID())
+                    .orElseThrow(() -> new RuntimeException("Team not found with ID: " + projectDTO.getTeam1byID()));
+            existingProject.setTeam1(team);
+        } else {
+            existingProject.setTeam1(null);
+        }
+
+        // Save the updated project
+        Project updatedProject = projectRepository.save(existingProject);
+
+        // Return updated DTO
+        return ProjectMapper.mapToProjectDTO(updatedProject);
     }
+
 
     @Override
     public void deleteProject(Long id) {
