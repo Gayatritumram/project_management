@@ -141,6 +141,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public TaskDTO updateTaskStatusAndTaskStatusBar(Long taskId, TaskDTO taskDTO) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        task.setStatus(taskDTO.getStatus());
+        task.setStatusBar(taskDTO.getStatusBar());
+
+        Task updatedTask = taskRepository.save(task);
+        return taskMapper.toDto(updatedTask);
+    }
+
+    @Override
     public TaskDTO getTaskById(Long taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
@@ -304,6 +316,8 @@ public class TaskServiceImpl implements TaskService {
         List<Task> tasks = taskRepository.findAllByAssignedToTeamLeader_Id(id);
         return taskMapper.toDtoList(tasks);
     }
+
+
 
 
 }

@@ -12,6 +12,8 @@ public interface TaskService {
 
     TaskDTO updateTask(Long taskId, TaskDTO taskDTO);
 
+    TaskDTO updateTaskStatusAndTaskStatusBar(Long taskId, TaskDTO taskDTO);
+
     TaskDTO getTaskById(Long taskId);
 
     List<TaskDTO> getAllTasks();
@@ -53,4 +55,6 @@ public interface TaskService {
 
     // Get all tasks assigned to a leader by their ID
     List<TaskDTO> getTasksAssignedToLeaderId(Long id);
+
+
 }

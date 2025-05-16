@@ -68,6 +68,11 @@ public class TaskController {
         return ResponseEntity.ok(taskService.updateTask(id, taskDTO));
     }
 
+    @PutMapping("/task-status-and-task-status-bar/{id}")
+    public ResponseEntity<TaskDTO> updateTaskStatusAndTaskStatusBar(@PathVariable Long id, @RequestBody TaskDTO taskDTO) {
+        return ResponseEntity.ok(taskService.updateTaskStatusAndTaskStatusBar(id, taskDTO));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<TaskDTO> getTask(@PathVariable Long id) {
         return ResponseEntity.ok(taskService.getTaskById(id));
