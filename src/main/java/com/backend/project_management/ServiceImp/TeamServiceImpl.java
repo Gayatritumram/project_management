@@ -16,13 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class TeamServiceImpl implements TeamService {
     @Autowired
-    private  TeamRepository teamRepository;
+    private TeamRepository teamRepository;
     @Autowired
-    private  TeamMapper teamMapper;
+    private TeamMapper teamMapper;
 
     @Autowired
     private TeamMemberRepository teamMemberrepository;
-
 
 
     @Override
@@ -46,19 +45,27 @@ public class TeamServiceImpl implements TeamService {
                 .collect(Collectors.toList());
     }
 
+    //    @Override
+//    public TeamDTO updateTeam(Long id,TeamDTO teamDTO) {
+//        Team existingTeam = teamRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Team not found"));
+//        existingTeam.setTeamName(teamDTO.getTeamName());
+//        return teamMapper.toDTO(teamRepository.save(existingTeam));
+//    }
     @Override
-    public TeamDTO updateTeam(Long id,TeamDTO teamDTO) {
+    public TeamDTO updateTeam(Long id, TeamDTO teamDTO) {
         Team existingTeam = teamRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
         existingTeam.setTeamName(teamDTO.getTeamName());
+        existingTeam.setBranchName(teamDTO.getBranchName());
+        existingTeam.setDepartment(teamDTO.getDepartment());
         return teamMapper.toDTO(teamRepository.save(existingTeam));
     }
+
     @Override
     public void deleteTeam(Long id) {
         teamRepository.deleteById(id);
     }
-
-
 
 
 }
