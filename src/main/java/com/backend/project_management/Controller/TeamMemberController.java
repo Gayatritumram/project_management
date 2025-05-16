@@ -70,8 +70,9 @@ public class TeamMemberController {
     }
 
     @PutMapping("/update-image-url/{id}")
-    public ResponseEntity<TeamMemberDTO> updateImageUrl(@PathVariable Long id, @RequestBody TeamMemberDTO teamMemberDTO) {
-        TeamMemberDTO updatedMember = service.updateImageUrl(id, teamMemberDTO.getImageUrl());
+    public ResponseEntity<TeamMemberDTO> updateImageUrl(@PathVariable Long id,
+                                                        @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
+        TeamMemberDTO updatedMember = service.updateImageUrl(id, imageFile);
         return ResponseEntity.ok(updatedMember);
     }
 

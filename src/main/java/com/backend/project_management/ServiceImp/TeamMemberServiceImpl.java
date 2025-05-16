@@ -20,8 +20,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -136,18 +141,40 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     }
 
     @Override
-    public TeamMemberDTO updateImageUrl(Long memberId, String imageUrl) {
+    public TeamMemberDTO updateImageUrl(Long memberId, MultipartFile imageFile) throws IOException {
         TeamMember teamMember = repository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("Team member not found"));
+
+        String imageUrl = saveImageFile(imageFile);
 
         teamMember.setImageUrl(imageUrl);
         TeamMember updatedMember = repository.save(teamMember);
 
-        TeamMemberDTO teamMemberDTO = new TeamMemberDTO();
-        teamMemberDTO.setId(updatedMember.getId());
-        teamMemberDTO.setImageUrl(updatedMember.getImageUrl());
+        return new TeamMemberDTO(updatedMember.getId(), updatedMember.getImageUrl());
+    }
 
-        return teamMemberDTO;
+    private String saveImageFile(MultipartFile imageFile) throws IOException {
+        if (imageFile.isEmpty()) {
+            throw new IllegalArgumentException("Image file is empty");
+        }
+
+        String contentType = imageFile.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("Only image files are allowed");
+        }
+
+        String uploadDir = "uploads/images/";
+        String fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
+        Path uploadPath = Paths.get(uploadDir);
+
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        Path filePath = uploadPath.resolve(fileName);
+        Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        return "http://localhost:8080/images/" + fileName;
     }
 
     @Override

@@ -25,6 +25,9 @@ public class TeamMemberDTO {
     private String imageUrl;
 
     private Long teamId;
+
+    public TeamMemberDTO(Long id, String imageUrl) {
+    }
     //private UserRole userRole;
 
 

@@ -21,8 +21,7 @@ public interface TeamMemberService {
 
     TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO);
 
-    TeamMemberDTO updateImageUrl(Long memberId, String imageUrl);
-
+    TeamMemberDTO updateImageUrl(Long memberId, MultipartFile imageFile) throws IOException;
     void deleteTeamMember(Long id);
 
     String forgotPassword(String email);
