@@ -9,12 +9,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 public class JwtResponse {
-    //private String jwtToken;
     private String token;
-
-    //private String username;
-    //private String role;
-    //private Long id;
     private Map<String, Object> data;
 
 }
