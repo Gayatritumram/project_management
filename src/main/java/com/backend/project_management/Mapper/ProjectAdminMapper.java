@@ -13,7 +13,9 @@ public class ProjectAdminMapper {
         admin.setEmail(adminDTO.getEmail());
         admin.setPhone(adminDTO.getPhone());
         admin.setPassword(adminDTO.getPassword());
-        admin.setUserRole1(adminDTO.getUserRole1());
+        admin.setBranchCode(adminDTO.getBranchCode());
+        admin.setCreatedByEmail(adminDTO.getCreatedByEmail());
+        admin.setRole(adminDTO.getRole());
         return admin;
     }
 
@@ -23,7 +25,9 @@ public class ProjectAdminMapper {
         dto.setEmail(admin.getEmail());
         dto.setPhone(admin.getPhone());
         dto.setPassword(admin.getPassword());
-        dto.setUserRole1(admin.getUserRole1());
+        dto.setBranchCode(admin.getBranchCode());
+        dto.setCreatedByEmail(admin.getCreatedByEmail());
+        dto.setRole(admin.getRole());
         return dto;
     }
 }

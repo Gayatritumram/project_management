@@ -1,6 +1,9 @@
 package com.backend.project_management.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,18 +30,27 @@ public class Task {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    @Email
+    private String createdByEmail;
+    private String role;
+    private String branchCode;
+
     @ManyToOne
     @JoinColumn(name = "assigned_by_admin_id")
     private ProjectAdmin assignedByAdmin;
 
     @ManyToOne
-    @JoinColumn(name = "assigned_by_leader_id")
-    private TeamLeader assignedByLeader;
-
-    @ManyToOne
     @JoinColumn(name = "assigned_to_member_id")
     private TeamMember assignedToTeamMember;
+
+    @ManyToOne
+    @JoinColumn(name = "assignedByLeader_id")
+    private TeamLeader assignedByLeader;
+
+
     @ManyToOne
     @JoinColumn(name = "assigned_to_leader_id")
+    @JsonIgnore
     private TeamLeader assignedToTeamLeader;
+
 }

@@ -1,113 +1,65 @@
 package com.backend.project_management.Util;
 
-import com.backend.project_management.UserPermission.UserRole;
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.security.Keys;
+
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtHelper {
 
-    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60; // 5 hours
+        @Value("${jwt.secret}")
+        private String secretKey;
 
+        @Value("${jwt.expiration}")
+        private long expirationTime;
 
-    private String secret = "afafasfafafasfasfasfafacasdasfasxASFACASDFACASDFASFASFDAFASFASDAADSCSDFADCVSGCFVADXCcadwavfsfarvf";
+        private SecretKey getSigningKey() {
+            // Use UTF-8 bytes of secret to build the HMAC SHA key
+            return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        }
 
+        public String generateToken(String email) {
+            // Generate JWT token with email as subject, issue time, expiration, and sign with secret
+            return Jwts.builder()
+                    .setSubject(email)
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                    .signWith(getSigningKey())  // default HS256
+                    .compact();
+        }
 
-    // Retrieve username from JWT token
-    public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
-    }
-
-    // Retrieve expiration date from JWT token
-    public Date getExpirationDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getExpiration);
-    }
-
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = getAllClaimsFromToken(token);
-        return claimsResolver.apply(claims);
-    }
-
-    public String getRoleFromToken(String token) {
-        List<String> roles = Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("userRole", List.class);
-
-        if (roles != null && !roles.isEmpty()) {
-            if (roles.contains("ROLE_ADMIN")) {
-                return "ADMIN";
-            } else if (roles.stream().anyMatch(r -> r.startsWith("TEAM_LEADER"))) {
-                return "TEAM_LEADER";
-            } else if (roles.contains("ROLE_TEAM_MEMBER") || roles.stream().anyMatch(r -> r.startsWith("TEAM_MEMBER"))) {
-                return "TEAM_MEMBER";
+        public boolean validateToken(String token) {
+            try {
+                Jwts.parserBuilder()
+                        .setSigningKey(getSigningKey())
+                        .build()
+                        .parseClaimsJws(token);  // parse and validate signature & claims
+                return true;
+            } catch (JwtException | IllegalArgumentException e) {
+                // Log or handle expired, malformed, or unsupported JWT exceptions if needed
+                return false;
             }
         }
 
-        return null; // or return "UNKNOWN";  // Get the single role from the claim, assuming it's a single string
+        public String extractEmail(String token) {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return claims.getSubject();
+        }
     }
 
-    // Retrieve claims from token
-    public Claims getAllClaimsFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    // Check if the token has expired
-    private Boolean isTokenExpired(String token) {
-        return getExpirationDateFromToken(token).before(Date.from(Instant.now()));
-    }
-
-    // Generate token for user
-    public String generateToken(UserDetails userDetails, UserRole role) {
-        Map<String, Object> claims = new HashMap<>();
-
-        List<String> rolesAndPermissions = role.getPermissions()
-                .stream()
-                .map(Enum::name)
-                .collect(Collectors.toList());
-
-        rolesAndPermissions.add("ROLE_" + role.name()); // add role also
-
-        claims.put("userRole", rolesAndPermissions);  // now contains both ROLE and PERMISSIONS
-
-        return doGenerateToken(claims, userDetails.getUsername());
-
-    }
-
-    // Create token
-    private String doGenerateToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS512)
-                .compact();
-    }
-
-    // Validate token
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
-    }
-}
 
 //authentication

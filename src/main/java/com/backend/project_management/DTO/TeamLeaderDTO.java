@@ -1,5 +1,6 @@
 package com.backend.project_management.DTO;
 
+import jakarta.validation.constraints.Email;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -17,5 +18,12 @@ public class TeamLeaderDTO {
     private LocalDate joinDate;
     private Long teamId;
     private String imageUrl;
-    //private UserRole userRole;
+
+    @Email
+    private String createdByEmail;
+
+    private String role;
+
+    private String branchCode;
+
 }

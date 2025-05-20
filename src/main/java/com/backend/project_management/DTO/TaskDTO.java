@@ -2,6 +2,7 @@ package com.backend.project_management.DTO;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,11 @@ public class TaskDTO {
     private int days;
 
     private String imageUrl;
+
+    @Email
+    private String createdByEmail;
+    private String role;
+    private String branchCode;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;

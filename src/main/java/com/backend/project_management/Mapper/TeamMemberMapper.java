@@ -22,6 +22,9 @@ public class TeamMemberMapper {
         teamMember.setBranchName(dto.getBranchName());
         teamMember.setPassword(dto.getPassword());
         teamMember.setImageUrl(dto.getImageUrl());
+        teamMember.setCreatedByEmail(dto.getCreatedByEmail());
+        teamMember.setBranchCode(dto.getBranchCode());
+        teamMember.setRole(dto.getRole());
 
 
 
@@ -46,6 +49,9 @@ public class TeamMemberMapper {
         if (teamMember.getTeamId() != null) {
             dto.setTeamId(teamMember.getTeamId().getId());
         }
+        dto.setCreatedByEmail(teamMember.getCreatedByEmail());
+        dto.setBranchCode(teamMember.getBranchCode());
+        dto.setRole(teamMember.getRole());
 
 
         return dto;

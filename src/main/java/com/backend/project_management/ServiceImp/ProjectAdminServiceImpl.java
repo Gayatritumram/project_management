@@ -1,10 +1,16 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.ProjectAdminDTO;
+import com.backend.project_management.Entity.Department;
 import com.backend.project_management.Entity.ProjectAdmin;
 
+import com.backend.project_management.Entity.TeamLeader;
+import com.backend.project_management.Entity.TeamMember;
+import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.ProjectAdminMapper;
 
+import com.backend.project_management.Model.JwtRequest;
+import com.backend.project_management.Model.JwtResponse;
 import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TaskRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
@@ -15,13 +21,17 @@ import com.backend.project_management.Service.ProjectAdminService;
 
 
 import com.backend.project_management.UserPermission.UserRole;
+import com.backend.project_management.Util.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,8 +55,6 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
 
     @Autowired
     private EmailService emailService;
@@ -54,49 +62,160 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
     @Autowired
     private OtpService otpService;
 
+    @Autowired
+    private StaffValidation  staffValidation;
+
+    @Autowired
+    private JwtHelper  jwtHelper;
+
+    @Autowired
+    private TeamMemberRepository teamMemberRepository;
+
+
+
+
+
 
     @Override
-    public ProjectAdminDTO registerAdmin(ProjectAdminDTO adminDTO) {
-        String email = adminDTO.getEmail();
-        
+    public ProjectAdminDTO registerAdmin(ProjectAdminDTO adminDTO,String role,String  email) {
         // Check if email already exists in any user table
-        if (adminRepo.findByEmail(email).isPresent() || 
-            memberRepository.findByEmail(email).isPresent() ||
-            teamLeaderRepository.findByEmail(email).isPresent()) {
+        if (adminRepo.findByEmail(email).isPresent() ){
             throw new EmailAlreadyExistsException("Email is already registered, please use a different email");
         }
-        
+
+        System.out.println("Checking permission for role: " + role + ", email: " + email);
+        if (!staffValidation.hasPermission(role, email, "POST")) {
+            System.out.println("Permission denied!");
+            throw new AccessDeniedException("No permission to create ProjectAdmin");
+        }
+        System.out.println("Permission granted!");
+
         ProjectAdmin projectAdmin = ProjectAdminMapper.toEntity(adminDTO);
-        
-        // Set password (encryption happens here)
+
+        String branchCode = staffValidation.fetchBranchCodeByRole(role, email);
+        System.out.println("Fetched branchCode: " + branchCode);
+
+        projectAdmin.setRole("ADMIN");
+        projectAdmin.setCreatedByEmail(email);
+        projectAdmin.setBranchCode(branchCode);
         projectAdmin.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
-        
-        // Set role if null
-        if (projectAdmin.getUserRole1() == null) {
-            projectAdmin.setUserRole1(UserRole.ADMIN);
+
+        ProjectAdmin saveAdmin = adminRepo.save(projectAdmin);
+        System.out.println("Project Admin saved with id: " + saveAdmin.getId());
+
+        return ProjectAdminMapper.toDTO(adminRepo.save(saveAdmin));
+    }
+
+
+    @Override
+    public ProjectAdminDTO findAdminByEmail(String email,String role) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("No permission to view ProjectAdmin");
         }
 
-        return ProjectAdminMapper.toDTO(adminRepo.save(projectAdmin));
-    }
+        Optional<ProjectAdmin> optionalAdmin = adminRepo.findByEmail(email);
+        if (optionalAdmin.isEmpty()) {
+            throw new IllegalArgumentException("Admin not found!");
+        }
 
-
-    @Override
-    public ProjectAdminDTO findAdminByEmail(String email) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        String email1 = userDetails.getUsername();
-        String password = userDetails.getPassword();
-        ProjectAdminDTO projectAdminDTO = new ProjectAdminDTO();
-        projectAdminDTO.setEmail(email1);
-        projectAdminDTO.setPassword(password);
-        return projectAdminDTO;
+        ProjectAdmin projectAdmin = optionalAdmin.get();
+        return ProjectAdminMapper.toDTO(projectAdmin);
 
     }
 
     @Override
-    public List<ProjectAdminDTO> findAllAdmin() {
-        List<ProjectAdmin> projectAdmin = adminRepo.findAll();
+    public List<ProjectAdminDTO> findAllAdmin(String role, String email, String branchCode) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("No permission to view ProjectAdmin");
+        }
+        List<ProjectAdmin> projectAdmin = adminRepo.findAllByBranchCode(branchCode);
         return  projectAdmin.stream().map( ProjectAdminMapper::toDTO).collect(Collectors.toList());
     }
+
+
+    @Override
+    public void deleteProjectAdmin(Long id,String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "DELETE")) {
+            throw new AccessDeniedException("You do not have permission to view projectAdmin");
+        }
+
+        ProjectAdmin projectAdmin = adminRepo.findById(id)
+                .orElseThrow(() -> new RequestNotFound("projectAdmin not found with id: " + id));
+        adminRepo.delete(projectAdmin);
+    }
+
+
+
+        @Override
+        public JwtResponse login(JwtRequest request) {
+            String email = request.getEmail();
+            String password = request.getPassword();
+
+            Map<String, Object> userData = new HashMap<>();
+
+            // 1. Try ProjectAdmin
+            Optional<ProjectAdmin> adminOpt = adminRepo.findByEmail(email);
+            if (adminOpt.isPresent()) {
+                ProjectAdmin admin = adminOpt.get();
+                if (!passwordEncoder.matches(password, admin.getPassword())) {
+                    throw new RuntimeException("Invalid email or password");
+                }
+
+                String token = jwtHelper.generateToken(email);
+
+                userData.put("id", admin.getId());
+                userData.put("name", admin.getName());
+                userData.put("email", admin.getEmail());
+                userData.put("role", admin.getRole()); // Should be "ADMIN"
+                userData.put("branchCode", admin.getBranchCode());
+
+                return new JwtResponse(token, userData);
+            }
+
+            // 2. Try TeamLeader
+            Optional<TeamLeader> leaderOpt = teamLeaderRepository.findByEmail(email);
+            if (leaderOpt.isPresent()) {
+                TeamLeader leader = leaderOpt.get();
+                if (!passwordEncoder.matches(password, leader.getPassword())) {
+                    throw new RuntimeException("Invalid email or password");
+                }
+
+                String token = jwtHelper.generateToken(email);
+
+                userData.put("id", leader.getId());
+                userData.put("name", leader.getName());
+                userData.put("email", leader.getEmail());
+                userData.put("role", leader.getRole()); // Should be "TEAM_LEADER"
+                userData.put("branchCode", leader.getBranchCode());
+
+                return new JwtResponse(token, userData);
+            }
+
+            // 3. Try TeamMember
+            Optional<TeamMember> memberOpt = teamMemberRepository.findByEmail(email);
+            if (memberOpt.isPresent()) {
+                TeamMember member = memberOpt.get();
+                if (!passwordEncoder.matches(password, member.getPassword())) {
+                    throw new RuntimeException("Invalid email or password");
+                }
+
+                String token = jwtHelper.generateToken(email);
+
+                userData.put("id", member.getId());
+                userData.put("name", member.getName());
+                userData.put("email", member.getEmail());
+                userData.put("role", member.getRole()); // Should be "TEAM_MEMBER"
+                userData.put("branchCode", member.getBranchCode());
+
+                return new JwtResponse(token, userData);
+            }
+
+            throw new RuntimeException("Invalid email or password");
+        }
+
+
+
+
 
     public String forgotPassword(String email) {
         Optional<ProjectAdmin> optionalAdmin = adminRepo.findByEmail(email);

@@ -1,6 +1,7 @@
 package com.backend.project_management.DTO;
 
 import com.backend.project_management.Entity.Team;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,12 @@ public class TeamMemberDTO {
     private String imageUrl;
 
     private Long teamId;
-    //private UserRole userRole;
+    @Email
+    private String createdByEmail;
+
+    private String role;
+
+    private String branchCode;
 
 
 }

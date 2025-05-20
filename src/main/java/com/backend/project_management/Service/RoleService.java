@@ -5,8 +5,8 @@ import com.backend.project_management.DTO.RoleDTO;
 import java.util.List;
 
 public interface RoleService {
-    RoleDTO createRole(RoleDTO roleDTO);
-    List<RoleDTO> getAllRoles();
-    RoleDTO getRoleById(Long id);
-    void deleteRole(Long id);
+    RoleDTO createRole(RoleDTO roleDTO,String role,String email);
+    List<RoleDTO> getAllRoles(String role, String email, String branchCode);
+    RoleDTO getRoleById(Long id,String role,String email);
+    void deleteRole(Long id,String role,String email);
 }

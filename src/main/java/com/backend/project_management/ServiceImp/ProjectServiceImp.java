@@ -1,16 +1,16 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.ProjectDTO;
-import com.backend.project_management.Entity.Project;
-import com.backend.project_management.Entity.ProjectAdmin;
-import com.backend.project_management.Entity.Task;
-import com.backend.project_management.Entity.Team;
+import com.backend.project_management.Entity.*;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.ProjectMapper;
+import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.ProjectRepository;
+import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,69 +23,147 @@ public class ProjectServiceImp implements ProjectService {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    private StaffValidation  staffValidation;
+
+    @Autowired
+    private ProjectAdminRepo adminRepo;
+
+    @Autowired
+    private TeamLeaderRepository teamLeaderRepository;
 
 
 
     @Override
-    public ProjectDTO addProject(ProjectDTO projectDTO) {
+    public ProjectDTO addProject(ProjectDTO projectDTO,String role,String email) {
+        System.out.println("Checking permission for role: " + role + ", email: " + email);
+        if (!staffValidation.hasPermission(role, email, "POST")) {
+            System.out.println("Permission denied!");
+            throw new AccessDeniedException("No permission to create project");
+        }
+        System.out.println("Permission granted!");
+
         Project project =ProjectMapper.mapToProject(projectDTO);
 
-        if (projectDTO.getTeam1byID() != null) {
-            Team admin = teamRepository.findById(projectDTO.getTeam1byID())
+        String branchCode = switch (role) {
+            case "ADMIN" -> adminRepo.findByEmail(email)
+                    .orElseThrow(() -> new RequestNotFound("Admin not found"))
+                    .getBranchCode();
+            case "TEAM_LEADER" -> teamLeaderRepository.findByEmail(email)
+                    .orElseThrow(() -> new RequestNotFound("Team Leader not found"))
+                    .getBranchCode();
+            default -> staffValidation.fetchBranchCodeByRole(role, email);
+        };
+
+        project.setRole(role);
+        project.setCreatedByEmail(email);
+        project.setBranchCode(branchCode);
+
+        if (projectDTO.getTeam1() != null) {
+            Team admin = teamRepository.findById(projectDTO.getTeam1())
                     .orElseThrow(() -> new RuntimeException("Team not found"));
             project.setTeam1(admin);
 
         }
-        Project savedTask = projectRepository.save(project);
 
+        Project savedTask = projectRepository.save(project);
+        System.out.println("project saved with id: " + savedTask.getId());
 
         return ProjectMapper.mapToProjectDTO(savedTask);
     }
 
+
+
     @Override
-    public ProjectDTO getProjectById(Long id) {
+    public ProjectDTO getProjectById(Long id,String role,String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view project");
+        }
         return ProjectMapper.mapToProjectDTO(projectRepository.findById(id)
                 .orElseThrow(() -> new RequestNotFound("Project not found with id: " + id)));
     }
 
+
+
     @Override
-    public ProjectDTO getProjectByName(String name) {
+    public ProjectDTO getProjectByName(String name,String role,String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view project");
+        }
+
         return ProjectMapper.mapToProjectDTO(projectRepository.findByProjectName(name)
                 .orElseThrow(() -> new RequestNotFound("Project not found with name: " + name)));
     }
 
+
+
+
     @Override
-    public List<ProjectDTO> getAllProjects() {
-        return projectRepository.findAll().stream().map(ProjectMapper::mapToProjectDTO).collect(Collectors.toList());
+    public List<ProjectDTO> getAllProjects(String role,String email,String branchCode) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view project");
+        }
+
+        return projectRepository.findAllByBranchCode(branchCode).stream().map(ProjectMapper::mapToProjectDTO).collect(Collectors.toList());
     }
 
-    @Override
-    public ProjectDTO updateProject(Long id, ProjectDTO project) {
-        ProjectDTO projectDTO = getProjectById(id);
-        projectDTO.setProjectName(project.getProjectName());
-        projectDTO.setProjectCategory(project.getProjectCategory());
-        projectDTO.setStatusBar(project.getStatusBar());
-        projectDTO.setStatus(project.getStatus());
-        projectDTO.setStartDate(project.getStartDate());
-        projectDTO.setEndDate(project.getEndDate());
-        projectDTO.setEstimatedDate(project.getEstimatedDate());
-        projectDTO.setStatusDescription(project.getStatusDescription());
-        projectDTO.setBranchName(project.getBranchName());
-        projectDTO.setTeam1byID(project.getTeam1byID());
-        projectDTO.setDepartment(project.getDepartment());
 
-        Project project1 = ProjectMapper.mapToProject(projectDTO);
+
+
+
+    @Override
+    public ProjectDTO updateProject(Long id, ProjectDTO project,String role,String email) {
+
+        if (!staffValidation.hasPermission(role, email, "PUT")) {
+            throw new AccessDeniedException("You do not have permission to view project");
+        }
+
+        Project project1 = ProjectMapper.mapToProject(project);
+
+        Project existingProject = projectRepository.findById(id)
+                .orElseThrow(() -> new RequestNotFound("Project not found with id: " + id));
+
+        String branchCode = staffValidation.fetchBranchCodeByRole(role, email);
+        System.out.println("Fetched branchCode: " + branchCode);
+
+        existingProject.setRole(role);
+        existingProject.setCreatedByEmail(email);
+        existingProject.setBranchCode(branchCode);
+
+        existingProject.setProjectName(project.getProjectName());
+        existingProject.setProjectCategory(project.getProjectCategory());
+        existingProject.setStatusBar(project.getStatusBar());
+        existingProject.setStatus(project.getStatus());
+        existingProject.setStartDate(project.getStartDate());
+        existingProject.setEndDate(project.getEndDate());
+        existingProject.setEstimatedDate(project.getEstimatedDate());
+        existingProject.setStatusDescription(project.getStatusDescription());
+        existingProject.setBranchName(project.getBranchName());
+        existingProject.setDepartment(project.getDepartment());
+
+
         return ProjectMapper.mapToProjectDTO(projectRepository.save(project1));
     }
 
+
+
+
     @Override
-    public void deleteProject(Long id) {
+    public void deleteProject(Long id,String role,String email) {
+        if (!staffValidation.hasPermission(role, email, "DELETE")) {
+            throw new AccessDeniedException("You do not have permission to view project");
+        }
         projectRepository.deleteById(id);
     }
 
-    @Override
-    public ProjectDTO assignProjectToTeam(Long projectId, Long teamId) {
 
+
+
+    @Override
+    public ProjectDTO assignProjectToTeam(Long projectId, Long teamId,String role,String email) {
+        if (!staffValidation.hasPermission(role, email, "PUT")) {
+            throw new AccessDeniedException("You do not have permission to view project");
+        }
 
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));

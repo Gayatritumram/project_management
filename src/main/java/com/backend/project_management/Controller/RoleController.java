@@ -16,23 +16,31 @@ public class RoleController {
     private RoleService roleService;
 
     @PostMapping("/create")
-    public ResponseEntity<RoleDTO> createRole(@RequestBody RoleDTO roleDTO) {
-        return ResponseEntity.ok(roleService.createRole(roleDTO));
+    public ResponseEntity<RoleDTO> createRole(@RequestBody RoleDTO roleDTO,
+                                              @RequestParam String role,
+                                              @RequestParam String email) {
+        return ResponseEntity.ok(roleService.createRole(roleDTO,role,email));
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<RoleDTO>> getAllRoles() {
-        return ResponseEntity.ok(roleService.getAllRoles());
+    public ResponseEntity<List<RoleDTO>> getAllRoles(@RequestParam String role,
+                                                     @RequestParam String email,
+                                                     @RequestParam String branchCode) {
+        return ResponseEntity.ok(roleService.getAllRoles(role, email, branchCode));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<RoleDTO> getRoleById(@PathVariable Long id) {
-        return ResponseEntity.ok(roleService.getRoleById(id));
+    @GetMapping("getRoleById/{id}")
+    public ResponseEntity<RoleDTO> getRoleById(@PathVariable Long id,
+                                               @RequestParam String role,
+                                               @RequestParam String email) {
+        return ResponseEntity.ok(roleService.getRoleById(id,role,email));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteRole(@PathVariable Long id) {
-        roleService.deleteRole(id);
+    @DeleteMapping("deleteRole/{id}")
+    public ResponseEntity<String> deleteRole(@PathVariable Long id,
+                                             @RequestParam String role,
+                                             @RequestParam String email) {
+        roleService.deleteRole(id,role,email);
         return ResponseEntity.ok("Role deleted successfully");
     }
 }

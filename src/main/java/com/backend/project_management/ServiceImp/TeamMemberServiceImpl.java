@@ -6,6 +6,7 @@ import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamMemberMapper;
+import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Repository.TeamRepository;
@@ -15,6 +16,7 @@ import com.backend.project_management.Service.TeamMemberService;
 import com.backend.project_management.UserPermission.UserRole;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,15 +48,42 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     private TeamLeaderRepository teamLeaderRepository;
 
     @Autowired private S3Service s3Service;
+    @Autowired
+    private StaffValidation  staffValidation;
+
+    @Autowired
+    private ProjectAdminRepo adminRepo;
 
 
 
 
 
     @Override
-    public TeamMember createTeamMember(TeamMemberDTO dto, MultipartFile imageFile) throws IOException {
+    public TeamMember  createTeamMember(TeamMemberDTO dto, MultipartFile imageFile , String role, String email) throws IOException {
+        System.out.println("Checking permission for role: " + role + ", email: " + email);
+        if (!staffValidation.hasPermission(role, email, "POST")) {
+            System.out.println("Permission denied!");
+            throw new AccessDeniedException("No permission to create TeamMember");
+        }
+        System.out.println("Permission granted!");
+
         TeamMember teamMember = TeamMemberMapper.mapToTeamMember(dto);
+
+        String branchCode;
+        if (role.equals("ADMIN")) {
+            branchCode = adminRepo.findByEmail(email)
+                    .orElseThrow(() -> new RequestNotFound("Admin not found"))
+                    .getBranchCode();
+        } else {
+            branchCode = staffValidation.fetchBranchCodeByRole(role, email);
+        }
+        System.out.println("Fetched branchCode: " + branchCode);
+
+        teamMember.setRole("TEAM_MEMBER");
+        teamMember.setCreatedByEmail(email);
+        teamMember.setBranchCode(branchCode);
         teamMember.setPassword(passwordEncoder.encode(dto.getPassword()));
+
         if (dto.getTeamId() != null) {
             Team admin = teamRepository.findById(dto.getTeamId())
                     .orElseThrow(() -> new RuntimeException("Team not found"));
@@ -67,20 +96,25 @@ public class TeamMemberServiceImpl implements TeamMemberService {
             teamMember.setImageUrl(imageUrl);
         }
 
-
         return repository.save(teamMember);
     }
 
     @Override
-    public TeamMemberDTO getTeamMemberById(Long id) {
+    public TeamMemberDTO getTeamMemberById(Long id,String role,String  email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view TeamMember");
+        }
         TeamMember teamMember = repository.findById(id)
                 .orElseThrow(() -> new RequestNotFound("Team Member not found"));
         return TeamMemberMapper.mapToTeamMemberDTO(teamMember);
     }
 
     @Override
-    public List<TeamMemberDTO> getAllTeamMembers() {
-        return repository.findAll()
+    public List<TeamMemberDTO> getAllTeamMembers(String role,String  email,String  branchCode) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view TeamMember");
+        }
+        return repository.findAllByBranchCode(branchCode)
                 .stream()
                 .map(TeamMemberMapper::mapToTeamMemberDTO)
 
@@ -89,7 +123,10 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
     @Override
     @Transactional
-    public void makeTeamLeader(Long id) {
+    public void makeTeamLeader(Long id, String role,String  email) {
+        if (!staffValidation.hasPermission(role, email, "PUT")) {
+            throw new AccessDeniedException("You do not have permission to view TeamMember");
+        }
         TeamMember teamMember = repository.findById(id)
                 .orElseThrow(() -> new RequestNotFound("Team Member not found"));
 
@@ -107,7 +144,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         teamLeader.setDepartment(teamMember.getDepartment());
         teamLeader.setAddress(teamMember.getAddress());
         teamLeader.setPhone(teamMember.getPhone());
-        teamLeader.setUserRole(UserRole.TEAM_LEADER);
+
 
         // Save the TeamLeader (let JPA generate new ID)
         teamLeaderRepository.save(teamLeader);
@@ -117,7 +154,10 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         repository.delete(teamMember);
     }
     @Override
-    public TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO) {
+    public TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO,String role,String  email) {
+        if (!staffValidation.hasPermission(role, email, "PUT")) {
+            throw new AccessDeniedException("You do not have permission to view TeamMember");
+        }
         TeamMember teamMember = repository.findById(id)
                 .orElseThrow(() -> new RequestNotFound("Team Member not found"));
 
@@ -136,7 +176,11 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     }
 
     @Override
-    public void deleteTeamMember(Long id) {
+    public void deleteTeamMember(Long id,String role,String  email) {
+        if (!staffValidation.hasPermission(role, email, "DELETE")) {
+            throw new AccessDeniedException("You do not have permission to view TeamMember");
+        }
+
         repository.deleteById(id);
     }
 

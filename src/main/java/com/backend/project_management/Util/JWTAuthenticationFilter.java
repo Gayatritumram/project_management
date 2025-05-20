@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -24,82 +25,58 @@ import java.util.List;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
-    private Logger logger = LoggerFactory.getLogger(OncePerRequestFilter.class);
-    @Autowired
-    private JwtHelper jwtHelper;
-
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private JwtHelper jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        //        try {
-//            Thread.sleep(500);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-        //Authorization
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
-        String requestHeader = request.getHeader("Authorization");
-        //Bearer 2352345235sdfrsfgsdfsdf
-        logger.info(" Header :  {}", requestHeader);
-        String username = null;
-        String token = null;
-        if (requestHeader != null && requestHeader.startsWith("Bearer")) {
-            //looking good
-            token = requestHeader.substring(7);
-            try {
+        String authHeader = request.getHeader("Authorization");
 
-                username = this.jwtHelper.getUsernameFromToken(token);
-
-            } catch (IllegalArgumentException e) {
-                logger.info("Illegal Argument while fetching the username !!");
-                e.printStackTrace();
-            } catch (ExpiredJwtException e) {
-                logger.info("Given jwt token is expired !!");
-                e.printStackTrace();
-            } catch (MalformedJwtException e) {
-                logger.info("Some changed has done in token !! Invalid Token");
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-
-            }
-
-
-        } else {
-            logger.info("Invalid Header Value !! ");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            // No token found or invalid format — proceed without authentication
+            // Optionally, log at debug level to avoid noisy console
+            // logger.debug("No JWT token found in request headers");
+            filterChain.doFilter(request, response);
+            return;
         }
 
+        String token = authHeader.substring(7);
 
-        //
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        // Validate token before extracting email
+        if (!jwtUtil.validateToken(token)) {
+            // Invalid token, reject request or just proceed anonymously
+            // For rejecting: response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT Token");
+            // return;
+            filterChain.doFilter(request, response);
+            return;
+        }
 
+        String email = jwtUtil.extractEmail(token);
 
-            //fetch user detail from username
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            Boolean validateToken = this.jwtHelper.validateToken(token, userDetails);
-            if (validateToken) {
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            // You can enhance this part to fetch user roles/authorities from DB or token claims
+            UserDetails userDetails = User.withUsername(email)
+                    .password("")        // No password needed here, token is proof
+                    .roles("USER")       // default role; change as per your logic
+                    .build();
 
-                //set the authentication
-                String role = jwtHelper.getRoleFromToken(token); // "ROLE_ADMIN"
-                List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
 
-
-            } else {
-                logger.info("Validation fails !!");
-            }
-
-
+            System.out.println("✅ Token received for email: " + email);
+            System.out.println("✅ Authenticated roles: " + userDetails.getAuthorities());
         }
 
         filterChain.doFilter(request, response);
-
     }
-}//authentication
+}
+
+
+//authentication

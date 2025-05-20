@@ -23,8 +23,12 @@ public class ProjectMapper {
         projectDTO.setBranchName(project.getBranchName());
         projectDTO.setDepartment(project.getDepartment());
         if (project.getTeam1() != null) {
-            projectDTO.setTeam1byID(project.getTeam1().getId());
+            projectDTO.setTeam1(project.getTeam1().getId());
         }
+        projectDTO.setCreatedByEmail(project.getCreatedByEmail());
+        projectDTO.setRole(project.getRole());
+        projectDTO.setBranchCode(project.getBranchCode());
+
         return projectDTO;
 
     }
@@ -43,6 +47,9 @@ public class ProjectMapper {
         project.setBranchName(projectDTO.getBranchName());
         project.setDepartment(projectDTO.getDepartment());
 
+        project.setCreatedByEmail(projectDTO.getCreatedByEmail());
+        project.setRole(projectDTO.getRole());
+        project.setBranchCode(projectDTO.getBranchCode());
 
         return project;
     }

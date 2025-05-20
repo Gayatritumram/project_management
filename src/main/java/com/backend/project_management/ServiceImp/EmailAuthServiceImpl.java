@@ -2,7 +2,8 @@ package com.backend.project_management.ServiceImp;
 
 
 import com.backend.project_management.Service.EmailAuthService;
-import com.backend.project_management.Util.TokenUtil;
+import com.backend.project_management.Util.JwtHelper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,10 +15,13 @@ public class EmailAuthServiceImpl implements EmailAuthService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private JwtHelper jwtUtil;
+
 
     @Override
     public String generatePasswordResetToken(String userId) {
-        return TokenUtil.generateToken(userId);
+        return jwtUtil.generateToken(userId);
     }
 
     public void sendPasswordResetEmail(String email, String token) {

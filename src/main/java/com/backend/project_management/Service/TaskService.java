@@ -8,49 +8,45 @@ import java.util.List;
 
 public interface TaskService {
 
-    public TaskDTO createTask(TaskDTO taskDTO, String token, Long id,MultipartFile file)throws IOException  ;
+    public TaskDTO createTask(TaskDTO taskDTO, String token, Long id,MultipartFile file,String role, String email)throws IOException  ;
 
-    TaskDTO updateTask(Long taskId, TaskDTO taskDTO);
+    TaskDTO updateTask(Long taskId, TaskDTO taskDTO,String role,String email);
 
-    TaskDTO getTaskById(Long taskId);
+    TaskDTO getTaskById(Long taskId,String role,String email);
 
-    List<TaskDTO> getAllTasks();
+    List<TaskDTO> getAllTasks(String role,String  email,String  branchCode);
 
-    void deleteTask(Long taskId);
+    void deleteTask(Long taskId,String role,String  email);
 
-    TaskDTO uploadTaskImage(Long taskId, MultipartFile file);
+    List<TaskDTO> getTasksAssignedToMemberById(Long id,String role,String email);
 
-    TaskDTO deleteTaskImage(Long taskId);
+    List<TaskDTO> getTasksAssignedByLeaderId(Long id,String role,String  email);
 
-    List<TaskDTO> getTasksAssignedToMemberById(Long id);
-
-    List<TaskDTO> getTasksAssignedByLeaderId(Long id);
-
-    List<TaskDTO> getTasksAssignedByAdminId(Long id);
+    List<TaskDTO> getTasksAssignedByAdminId(Long id,String  role,String  email);
 
 
-    List<TaskDTO> getTasksAssignedByAdminEmail(String email);
+    List<TaskDTO> getTasksAssignedByAdminEmail(String email,String role);
 
-    List<TaskDTO> getTasksAssignedByLeaderEmail(String email);
+    List<TaskDTO> getTasksAssignedByLeaderEmail(String email,String role );
 
-    List<TaskDTO> getTasksAssignedToMemberEmail(String email);
+    List<TaskDTO> getTasksAssignedToMemberEmail(String email,String role);
 
-    public List<TaskDTO> getTodaysLeaderTasksByEmail(String email);
-    public TaskDTO createTaskForLeader(TaskDTO taskDTO, String token, Long id,MultipartFile file)throws IOException  ;
+    public List<TaskDTO> getTodaysLeaderTasksByEmail(String email,String  role);
+    public TaskDTO createTaskForLeader(TaskDTO taskDTO, String token, Long id,MultipartFile file,String role,String  email)throws IOException  ;
 
     // New methods for admin-assigned tasks to a specific member
-    List<TaskDTO> getTasksAssignedByAdminToMember(Long adminId, Long memberId);
+    List<TaskDTO> getTasksAssignedByAdminToMember(Long adminId, Long memberId,String  role,String  email);
     
-    List<TaskDTO> getTodaysTasksAssignedByAdminToMember(Long adminId, Long memberId);
+    List<TaskDTO> getTodaysTasksAssignedByAdminToMember(Long adminId, Long memberId,String  role,String  email);
     
     // New methods for leader-assigned tasks to a specific member
-    List<TaskDTO> getTasksAssignedByLeaderToMember(Long leaderId, Long memberId);
+    List<TaskDTO> getTasksAssignedByLeaderToMember(Long leaderId, Long memberId,String role,String  email);
     
-    List<TaskDTO> getTodaysTasksAssignedByLeaderToMember(Long leaderId, Long memberId);
+    List<TaskDTO> getTodaysTasksAssignedByLeaderToMember(Long leaderId, Long memberId,String  role, String email);
 
     // new method for Leader assigns task to member
-    TaskDTO assignTaskFromLeaderToMember(TaskDTO taskDTO, String token, Long leaderId, Long memberId, MultipartFile file) throws IOException;
+    TaskDTO assignTaskFromLeaderToMember(TaskDTO taskDTO, String token, Long leaderId, Long memberId, MultipartFile file,String role,String  email) throws IOException;
 
     // Get all tasks assigned to a leader by their ID
-    List<TaskDTO> getTasksAssignedToLeaderId(Long id);
+    List<TaskDTO> getTasksAssignedToLeaderId(Long id,String role,String email);
 }

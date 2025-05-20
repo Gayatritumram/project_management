@@ -10,6 +10,9 @@ public class RoleMapper {
         RoleDTO dto = new RoleDTO();
         dto.setId(role.getId());
         dto.setRoleName(role.getRoleName());
+        dto.setRole(role.getRole());
+        dto.setBranchCode(role.getBranchCode());
+        dto.setCreatedByEmail(role.getCreatedByEmail());
         return dto;
     }
 
@@ -17,6 +20,9 @@ public class RoleMapper {
         Role role = new Role();
         role.setId(dto.getId());
         role.setRoleName(dto.getRoleName());
+        role.setRole(dto.getRole());
+        role.setBranchCode(dto.getBranchCode());
+        role.setCreatedByEmail(dto.getCreatedByEmail());
         return role;
     }
 }

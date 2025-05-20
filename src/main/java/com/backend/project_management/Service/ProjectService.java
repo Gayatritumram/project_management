@@ -7,19 +7,19 @@ import java.util.List;
 
 @Service
 public interface ProjectService {
-    ProjectDTO addProject(ProjectDTO projectDTO);
+    ProjectDTO addProject(ProjectDTO projectDTO,String role,String email);
 
-    ProjectDTO getProjectById(Long id);
+    ProjectDTO getProjectById(Long id,String role,String email);
 
-    ProjectDTO getProjectByName(String name);
+    ProjectDTO getProjectByName(String name,String role,String email);
 
-    List<ProjectDTO> getAllProjects();
+    List<ProjectDTO> getAllProjects(String role,String email,String branchCode);
 
-    ProjectDTO updateProject(Long id, ProjectDTO project);
+    ProjectDTO updateProject(Long id, ProjectDTO project,String role,String email);
 
-    void deleteProject(Long id);
+    void deleteProject(Long id,String role,String email);
 
-    ProjectDTO assignProjectToTeam(Long projectId, Long teamId);
+    ProjectDTO assignProjectToTeam(Long projectId, Long teamId,String role,String email);
 
 
 }

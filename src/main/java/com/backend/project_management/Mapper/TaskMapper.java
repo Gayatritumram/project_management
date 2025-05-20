@@ -39,6 +39,9 @@ public class TaskMapper {
         dto.setImageUrl(task.getImageUrl());
         dto.setStartDate(task.getStartDate());
         dto.setEndDate(task.getEndDate());
+        dto.setCreatedByEmail(task.getCreatedByEmail());
+        dto.setBranchCode(task.getBranchCode());
+        dto.setRole(task.getRole());
 
 
         dto.setAssignedByAdminId(task.getAssignedByAdmin() != null ? task.getAssignedByAdmin().getId() : null);
@@ -63,6 +66,10 @@ public class TaskMapper {
         task.setImageUrl(dto.getImageUrl());
         task.setStartDate(dto.getStartDate());
         task.setEndDate(dto.getEndDate());
+        task.setCreatedByEmail(dto.getCreatedByEmail());
+        task.setBranchCode(dto.getBranchCode());
+        task.setRole(dto.getRole());
+
         if (dto.getAssignedByAdminId() != null) {
             task.setAssignedByAdmin(projectAdminRepository.findById(dto.getAssignedByAdminId()).orElse(null));
         }
@@ -78,6 +85,7 @@ public class TaskMapper {
         if (dto.getAssignedToTeamLeader() != null) {
             task.setAssignedToTeamLeader(teamLeaderRepository.findById(dto.getAssignedToTeamLeader()).orElse(null));
         }
+
 
 
 

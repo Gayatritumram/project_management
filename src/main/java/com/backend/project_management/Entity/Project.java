@@ -1,6 +1,7 @@
 package com.backend.project_management.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,11 @@ public class Project {
 
     private String branchName;
     private String department;
+
+    @Email
+    private String createdByEmail;
+    private String role;
+    private String branchCode;
 
     @ManyToOne
     @JoinColumn(name = "team1")

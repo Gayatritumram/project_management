@@ -18,31 +18,41 @@ public class  TeamController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<TeamDTO> createTeam(@RequestBody TeamDTO teamDTO) {
-        return ResponseEntity.ok(teamService.createTeam(teamDTO));
+    public ResponseEntity<TeamDTO> createTeam(@RequestBody TeamDTO teamDTO,
+                                              @RequestParam String role,
+                                              @RequestParam String email) {
+        return ResponseEntity.ok(teamService.createTeam(teamDTO, role, email));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TeamDTO> getTeamById(@PathVariable Long id) {
-        return ResponseEntity.ok(teamService.getTeamById(id));
+    @GetMapping("getTeamById/{id}")
+    public ResponseEntity<TeamDTO> getTeamById(@PathVariable Long id,
+                                               @RequestParam String role,
+                                               @RequestParam String email) {
+        return ResponseEntity.ok(teamService.getTeamById(id, role, email));
     }
 
     @GetMapping("/getAllTeams")
-    public ResponseEntity<List<TeamDTO>> getAllTeams() {
-        return ResponseEntity.ok(teamService.getAllTeams());
+    public ResponseEntity<List<TeamDTO>> getAllTeams(@RequestParam String role,
+                                                     @RequestParam String email,
+                                                     @RequestParam String branchCode) {
+        return ResponseEntity.ok(teamService.getAllTeams(role, email, branchCode));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<TeamDTO> updateTeam(@PathVariable Long id, @RequestBody TeamDTO teamDTO) {
-        return ResponseEntity.ok(teamService.updateTeam(id, teamDTO));
+    @PutMapping("updateTeam/{id}")
+    public ResponseEntity<TeamDTO> updateTeam(@PathVariable Long id,
+                                              @RequestBody TeamDTO teamDTO,
+                                              @RequestParam String role,
+                                              @RequestParam String email) {
+        return ResponseEntity.ok(teamService.updateTeam(id, teamDTO, role, email));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTeam(@PathVariable Long id) {
-        teamService.deleteTeam(id);
+    @DeleteMapping("deleteTeam/{id}")
+    public ResponseEntity<Void> deleteTeam(@PathVariable Long id,
+                                           @RequestParam String role,
+                                           @RequestParam String email) {
+        teamService.deleteTeam(id, role, email);
         return ResponseEntity.noContent().build();
     }
 
-    // Add multiple members to a team
 
 }

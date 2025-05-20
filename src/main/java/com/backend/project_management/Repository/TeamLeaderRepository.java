@@ -9,5 +9,7 @@ import java.util.Optional;
 @Repository
 public interface TeamLeaderRepository extends JpaRepository<TeamLeader, Long> {
     Optional<TeamLeader> findByEmail(String email);
+    boolean existsByEmail(String email);
 
+    Optional<TeamLeader> findAllByBranchCode(String branchCode);
 }

@@ -2,6 +2,7 @@ package com.backend.project_management.DTO;
 
 import com.backend.project_management.UserPermission.UserRole;
 
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,12 @@ public class ProjectAdminDTO{
     private String email;
     private String phone;
     private String password;
-    private UserRole userRole1;
-    
-    
-    
+
+    @Email
+    private String createdByEmail;
+    private String role;
+    private String branchCode;
+
+
+
 }

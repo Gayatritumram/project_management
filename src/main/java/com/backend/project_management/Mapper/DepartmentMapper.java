@@ -10,6 +10,9 @@ public class DepartmentMapper {
         DepartmentDTO dto = new DepartmentDTO();
         dto.setId(department.getId());
         dto.setDepartment(department.getDepartment());
+        dto.setRole(department.getRole());
+        dto.setCreatedByEmail(department.getCreatedByEmail());
+        dto.setBranchCode(department.getBranchCode());
         return dto;
     }
 
@@ -17,6 +20,9 @@ public class DepartmentMapper {
         Department department = new Department();
         department.setId(dto.getId());
         department.setDepartment(dto.getDepartment());
+        department.setRole(dto.getRole());
+        department.setCreatedByEmail(dto.getCreatedByEmail());
+        department.setBranchCode(dto.getBranchCode());
         return department;
     }
 }

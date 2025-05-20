@@ -1,15 +1,19 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.TeamLeaderDTO;
+import com.backend.project_management.Entity.Branch;
 import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamLeader;
+import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamLeaderMapper;
+import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.EmailService;
 import com.backend.project_management.Service.OtpService;
 import com.backend.project_management.Service.TeamLeaderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,13 +46,39 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
     @Autowired private S3Service s3Service;
 
+    @Autowired
+    private StaffValidation  staffValidation;
 
+    @Autowired
+    private ProjectAdminRepo adminRepo;
 
 
 
     @Override
-    public TeamLeader createTeamLeader(TeamLeaderDTO dto, MultipartFile imageFile) throws IOException {
+    public TeamLeader createTeamLeader(TeamLeaderDTO dto, MultipartFile imageFile,String role, String email)throws IOException {
+        System.out.println("Checking permission for role: " + role + ", email: " + email);
+        if (!staffValidation.hasPermission(role, email, "POST")) {
+            System.out.println("Permission denied!");
+            throw new AccessDeniedException("No permission to create Branch");
+        }
+        System.out.println("Permission granted!");
+
         TeamLeader leader = new TeamLeader();
+        String branchCode;
+        if (role.equals("ADMIN")) {
+            branchCode = adminRepo.findByEmail(email)
+                    .orElseThrow(() -> new RequestNotFound("Admin not found"))
+                    .getBranchCode();
+        } else {
+            branchCode = staffValidation.fetchBranchCodeByRole(role, email);
+        }
+
+        leader.setRole("TEAM_LEADER");
+        leader.setCreatedByEmail(email);
+
+        leader.setBranchCode(branchCode);
+
+
         leader.setName(dto.getName());
         leader.setEmail(dto.getEmail());
         leader.setPassword(passwordEncoder.encode(dto.getPassword())); // Hash if needed
@@ -75,28 +105,37 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
 
     @Override
-    public TeamLeaderDTO updateTeamLeader(Long id, TeamLeaderDTO dto) {
+    public TeamLeaderDTO updateTeamLeader(Long id, TeamLeaderDTO teamLeaderDTO,String  role, String email) {
+        if (!staffValidation.hasPermission(role, email, "PUT")) {
+            throw new AccessDeniedException("You do not have permission to view TeamLeader");
+        }
+
+
         TeamLeader leader = teamLeaderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("TeamLeader not found with id: " + id));
 
-        leader.setName(dto.getName());
-        leader.setEmail(dto.getEmail());
+        leader.setName(teamLeaderDTO.getName());
+        leader.setEmail(teamLeaderDTO.getEmail());
 
-        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            leader.setPassword(passwordEncoder.encode(dto.getPassword()));
+        if (teamLeaderDTO.getPassword() != null && !teamLeaderDTO.getPassword().isBlank()) {
+            leader.setPassword(passwordEncoder.encode(teamLeaderDTO.getPassword()));
         }
 
-        leader.setPhone(dto.getPhone());
-        leader.setAddress(dto.getAddress());
-        leader.setDepartment(dto.getDepartment());
-        leader.setBranchName(dto.getBranchName());
+        leader.setPhone(teamLeaderDTO.getPhone());
+        leader.setAddress(teamLeaderDTO.getAddress());
+        leader.setDepartment(teamLeaderDTO.getDepartment());
+        leader.setBranchName(teamLeaderDTO.getBranchName());
 
         TeamLeader updated = teamLeaderRepository.save(leader);
         return teamLeaderMapper.toDto(updated);
     }
 
     @Override
-    public void deleteTeamLeader(Long id) {
+    public void deleteTeamLeader(Long id,String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "DELETE")) {
+            throw new AccessDeniedException("You do not have permission to view TeamLeader");
+        }
+
         if (!teamLeaderRepository.existsById(id)) {
             throw new RuntimeException("TeamLeader not found with id: " + id);
         }
@@ -104,26 +143,52 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
     }
 
     @Override
-    public TeamLeaderDTO getTeamLeaderById(Long id) {
+    public TeamLeaderDTO getTeamLeaderById(Long id, String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view TeamLeader");
+        }
+
+
         return teamLeaderRepository.findById(id)
                 .map(teamLeaderMapper::toDto)
                 .orElseThrow(() -> new RuntimeException("TeamLeader not found with id: " + id));
     }
 
     @Override
-    public List<TeamLeaderDTO> getAllTeamLeaders() {
-        return teamLeaderRepository.findAll()
+    public List<TeamLeaderDTO> getAllTeamLeaders(String role, String email, String branchCode) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view TeamLeader");
+        }
+
+
+        return teamLeaderRepository.findAllByBranchCode(branchCode)
                 .stream()
                 .map(teamLeaderMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public TeamLeaderDTO getTeamLeaderByEmail(String email) {
+    public TeamLeaderDTO getTeamLeaderByEmail(String email,String role) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view TeamLeader");
+        }
+
+
         return teamLeaderRepository.findByEmail(email)
                 .map(teamLeaderMapper::toDto)
                 .orElseThrow(() -> new RuntimeException("TeamLeader not found with email: " + email));
     }
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public String forgotPassword(String email) {

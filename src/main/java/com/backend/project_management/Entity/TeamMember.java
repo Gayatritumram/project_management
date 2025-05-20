@@ -2,8 +2,10 @@ package com.backend.project_management.Entity;
 
 import com.backend.project_management.UserPermission.UserRole;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,8 +21,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "PMTeamMember_table")
-public class TeamMember implements UserDetails {
+public class TeamMember{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,50 +39,23 @@ public class TeamMember implements UserDetails {
     private String projectName;
     private String branchName;
     private String imageUrl;
-    //default value is false
 
-    @Enumerated(EnumType.STRING)
-    private UserRole userRole = UserRole.TEAM_MEMBER;
+    @Email
+    private String createdByEmail;
+
+    private String role;
+
+    private String branchCode;
+
 
     @ManyToOne
     @JoinColumn(name = "team_id")
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
     private Team teamId;
 
-    @OneToMany(mappedBy = "assignedToTeamMember", cascade = CascadeType.ALL)
-    private List<Task> assignedTasks;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return userRole != null ?
-                List.of(new SimpleGrantedAuthority("ROLE_" + userRole) ):
-                List.of(new SimpleGrantedAuthority("ROLE_TEAM_MEMBER"));
-    }
-
-    @Override
-    public String getUsername() {
-
-        return this.email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+    public boolean isCanAccessTask() {
+        return  true;
     }
 }
 

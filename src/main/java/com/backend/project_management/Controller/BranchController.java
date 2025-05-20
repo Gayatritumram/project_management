@@ -15,23 +15,31 @@ public class BranchController {
     private BranchService branchService;
 
     @PostMapping("/create")
-    public ResponseEntity<BranchDTO> createBranch(@RequestBody BranchDTO branchDTO) {
-        return ResponseEntity.ok(branchService.createBranch(branchDTO));
+    public ResponseEntity<BranchDTO> createBranch(@RequestBody BranchDTO branchDTO,
+                                                  @RequestParam String role,
+                                                  @RequestParam String email) {
+        return ResponseEntity.ok(branchService.createBranch(branchDTO,role,email));
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<BranchDTO>> getAllBranches() {
-        return ResponseEntity.ok(branchService.getAllBranches());
+    public ResponseEntity<List<BranchDTO>> getAllBranches(@RequestParam String role,
+                                                          @RequestParam String email,
+                                                          @RequestParam String branchCode) {
+        return ResponseEntity.ok(branchService.getAllBranches(role, email, branchCode));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BranchDTO> getBranchById(@PathVariable Long id) {
-        return ResponseEntity.ok(branchService.getBranchById(id));
+    @GetMapping("getBranchById/{id}")
+    public ResponseEntity<BranchDTO> getBranchById(@PathVariable Long id,
+                                                   @RequestParam String role,
+                                                   @RequestParam String email) {
+        return ResponseEntity.ok(branchService.getBranchById(id,role,email));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBranch(@PathVariable Long id) {
-        branchService.deleteBranch(id);
+    @DeleteMapping("deleteBranch/{id}")
+    public ResponseEntity<String> deleteBranch(@PathVariable Long id,
+                                               @RequestParam String role,
+                                               @RequestParam String email) {
+        branchService.deleteBranch(id,role,email);
         return ResponseEntity.ok("Branch deleted successfully");
     }
 }
