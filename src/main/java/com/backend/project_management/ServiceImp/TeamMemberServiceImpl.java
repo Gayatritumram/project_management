@@ -13,7 +13,7 @@ import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.EmailService;
 import com.backend.project_management.Service.OtpService;
 import com.backend.project_management.Service.TeamMemberService;
-import com.backend.project_management.UserPermission.UserRole;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -137,13 +137,18 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         TeamLeader teamLeader = new TeamLeader();
         teamLeader.setName(teamMember.getName());
         teamLeader.setEmail(teamMember.getEmail());
-        teamLeader.setPassword(teamMember.getPassword());
+        teamLeader.setPassword(passwordEncoder.encode(teamMember.getPassword()));
         teamLeader.setTeamId(teamMember.getTeamId());
         teamLeader.setBranchName(teamMember.getBranchName());
         teamLeader.setJoinDate(teamMember.getJoinDate());
         teamLeader.setDepartment(teamMember.getDepartment());
         teamLeader.setAddress(teamMember.getAddress());
         teamLeader.setPhone(teamMember.getPhone());
+        teamLeader.setCreatedByEmail(teamMember.getCreatedByEmail());
+        teamLeader.setBranchCode(teamMember.getBranchCode());
+        teamLeader.setRole(teamMember.getRole());
+        teamLeader.setImageUrl(teamMember.getImageUrl());
+
 
 
         // Save the TeamLeader (let JPA generate new ID)

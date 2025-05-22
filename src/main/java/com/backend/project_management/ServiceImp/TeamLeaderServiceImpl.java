@@ -75,7 +75,6 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
         leader.setRole("TEAM_LEADER");
         leader.setCreatedByEmail(email);
-
         leader.setBranchCode(branchCode);
 
 
@@ -168,13 +167,13 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
     }
 
     @Override
-    public TeamLeaderDTO getTeamLeaderByEmail(String email,String role) {
+    public TeamLeaderDTO getTeamLeaderByEmail(String email,String role,String emailFind) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("You do not have permission to view TeamLeader");
         }
 
 
-        return teamLeaderRepository.findByEmail(email)
+        return teamLeaderRepository.findByEmail(emailFind)
                 .map(teamLeaderMapper::toDto)
                 .orElseThrow(() -> new RuntimeException("TeamLeader not found with email: " + email));
     }

@@ -47,11 +47,11 @@ public class  TeamController {
     }
 
     @DeleteMapping("deleteTeam/{id}")
-    public ResponseEntity<Void> deleteTeam(@PathVariable Long id,
+    public ResponseEntity<String> deleteTeam(@PathVariable Long id,
                                            @RequestParam String role,
                                            @RequestParam String email) {
         teamService.deleteTeam(id, role, email);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Team Leader with ID " + id + " deleted successfully.");
     }
 
 

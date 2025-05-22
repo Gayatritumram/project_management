@@ -57,10 +57,11 @@ public class TeamLeaderController {
         return ResponseEntity.ok(teamLeaderService.getTeamLeaderById(id, role, email));
     }
 
-    @GetMapping("/email")
+    @GetMapping("/email/{emailFind}")
     public ResponseEntity<TeamLeaderDTO> getByEmail(@RequestParam String email,
-                                                    @RequestParam String role) {
-        return ResponseEntity.ok(teamLeaderService.getTeamLeaderByEmail(email,role));
+                                                    @RequestParam String role,
+                                                    @PathVariable String emailFind) {
+        return ResponseEntity.ok(teamLeaderService.getTeamLeaderByEmail(email,role,emailFind));
     }
 
     @PutMapping("/update/{id}")
@@ -78,7 +79,7 @@ public class TeamLeaderController {
         return ResponseEntity.ok("Team Leader with ID " + id + " deleted successfully.");
     }
 
-
+    //updateImage API for team leader
 
 
 

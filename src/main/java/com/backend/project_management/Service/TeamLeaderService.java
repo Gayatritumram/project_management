@@ -13,7 +13,7 @@ public interface TeamLeaderService {
     void deleteTeamLeader(Long id,String role, String email);
     TeamLeaderDTO getTeamLeaderById(Long id, String role, String email);
     List<TeamLeaderDTO> getAllTeamLeaders(String role, String email, String branchCode);
-    TeamLeaderDTO getTeamLeaderByEmail(String email,String role);
+    TeamLeaderDTO getTeamLeaderByEmail(String email,String role,String emailFind);
     String forgotPassword(String email);
     String verifyOtp(String email, int otp);
     String resetPassword(String email, String newPassword, String confirmPassword);

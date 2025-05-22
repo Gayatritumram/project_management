@@ -56,7 +56,7 @@ public class TeamMemberController {
     }
 
     // Get all non-leader Team Members
-    @GetMapping("/members")
+    @GetMapping("/getAllTeamMembers")
     public ResponseEntity<List<TeamMemberDTO>> getAllTeamMembers(@RequestParam String role,
                                                                  @RequestParam String email,
                                                                  @RequestParam String branchCode) {
@@ -64,7 +64,7 @@ public class TeamMemberController {
     }
 
     // Promote a Team Member to Team Leader
-    @PutMapping("/promote/{id}")
+    @PutMapping("/promoteToLeader/{id}")
     public ResponseEntity<String> promoteToLeader(@PathVariable Long id,
                                                   @RequestParam String role,
                                                   @RequestParam String email) {
@@ -81,13 +81,6 @@ public class TeamMemberController {
         return ResponseEntity.ok(service.updateTeamMember(id, dto, role, email));
     }
 
-    @PutMapping("/update-image-url/{id}")
-    public ResponseEntity<TeamMemberDTO> updateImageUrl(@PathVariable Long id,
-                                                        @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
-        TeamMemberDTO updatedMember = service.updateImageUrl(id, imageFile);
-        return ResponseEntity.ok(updatedMember);
-    }
-
     // Delete Team Member
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id,
@@ -96,8 +89,6 @@ public class TeamMemberController {
         service.deleteTeamMember(id, role, email);
         return ResponseEntity.ok("Team Member deleted successfully.");
     }
-
-
 
 
 

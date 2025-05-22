@@ -32,10 +32,11 @@ public class ProjectAdminController {
         return ResponseEntity.ok(adminService.findAllAdmin(role, email, branchCode));
     }
 
-    @GetMapping("/getProjectAdminByEmail")
-    public ResponseEntity <ProjectAdminDTO> getProjectAdminByEmail(@RequestParam String role,
+    @GetMapping("/getProjectAdminByEmail/{emailFind}")
+    public ResponseEntity <ProjectAdminDTO> getProjectAdminByEmail(@PathVariable String emailFind,
+                                                                    @RequestParam String role,
                                                                     @RequestParam String email) {
-        return ResponseEntity.ok(adminService.findAdminByEmail(role, email));
+        return ResponseEntity.ok(adminService.findAdminByEmail(role, emailFind,email));
     }
 
 

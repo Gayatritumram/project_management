@@ -117,18 +117,8 @@ public class ProjectServiceImp implements ProjectService {
         if (!staffValidation.hasPermission(role, email, "PUT")) {
             throw new AccessDeniedException("You do not have permission to view project");
         }
-
-        Project project1 = ProjectMapper.mapToProject(project);
-
         Project existingProject = projectRepository.findById(id)
                 .orElseThrow(() -> new RequestNotFound("Project not found with id: " + id));
-
-        String branchCode = staffValidation.fetchBranchCodeByRole(role, email);
-        System.out.println("Fetched branchCode: " + branchCode);
-
-        existingProject.setRole(role);
-        existingProject.setCreatedByEmail(email);
-        existingProject.setBranchCode(branchCode);
 
         existingProject.setProjectName(project.getProjectName());
         existingProject.setProjectCategory(project.getProjectCategory());
@@ -142,7 +132,8 @@ public class ProjectServiceImp implements ProjectService {
         existingProject.setDepartment(project.getDepartment());
 
 
-        return ProjectMapper.mapToProjectDTO(projectRepository.save(project1));
+
+        return ProjectMapper.mapToProjectDTO(projectRepository.save(existingProject));
     }
 
 

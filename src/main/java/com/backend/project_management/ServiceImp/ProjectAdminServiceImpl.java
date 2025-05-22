@@ -20,7 +20,6 @@ import com.backend.project_management.Service.OtpService;
 import com.backend.project_management.Service.ProjectAdminService;
 
 
-import com.backend.project_management.UserPermission.UserRole;
 import com.backend.project_management.Util.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -108,12 +107,12 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
 
 
     @Override
-    public ProjectAdminDTO findAdminByEmail(String email,String role) {
+    public ProjectAdminDTO findAdminByEmail(String role,String emailFind,String email) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view ProjectAdmin");
         }
 
-        Optional<ProjectAdmin> optionalAdmin = adminRepo.findByEmail(email);
+        Optional<ProjectAdmin> optionalAdmin = adminRepo.findByEmail(emailFind);
         if (optionalAdmin.isEmpty()) {
             throw new IllegalArgumentException("Admin not found!");
         }

@@ -66,7 +66,7 @@ public class ProjectController {
                                                 @RequestParam String role,
                                                 @RequestParam String email) {
         projectService.deleteProject(id,role,email);
-        return ResponseEntity.ok("Project Completed");
+        return ResponseEntity.ok("Project deleted successfully");
     }
 
     @PutMapping("/assignProjectToTeam/{projectId}/assign/{teamId}")

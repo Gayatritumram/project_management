@@ -10,7 +10,7 @@ import java.util.List;
 public interface ProjectAdminService {
     ProjectAdminDTO registerAdmin(ProjectAdminDTO adminDTO,String role,String  email);
 
-    ProjectAdminDTO findAdminByEmail(String email,String role);
+    ProjectAdminDTO findAdminByEmail(String role,String emailFind,String email);
     List<ProjectAdminDTO> findAllAdmin(String role, String email, String branchCode);
 
     String forgotPassword(String email);

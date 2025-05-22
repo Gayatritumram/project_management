@@ -1,6 +1,6 @@
 package com.backend.project_management.Entity;
 
-import com.backend.project_management.UserPermission.UserRole;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;

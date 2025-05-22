@@ -174,38 +174,38 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDTO> getTasksAssignedByAdminEmail(String email, String role) {
+    public List<TaskDTO> getTasksAssignedByAdminEmail(String emailFind, String role,String email) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("You do not have permission to view task");
         }
-        List<Task> tasks = taskRepository.findAllByAssignedByAdminEmail(email);
+        List<Task> tasks = taskRepository.findAllByAssignedByAdminEmail(emailFind);
         return taskMapper.toDtoList(tasks);
     }
 
     @Override
-    public List<TaskDTO> getTasksAssignedByLeaderEmail(String email, String role) {
+    public List<TaskDTO> getTasksAssignedByLeaderEmail(String emailFind,String role,String email) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("You do not have permission to view task");
         }
-        List<Task> tasks = taskRepository.findAllByAssignedByLeaderEmail(email);
+        List<Task> tasks = taskRepository.findAllByAssignedByLeaderEmail(emailFind);
         return taskMapper.toDtoList(tasks);
     }
 
     @Override
-    public List<TaskDTO> getTasksAssignedToMemberEmail(String email, String role) {
+    public List<TaskDTO> getTasksAssignedToMemberEmail(String emailFind,String role,String email) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("You do not have permission to view task");
         }
-        List<Task> tasks = taskRepository.findAllByAssignedToTeamMemberEmail(email);
+        List<Task> tasks = taskRepository.findAllByAssignedToTeamMemberEmail(emailFind);
         return taskMapper.toDtoList(tasks);
     }
 
     @Override
-    public List<TaskDTO> getTodaysLeaderTasksByEmail(String email, String role) {
+    public List<TaskDTO> getTodaysLeaderTasksByEmail(String emailFind,String email, String role) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("You do not have permission to view task");
         }
-        List<Task> tasks = taskRepository.findTodaysTasksAssignedToLeader(email);
+        List<Task> tasks = taskRepository.findTodaysTasksAssignedToLeader(emailFind);
         return tasks.stream().map(taskMapper::toDto).collect(Collectors.toList());
     }
 

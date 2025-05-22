@@ -25,13 +25,13 @@ public interface TaskService {
     List<TaskDTO> getTasksAssignedByAdminId(Long id,String  role,String  email);
 
 
-    List<TaskDTO> getTasksAssignedByAdminEmail(String email,String role);
+    List<TaskDTO> getTasksAssignedByAdminEmail(String emailFind,String role,String email);
 
-    List<TaskDTO> getTasksAssignedByLeaderEmail(String email,String role );
+    List<TaskDTO> getTasksAssignedByLeaderEmail(String emailFind,String role,String email);
 
-    List<TaskDTO> getTasksAssignedToMemberEmail(String email,String role);
+    List<TaskDTO> getTasksAssignedToMemberEmail(String emailFind,String role,String email);
 
-    public List<TaskDTO> getTodaysLeaderTasksByEmail(String email,String  role);
+    public List<TaskDTO> getTodaysLeaderTasksByEmail(String emailFind,String email,String  role);
     public TaskDTO createTaskForLeader(TaskDTO taskDTO, String token, Long id,MultipartFile file,String role,String  email)throws IOException  ;
 
     // New methods for admin-assigned tasks to a specific member
