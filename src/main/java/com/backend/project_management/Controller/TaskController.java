@@ -84,7 +84,7 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTaskById(id, role, email));
     }
 
-///
+    ///
 
     @GetMapping("/getAllTasks")
     public ResponseEntity<List<TaskDTO>> getAllTasks(@RequestParam String role,
@@ -104,11 +104,12 @@ public class TaskController {
     }
 
 
-    @GetMapping("/tasks/admin/email/{email}")
-    public ResponseEntity<List<TaskDTO>> getTasksByAdminEmail(@PathVariable String email,
-                                                              @RequestParam String role
+    @GetMapping("/tasks/admin/email/{emailFind}")
+    public ResponseEntity<List<TaskDTO>> getTasksByAdminEmail(@PathVariable String emailFind,
+                                                              @RequestParam String role,
+                                                              @RequestParam String email
     ) {
-        return ResponseEntity.ok(taskService.getTasksAssignedByAdminEmail(email, role));
+        return ResponseEntity.ok(taskService.getTasksAssignedByAdminEmail(email, role,emailFind));
     }
 
 
@@ -116,23 +117,26 @@ public class TaskController {
 
 
 
-    @GetMapping("/tasks/leader/email/{email}")
-    public ResponseEntity<List<TaskDTO>> getTasksByLeaderEmail(@PathVariable String email,
+    @GetMapping("/tasks/leader/email/{emailFind}")
+    public ResponseEntity<List<TaskDTO>> getTasksByLeaderEmail(@PathVariable String emailFind,
+                                                               @RequestParam String email,
                                                                @RequestParam String role) {
-        return ResponseEntity.ok(taskService.getTasksAssignedByLeaderEmail(email, role));
+        return ResponseEntity.ok(taskService.getTasksAssignedByLeaderEmail(email, role,emailFind));
     }
 
 
-    @GetMapping("/tasks/member/email/{email}")
-    public ResponseEntity<List<TaskDTO>> getTasksByMemberEmail(@PathVariable String email,
+    @GetMapping("/tasks/member/email/{emailFind}")
+    public ResponseEntity<List<TaskDTO>> getTasksByMemberEmail( @RequestParam String email,
+                                                               @PathVariable String emailFind,
                                                                @RequestParam String role) {
-        return ResponseEntity.ok(taskService.getTasksAssignedToMemberEmail(email,role));
+        return ResponseEntity.ok(taskService.getTasksAssignedToMemberEmail(email,role,emailFind));
     }
 
-    @GetMapping("/leader/today/{email}")
-    public ResponseEntity<List<TaskDTO>> getTodaysLeaderTasks(@PathVariable String email,
+    @GetMapping("/leader/today/{emailFind}")
+    public ResponseEntity<List<TaskDTO>> getTodaysLeaderTasks(  @RequestParam String email,
+                                                                @PathVariable String emailFind,
                                                               @RequestParam String role) {
-        return ResponseEntity.ok(taskService.getTodaysLeaderTasksByEmail(email, role));
+        return ResponseEntity.ok(taskService.getTodaysLeaderTasksByEmail(email, role,emailFind));
     }
 
 
