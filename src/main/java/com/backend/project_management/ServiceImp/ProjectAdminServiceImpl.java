@@ -1,7 +1,6 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.ProjectAdminDTO;
-import com.backend.project_management.Entity.Department;
 import com.backend.project_management.Entity.ProjectAdmin;
 
 import com.backend.project_management.Entity.TeamLeader;
@@ -23,8 +22,6 @@ import com.backend.project_management.Service.ProjectAdminService;
 import com.backend.project_management.Util.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -94,6 +91,7 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
         String branchCode = staffValidation.fetchBranchCodeByRole(role, email);
         System.out.println("Fetched branchCode: " + branchCode);
 
+        projectAdmin.setCreatedByRole(role);
         projectAdmin.setRole("ADMIN");
         projectAdmin.setCreatedByEmail(email);
         projectAdmin.setBranchCode(branchCode);

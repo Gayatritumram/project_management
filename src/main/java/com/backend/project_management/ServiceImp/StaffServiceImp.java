@@ -31,8 +31,9 @@ public class StaffServiceImp implements StaffService {
 
     @Override
     public Mono<JwtResponse> loginStaff(JwtRequest request) {
+        System.out.println("Inside loginStaff");
         return webClient.post()
-                .uri("/stafflogin")
+                .uri("/branchlogin")
                 .bodyValue(request)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, response ->

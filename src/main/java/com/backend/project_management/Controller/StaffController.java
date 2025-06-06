@@ -16,15 +16,16 @@ public class StaffController
     @Autowired
     private StaffService staffLoginService;
 
-    @PostMapping("/stafflogin")
+    @PostMapping("/branchlogin")
     public Mono<ResponseEntity<JwtResponse>> loginStaff(@RequestBody JwtRequest request) {
+
         return staffLoginService.loginStaff(request)
                 .map(ResponseEntity::ok)
                 .onErrorResume(e -> {
                     JwtResponse errorResponse = new JwtResponse();
-                    errorResponse.setToken(null);
+                    errorResponse.setToken(errorResponse.getToken());
                     errorResponse.setData(Map.of("error", "Login failed: " + e.getMessage()));
-                    return Mono.just(ResponseEntity.status(500).body(errorResponse));
+                    return Mono.just(ResponseEntity.status(500).body(errorResponse)).log("error");
                 });
     }
 

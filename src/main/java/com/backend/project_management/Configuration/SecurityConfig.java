@@ -56,7 +56,11 @@ public class SecurityConfig {
                         return config;
                     }))
                     .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/stafflogin","/admin/adminLogin").permitAll()
+                            .requestMatchers(
+                                "/branchlogin",
+                                "/admin/adminLogin",
+                                "/api/tasks/create/**"
+                            ).permitAll()
                             .anyRequest().authenticated()
                     )
                     .sessionManagement(session -> session

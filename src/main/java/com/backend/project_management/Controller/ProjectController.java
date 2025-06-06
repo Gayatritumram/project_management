@@ -1,6 +1,5 @@
 package com.backend.project_management.Controller;
 
-import com.backend.project_management.DTO.DepartmentDTO;
 import com.backend.project_management.DTO.ProjectDTO;
 
 import com.backend.project_management.Service.ProjectService;
