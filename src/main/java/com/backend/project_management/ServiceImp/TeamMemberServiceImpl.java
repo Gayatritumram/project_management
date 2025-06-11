@@ -1,15 +1,13 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.TeamMemberDTO;
+import com.backend.project_management.Entity.Task;
 import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamMemberMapper;
-import com.backend.project_management.Repository.ProjectAdminRepo;
-import com.backend.project_management.Repository.TeamLeaderRepository;
-import com.backend.project_management.Repository.TeamMemberRepository;
-import com.backend.project_management.Repository.TeamRepository;
+import com.backend.project_management.Repository.*;
 import com.backend.project_management.Service.EmailService;
 import com.backend.project_management.Service.OtpService;
 import com.backend.project_management.Service.TeamMemberService;
@@ -53,6 +51,8 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
     @Autowired
     private ProjectAdminRepo adminRepo;
+
+    @Autowired private TaskRepository taskRepository;
 
 
 
@@ -121,19 +121,24 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                 .collect(Collectors.toList());
     }
 
-    @Override
     @Transactional
-    public void makeTeamLeader(Long id, String role,String  email) {
+    @Override
+    public void makeTeamLeader(Long id, String role, String email) {
         if (!staffValidation.hasPermission(role, email, "PUT")) {
-            throw new AccessDeniedException("You do not have permission to view TeamMember");
+            throw new AccessDeniedException("You do not have permission to promote team member");
         }
+
         TeamMember teamMember = repository.findById(id)
                 .orElseThrow(() -> new RequestNotFound("Team Member not found"));
 
-        // Remove the member from TeamMember repository first
-        repository.delete(teamMember);
+        // Step 1: Remove references from tasks
+        List<Task> assignedTasks = taskRepository.findByAssignedToTeamMember(teamMember);
+        for (Task task : assignedTasks) {
+            task.setAssignedToTeamMember(null); // or reassign to someone else if needed
+        }
+        taskRepository.saveAll(assignedTasks);
 
-        // Create a new TeamLeader without copying the ID
+        // Step 2: Create and save TeamLeader
         TeamLeader teamLeader = new TeamLeader();
         teamLeader.setName(teamMember.getName());
         teamLeader.setEmail(teamMember.getEmail());
@@ -146,18 +151,15 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         teamLeader.setPhone(teamMember.getPhone());
         teamLeader.setCreatedByEmail(teamMember.getCreatedByEmail());
         teamLeader.setBranchCode(teamMember.getBranchCode());
-        teamLeader.setRole(teamMember.getRole());
+        teamLeader.setRole("TEAM_LEADER"); // 🔁 update role
         teamLeader.setImageUrl(teamMember.getImageUrl());
 
-
-
-        // Save the TeamLeader (let JPA generate new ID)
         teamLeaderRepository.save(teamLeader);
 
-
-    // Remove from teamMember repository
+        // Step 3: Now safely delete the team member
         repository.delete(teamMember);
     }
+
     @Override
     public TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO,String role,String  email) {
         if (!staffValidation.hasPermission(role, email, "PUT")) {
