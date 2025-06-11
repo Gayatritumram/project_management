@@ -37,6 +37,7 @@ public class ProjectAdmin {
     private String password;
     @Email
     private String createdByEmail;
+    private String CreatedByRole;
     private String role;
     private String branchCode;
 

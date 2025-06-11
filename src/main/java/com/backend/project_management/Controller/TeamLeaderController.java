@@ -35,12 +35,26 @@ public class TeamLeaderController {
         TeamLeaderDTO teamLeaderDTO = objectMapper.readValue(dtoJson, TeamLeaderDTO.class);
 
         TeamLeader created = teamLeaderService.createTeamLeader(teamLeaderDTO, imageFile, role, email);
+        
+        // Map the saved entity back to DTO to include all fields
+        TeamLeaderDTO responseDTO = new TeamLeaderDTO();
+        responseDTO.setId(created.getId());
+        responseDTO.setName(created.getName());
+        responseDTO.setEmail(created.getEmail());
+        responseDTO.setPhone(created.getPhone());
+        responseDTO.setAddress(created.getAddress());
+        responseDTO.setDepartment(created.getDepartment());
+        responseDTO.setBranchName(created.getBranchName());
+        responseDTO.setJoinDate(created.getJoinDate());
+        responseDTO.setImageUrl(created.getImageUrl());
+        responseDTO.setCreatedByEmail(created.getCreatedByEmail());
+        responseDTO.setRole(created.getRole());
+        responseDTO.setBranchCode(created.getBranchCode());
+        if (created.getTeamId() != null) {
+            responseDTO.setTeamId(created.getTeamId().getId());
+        }
 
-        // Update DTO with saved values (id, imageUrl, etc.)
-        teamLeaderDTO.setId(created.getId());
-        teamLeaderDTO.setImageUrl(created.getImageUrl());
-
-        return new ResponseEntity<>(teamLeaderDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
     @GetMapping("/getAll")

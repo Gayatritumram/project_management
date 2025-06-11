@@ -71,9 +71,6 @@ public class StaffValidation {
                     default -> false;
                 };
             }
-            case "ADMIN" -> {
-                yield projectAdminRepo.existsByEmail(email);
-            }
 
             case "TEAM_LEADER" -> {
                 // Fetch entity directly (assuming teamLeaderRepository is accessible here)
