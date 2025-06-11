@@ -3,6 +3,7 @@ package com.backend.project_management.Repository;
 import java.util.Arrays;
 import java.util.List;
 
+import com.backend.project_management.Entity.TeamMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -48,5 +49,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findAllByAssignedToTeamMemberEmail(String email);
 
     List<Task> findAllByBranchCode(String branchCode);
+
+    List<Task> findByAssignedToTeamMember(TeamMember teamMember);
 }
 

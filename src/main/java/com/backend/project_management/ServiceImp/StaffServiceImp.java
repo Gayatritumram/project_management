@@ -1,26 +1,46 @@
 package com.backend.project_management.ServiceImp;
 
 
+import com.backend.project_management.Entity.TeamLeader;
+import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Model.JwtRequest;
 import com.backend.project_management.Model.JwtResponse;
+import com.backend.project_management.Repository.TeamLeaderRepository;
+import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Service.StaffService;
+import com.backend.project_management.Util.JwtHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class StaffServiceImp implements StaffService {
 
     private final WebClient webClient;
+
+    @Autowired
+    private TeamLeaderRepository teamLeaderRepository;
+
+    @Autowired
+    private TeamMemberRepository teamMemberRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtHelper jwtHelper;
 
     @Autowired
     public StaffServiceImp(WebClient webClient) {
@@ -31,16 +51,60 @@ public class StaffServiceImp implements StaffService {
 
     @Override
     public Mono<JwtResponse> loginStaff(JwtRequest request) {
-        System.out.println("Inside loginStaff");
+        String email = request.getEmail();
+        String password = request.getPassword();
+        Map<String, Object> userData = new HashMap<>();
+
+        // 1. Try Branch Login via external service
         return webClient.post()
                 .uri("/branchlogin")
                 .bodyValue(request)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, response ->
                         response.bodyToMono(String.class)
-                                .flatMap(error -> Mono.error(new RuntimeException("Login Failed: " + error)))
+                                .flatMap(error -> Mono.error(new RuntimeException("Branch Login Failed: " + error)))
                 )
-                .bodyToMono(JwtResponse.class);
+                .bodyToMono(JwtResponse.class)
+
+                // 2. If branch login fails, try TeamLeader
+                .onErrorResume(branchError -> {
+                    Optional<TeamLeader> leaderOpt = teamLeaderRepository.findByEmail(email);
+                    if (leaderOpt.isPresent()) {
+                        TeamLeader leader = leaderOpt.get();
+                        if (!passwordEncoder.matches(password, leader.getPassword())) {
+                            return Mono.error(new RuntimeException("Invalid email or password"));
+                        }
+
+                        String token = jwtHelper.generateToken(email);
+                        userData.put("id", leader.getId());
+                        userData.put("name", leader.getName());
+                        userData.put("email", leader.getEmail());
+                        userData.put("role", leader.getRole());
+                        userData.put("branchCode", leader.getBranchCode());
+
+                        return Mono.just(new JwtResponse(token, userData));
+                    }
+
+                    // 3. If not TeamLeader, try TeamMember
+                    Optional<TeamMember> memberOpt = teamMemberRepository.findByEmail(email);
+                    if (memberOpt.isPresent()) {
+                        TeamMember member = memberOpt.get();
+                        if (!passwordEncoder.matches(password, member.getPassword())) {
+                            return Mono.error(new RuntimeException("Invalid email or password"));
+                        }
+
+                        String token = jwtHelper.generateToken(email);
+                        userData.put("id", member.getId());
+                        userData.put("name", member.getName());
+                        userData.put("email", member.getEmail());
+                        userData.put("role", member.getRole());
+                        userData.put("branchCode", member.getBranchCode());
+
+                        return Mono.just(new JwtResponse(token, userData));
+                    }
+
+                    return Mono.error(new RuntimeException("Invalid email or password"));
+                });
     }
 
 

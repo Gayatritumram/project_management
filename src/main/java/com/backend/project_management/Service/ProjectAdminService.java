@@ -20,6 +20,6 @@ public interface ProjectAdminService {
     String resetPassword(String email, String newPassword, String confirmPassword);
 
     void deleteProjectAdmin(Long id,String role, String email);
-    JwtResponse login(JwtRequest request);
+
 
 }

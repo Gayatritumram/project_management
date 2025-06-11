@@ -16,8 +16,8 @@ public class StaffController
     @Autowired
     private StaffService staffLoginService;
 
-    @PostMapping("/branchlogin")
-    public Mono<ResponseEntity<JwtResponse>> loginStaff(@RequestBody JwtRequest request) {
+    @PostMapping("/loginBranch")
+    public Mono<ResponseEntity<JwtResponse>> loginBranch(@RequestBody JwtRequest request) {
 
         return staffLoginService.loginStaff(request)
                 .map(ResponseEntity::ok)
@@ -29,7 +29,7 @@ public class StaffController
                 });
     }
 
-    @GetMapping("/permissionForStaff")
+    @GetMapping("/getPermission")
     public Map<String, Boolean> getPermission(@RequestParam String staffEmail) {
         return staffLoginService.getPermissionsByEmail(staffEmail);
     }

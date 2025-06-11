@@ -51,7 +51,6 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Autowired
     private EmailService emailService;
 
@@ -66,9 +65,6 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
 
     @Autowired
     private TeamMemberRepository teamMemberRepository;
-
-
-
 
 
 
@@ -141,79 +137,6 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
         adminRepo.delete(projectAdmin);
     }
 
-
-
-        @Override
-        public JwtResponse login(JwtRequest request) {
-            String email = request.getEmail();
-            String password = request.getPassword();
-
-            Map<String, Object> userData = new HashMap<>();
-
-            // 1. Try ProjectAdmin
-            Optional<ProjectAdmin> adminOpt = adminRepo.findByEmail(email);
-            if (adminOpt.isPresent()) {
-                ProjectAdmin admin = adminOpt.get();
-                if (!passwordEncoder.matches(password, admin.getPassword())) {
-                    throw new RuntimeException("Invalid email or password");
-                }
-
-                String token = jwtHelper.generateToken(email);
-
-                userData.put("id", admin.getId());
-                userData.put("name", admin.getName());
-                userData.put("email", admin.getEmail());
-                userData.put("role", admin.getRole()); // Should be "ADMIN"
-                userData.put("branchCode", admin.getBranchCode());
-
-                return new JwtResponse(token, userData);
-            }
-
-            // 2. Try TeamLeader
-            Optional<TeamLeader> leaderOpt = teamLeaderRepository.findByEmail(email);
-            if (leaderOpt.isPresent()) {
-                TeamLeader leader = leaderOpt.get();
-                if (!passwordEncoder.matches(password, leader.getPassword())) {
-                    throw new RuntimeException("Invalid email or password");
-                }
-
-                String token = jwtHelper.generateToken(email);
-
-                userData.put("id", leader.getId());
-                userData.put("name", leader.getName());
-                userData.put("email", leader.getEmail());
-                userData.put("role", leader.getRole()); // Should be "TEAM_LEADER"
-                userData.put("branchCode", leader.getBranchCode());
-
-                return new JwtResponse(token, userData);
-            }
-
-            // 3. Try TeamMember
-            Optional<TeamMember> memberOpt = teamMemberRepository.findByEmail(email);
-            if (memberOpt.isPresent()) {
-                TeamMember member = memberOpt.get();
-                if (!passwordEncoder.matches(password, member.getPassword())) {
-                    throw new RuntimeException("Invalid email or password");
-                }
-
-                String token = jwtHelper.generateToken(email);
-
-                userData.put("id", member.getId());
-                userData.put("name", member.getName());
-                userData.put("email", member.getEmail());
-                userData.put("role", member.getRole()); // Should be "TEAM_MEMBER"
-                userData.put("branchCode", member.getBranchCode());
-
-                return new JwtResponse(token, userData);
-            }
-
-            throw new RuntimeException("Invalid email or password");
-        }
-
-
-
-
-
     public String forgotPassword(String email) {
         Optional<ProjectAdmin> optionalAdmin = adminRepo.findByEmail(email);
         if (optionalAdmin.isPresent()) {
@@ -251,6 +174,5 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
             throw new IllegalArgumentException("Admin email not found!");
         }
     }
-
 
 }

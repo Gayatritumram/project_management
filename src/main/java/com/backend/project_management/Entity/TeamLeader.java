@@ -1,6 +1,7 @@
 package com.backend.project_management.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -53,6 +54,12 @@ public class TeamLeader {
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team teamId;
+
+    @OneToMany(mappedBy = "assignedByLeader")
+    @JsonManagedReference("assigned-by")
+    private List<Task> tasksAssigned; // You can name this whatever fits
+
+
 
 
     public boolean isCanAccessTask() {

@@ -42,15 +42,16 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "assigned_to_member_id")
     private TeamMember assignedToTeamMember;
-
-    @ManyToOne
-    @JoinColumn(name = "assignedByLeader_id")
-    private TeamLeader assignedByLeader;
-
-
+    
     @ManyToOne
     @JoinColumn(name = "assigned_to_leader_id")
     @JsonIgnore
     private TeamLeader assignedToTeamLeader;
+
+    @ManyToOne
+    @JoinColumn(name = "assignedByLeader_id")
+    @JsonBackReference("assigned-by")
+    private TeamLeader assignedByLeader;
+
 
 }
