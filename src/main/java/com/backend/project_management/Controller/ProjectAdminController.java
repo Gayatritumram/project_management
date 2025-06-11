@@ -40,12 +40,6 @@ public class ProjectAdminController {
     }
 
 
-    @PostMapping("/adminLogin")
-    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
-        JwtResponse response = adminService.login(request);
-        return ResponseEntity.ok(response);
-    }
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id,
                                          @RequestParam String role,

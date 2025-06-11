@@ -57,7 +57,7 @@ public class SecurityConfig {
                     }))
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers(
-                                "/branchlogin",
+                                "/loginBranch",
                                 "/admin/adminLogin",
                                 "/api/tasks/create/**"
                             ).permitAll()
