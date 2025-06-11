@@ -10,7 +10,7 @@ public interface TaskService {
 
     public TaskDTO createTask(TaskDTO taskDTO, String token, Long id,MultipartFile file,String role, String email)throws IOException  ;
 
-    TaskDTO updateTask(Long taskId, TaskDTO taskDTO,String role,String email);
+    public TaskDTO updateTask(Long taskId, TaskDTO taskDTO, String role, String email, MultipartFile file) throws IOException;
 
     TaskDTO getTaskById(Long taskId,String role,String email);
 

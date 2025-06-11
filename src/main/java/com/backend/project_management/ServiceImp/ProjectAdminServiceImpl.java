@@ -51,7 +51,6 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Autowired
     private EmailService emailService;
 
@@ -66,9 +65,6 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
 
     @Autowired
     private TeamMemberRepository teamMemberRepository;
-
-
-
 
 
 
@@ -141,10 +137,6 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
         adminRepo.delete(projectAdmin);
     }
 
-
-
-
-
     public String forgotPassword(String email) {
         Optional<ProjectAdmin> optionalAdmin = adminRepo.findByEmail(email);
         if (optionalAdmin.isPresent()) {
@@ -182,6 +174,5 @@ public class ProjectAdminServiceImpl implements ProjectAdminService {
             throw new IllegalArgumentException("Admin email not found!");
         }
     }
-
 
 }
