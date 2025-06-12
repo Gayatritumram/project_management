@@ -35,11 +35,6 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private ProjectAdminRepo adminRepo;
 
-
-
-
-
-
     @Autowired
     private TeamMemberRepository repository;
 
@@ -116,44 +111,49 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task with ID " + taskId + " not found"));
 
-        // Conditionally update fields
-        if (taskDTO.getSubject() != null) task.setSubject(taskDTO.getSubject());
-        if (taskDTO.getDescription() != null) task.setDescription(taskDTO.getDescription());
-        if (taskDTO.getProjectName() != null) task.setProjectName(taskDTO.getProjectName());
-        if (taskDTO.getPriority() != null) task.setPriority(taskDTO.getPriority());
-        if (taskDTO.getStatus() != null) task.setStatus(taskDTO.getStatus());
-        if (taskDTO.getStatusBar() != null) task.setStatusBar(taskDTO.getStatusBar());
-        if (taskDTO.getDays() != 0) task.setDays(taskDTO.getDays());
+        if(role.equals("TEAM_MEMBER")){
+            if (taskDTO.getStatus() != null) task.setStatus(taskDTO.getStatus());
+            if (taskDTO.getStatusBar() != null) task.setStatusBar(taskDTO.getStatusBar());
+        }else {
 
-        if (taskDTO.getStartDate() != null) task.setStartDate(taskDTO.getStartDate());
-        if (taskDTO.getEndDate() != null) task.setEndDate(taskDTO.getEndDate());
+            // Conditionally update fields
+            if (taskDTO.getSubject() != null) task.setSubject(taskDTO.getSubject());
+            if (taskDTO.getDescription() != null) task.setDescription(taskDTO.getDescription());
+            if (taskDTO.getProjectName() != null) task.setProjectName(taskDTO.getProjectName());
+            if (taskDTO.getPriority() != null) task.setPriority(taskDTO.getPriority());
+            if (taskDTO.getStatus() != null) task.setStatus(taskDTO.getStatus());
+            if (taskDTO.getStatusBar() != null) task.setStatusBar(taskDTO.getStatusBar());
+            if (taskDTO.getDays() != 0) task.setDays(taskDTO.getDays());
 
-        if (taskDTO.getAssignedToTeamMember() != null) {
-            TeamMember assignedTo = teamMemberRepository.findById(taskDTO.getAssignedToTeamMember())
-                    .orElseThrow(() -> new RuntimeException("Assigned team member not found"));
-            task.setAssignedToTeamMember(assignedTo);
+            if (taskDTO.getStartDate() != null) task.setStartDate(taskDTO.getStartDate());
+            if (taskDTO.getEndDate() != null) task.setEndDate(taskDTO.getEndDate());
+
+            if (taskDTO.getAssignedToTeamMember() != null) {
+                TeamMember assignedTo = teamMemberRepository.findById(taskDTO.getAssignedToTeamMember())
+                        .orElseThrow(() -> new RuntimeException("Assigned team member not found"));
+                task.setAssignedToTeamMember(assignedTo);
+            }
+
+            // File (image) update
+            if (file != null && !file.isEmpty()) {
+                String imageUrl = s3Service.uploadImage(file);
+                task.setImageUrl(imageUrl);
+            }
+
+            // Keep original creator info if null
+            if (task.getCreatedByEmail() == null) task.setCreatedByEmail(email);
+            if (task.getRole() == null) task.setRole(role);
+            if (task.getBranchCode() == null) {
+                String branchCode = staffValidation.fetchBranchCodeByRole(role, email);
+                task.setBranchCode(branchCode);
+            }
+
+            if ("TEAM_LEADER".equalsIgnoreCase(role) && task.getAssignedByLeader() == null) {
+                TeamLeader leader = teamLeaderRepository.findByEmail(email)
+                        .orElseThrow(() -> new RuntimeException("Team Leader not found"));
+                task.setAssignedByLeader(leader);
+            }
         }
-
-        // File (image) update
-        if (file != null && !file.isEmpty()) {
-            String imageUrl = s3Service.uploadImage(file);
-            task.setImageUrl(imageUrl);
-        }
-
-        // Keep original creator info if null
-        if (task.getCreatedByEmail() == null) task.setCreatedByEmail(email);
-        if (task.getRole() == null) task.setRole(role);
-        if (task.getBranchCode() == null) {
-            String branchCode = staffValidation.fetchBranchCodeByRole(role, email);
-            task.setBranchCode(branchCode);
-        }
-
-        if ("TEAM_LEADER".equalsIgnoreCase(role) && task.getAssignedByLeader() == null) {
-            TeamLeader leader = teamLeaderRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("Team Leader not found"));
-            task.setAssignedByLeader(leader);
-        }
-
         Task updatedTask = taskRepository.save(task);
         return taskMapper.toDto(updatedTask);
     }

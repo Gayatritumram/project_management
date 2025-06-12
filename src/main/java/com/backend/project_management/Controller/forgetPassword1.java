@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/forgetPassword")
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://pjsofttech.in")
 public class forgetPassword1 {
     @Autowired
     private ProjectAdminService adminService;

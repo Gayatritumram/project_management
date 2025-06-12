@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/team-leader")
+@CrossOrigin(origins = "https://pjsofttech.in")
 public class TeamLeaderController {
 
     @Autowired
@@ -94,31 +95,4 @@ public class TeamLeaderController {
     }
 
     //updateImage API for team leader
-
-
-
-
-
-
-
-
-
-    @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
-        return ResponseEntity.ok(teamLeaderService.forgotPassword(email));
-    }
-
-    @PostMapping("/verify-otp")
-    public ResponseEntity<String> verifyOtp(@RequestParam String email, @RequestParam int otp) {
-        return ResponseEntity.ok(teamLeaderService.verifyOtp(email, otp));
-    }
-
-    @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(
-            @RequestParam String email,
-            @RequestParam String newPassword,
-            @RequestParam String confirmPassword
-    ) {
-        return ResponseEntity.ok(teamLeaderService.resetPassword(email, newPassword, confirmPassword));
-    }
 }

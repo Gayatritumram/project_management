@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/team-members")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://pjsofttech.in")
 public class TeamMemberController {
 
     @Autowired
@@ -96,29 +96,7 @@ public class TeamMemberController {
 
 
     // Forgot Password - Send OTP
-    @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
-        String response = service.forgotPassword(email);
-        return ResponseEntity.ok(response);
-    }
 
-    // Verify OTP
-    @PostMapping("/verify-otp")
-    public ResponseEntity<String> verifyOtp(@RequestParam String email, @RequestParam int otp) {
-        String response = service.verifyOtp(email, otp);
-        return ResponseEntity.ok(response);
-    }
-
-    // Reset Password
-    @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(
-            @RequestParam String email,
-            @RequestParam String newPassword,
-            @RequestParam String confirmPassword
-    ) {
-        String response = service.resetPassword(email, newPassword, confirmPassword);
-        return ResponseEntity.ok(response);
-    }
 
 
 
