@@ -67,11 +67,23 @@ public class TaskController {
 
 
 
-    @PutMapping("/updateTask/{id}")
-    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody TaskDTO taskDTO,
-                                              @RequestParam String role,
-                                              @RequestParam String email) {
-        return ResponseEntity.ok(taskService.updateTask(id, taskDTO, role, email));
+    @PutMapping("/update/{taskId}")
+    public ResponseEntity<TaskDTO> updateTask(
+            @PathVariable Long taskId,
+            @RequestParam("task") String taskJson,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestParam String role,
+            @RequestParam String email
+    ) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        TaskDTO taskDTO = objectMapper.readValue(taskJson, TaskDTO.class);
+
+        TaskDTO updatedTask = taskService.updateTask(taskId, taskDTO, role, email, file);
+
+        return ResponseEntity.ok(updatedTask);
     }
 
 
