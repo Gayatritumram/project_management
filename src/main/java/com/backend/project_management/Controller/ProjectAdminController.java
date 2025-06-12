@@ -12,7 +12,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://pjsofttech.in")
 public class ProjectAdminController {
     @Autowired
     private ProjectAdminService adminService;

@@ -18,8 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/tasks")
-@CrossOrigin(origins = "http://localhost:3000")
-
+@CrossOrigin(origins = "https://pjsofttech.in")
 public class TaskController {
 
     @Autowired

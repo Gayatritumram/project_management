@@ -4,6 +4,7 @@ import com.backend.project_management.Model.JwtRequest;
 import com.backend.project_management.Model.JwtResponse;
 import com.backend.project_management.Service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "https://pjsofttech.in")
 public class StaffController
 {
     @Autowired
@@ -23,10 +25,18 @@ public class StaffController
                 .map(ResponseEntity::ok)
                 .onErrorResume(e -> {
                     JwtResponse errorResponse = new JwtResponse();
-                    errorResponse.setToken(errorResponse.getToken());
+                    errorResponse.setToken(null); // explicitly null
                     errorResponse.setData(Map.of("error", "Login failed: " + e.getMessage()));
-                    return Mono.just(ResponseEntity.status(500).body(errorResponse)).log("error");
+
+                    // If it's a known invalid credentials issue, return 401
+                    if (e.getMessage().toLowerCase().contains("invalid") || e.getMessage().toLowerCase().contains("unauthorized")) {
+                        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse));
+                    }
+
+                    // Otherwise, internal server error
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse));
                 });
+
     }
 
     @GetMapping("/getPermission")
