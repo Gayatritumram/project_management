@@ -38,7 +38,7 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentService.updateDepartment(id,departmentDTO, email,role));
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/getDepartmentById/{id}")
     public ResponseEntity<DepartmentDTO> getDepartmentById(@RequestParam String role,
                                                            @RequestParam String email,
                                                            @PathVariable Long id) {
