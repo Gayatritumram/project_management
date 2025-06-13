@@ -24,21 +24,21 @@ public class BranchController {
                                                         @RequestParam String email) {
         return ResponseEntity.ok(branchService.CreateBranch(branchResponseDTO, role, email));
     }
-    @PutMapping("/updateBranch")
+    @PutMapping("/updateBranch/{id}")
     public ResponseEntity<BranchResponseDTO>updateBranch(@PathVariable Long id,
-                                                         @RequestParam BranchResponseDTO branchResponseDTO,
+                                                         @RequestBody BranchResponseDTO branchResponseDTO,
                                                          @RequestParam String role,
                                                          @RequestParam String email){
         return ResponseEntity.ok(branchService.UpdateBranch(id,branchResponseDTO,role,email));
     }
-    @GetMapping("getById/{id}")
+    @GetMapping("/getBranchById/{id}")
     public ResponseEntity<BranchResponseDTO> getBranchById(@PathVariable Long id,
                                                  @RequestParam String role,
                                                  @RequestParam String email) {
         return ResponseEntity.ok(branchService.getBranchById(id, role, email));
     }
-    @GetMapping("/getAll")
-    public ResponseEntity<List<BranchResponseDTO>> getAll(@RequestParam String role,
+    @GetMapping("/getAllBranch")
+    public ResponseEntity<List<BranchResponseDTO>> getAllBranch(@RequestParam String role,
                                                       @RequestParam String email,
                                                       @RequestParam String branchCode) {
         return ResponseEntity.ok(branchService.getAllBranches(role, email, branchCode));
