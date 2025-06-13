@@ -13,7 +13,7 @@ public interface BranchService {
 
     List<BranchResponseDTO> getAllBranches(String role, String email, String branchcode);
 
-
+    void deleteBranch(Long id,String role, String email);
 
 
 

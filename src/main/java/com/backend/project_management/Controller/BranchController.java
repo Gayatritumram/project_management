@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Branch")
+@RequestMapping("/branch")
 public class BranchController {
     @Autowired
     private BranchService branchService;
@@ -42,6 +42,13 @@ public class BranchController {
                                                       @RequestParam String email,
                                                       @RequestParam String branchCode) {
         return ResponseEntity.ok(branchService.getAllBranches(role, email, branchCode));
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id,
+                                         @RequestParam String role,
+                                         @RequestParam String email) {
+        branchService.deleteBranch(id, role, email);
+        return ResponseEntity.ok("Branch with ID " + id + " deleted successfully.");
     }
 
 }

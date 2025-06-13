@@ -72,5 +72,16 @@ public class BranchServiceImpl implements BranchService {
                     .map(mapper::toResponseDTO)
                     .collect(Collectors.toList());
     }
+    @Override
+    public void deleteBranch(Long id,String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "DELETE")) {
+            throw new AccessDeniedException("You do not have permission to view Branch");
+        }
+
+        if (!repository.existsById(id)) {
+            throw new RuntimeException("BRANCH not found with id: " + id);
+        }
+       repository.deleteById(id);
+    }
 }
 
