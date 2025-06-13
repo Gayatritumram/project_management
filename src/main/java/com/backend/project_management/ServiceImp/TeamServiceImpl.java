@@ -82,6 +82,7 @@ public class TeamServiceImpl implements TeamService {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public TeamDTO updateTeam(Long id, TeamDTO teamDTO, String role, String email) {
         if (!staffValidation.hasPermission(role, email, "PUT")) {
@@ -95,6 +96,14 @@ public class TeamServiceImpl implements TeamService {
 
         return teamMapper.toDTO(teamRepository.save(existingTeam));
     }
+
+
+
+
+
+
+
+
 
     @Override
     public void deleteTeam(Long id, String role, String email) {
