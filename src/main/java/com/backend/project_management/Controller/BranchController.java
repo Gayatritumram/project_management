@@ -1,0 +1,47 @@
+package com.backend.project_management.Controller;
+
+import com.backend.project_management.DTO.BranchResponseDTO;
+import com.backend.project_management.DTO.TeamDTO;
+import com.backend.project_management.DTO.TeamLeaderDTO;
+import com.backend.project_management.Entity.Branch;
+import com.backend.project_management.Service.BranchService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/Branch")
+public class BranchController {
+    @Autowired
+    private BranchService branchService;
+
+
+    @PostMapping("/createBranch")
+    public ResponseEntity<BranchResponseDTO> createBranch(@RequestBody BranchResponseDTO branchResponseDTO,
+                                                        @RequestParam String role,
+                                                        @RequestParam String email) {
+        return ResponseEntity.ok(branchService.CreateBranch(branchResponseDTO, role, email));
+    }
+    @PutMapping("/updateBranch")
+    public ResponseEntity<BranchResponseDTO>updateBranch(@PathVariable Long id,
+                                                         @RequestParam BranchResponseDTO branchResponseDTO,
+                                                         @RequestParam String role,
+                                                         @RequestParam String email){
+        return ResponseEntity.ok(branchService.UpdateBranch(id,branchResponseDTO,role,email));
+    }
+    @GetMapping("getById/{id}")
+    public ResponseEntity<BranchResponseDTO> getBranchById(@PathVariable Long id,
+                                                 @RequestParam String role,
+                                                 @RequestParam String email) {
+        return ResponseEntity.ok(branchService.getBranchById(id, role, email));
+    }
+    @GetMapping("/getAll")
+    public ResponseEntity<List<BranchResponseDTO>> getAll(@RequestParam String role,
+                                                      @RequestParam String email,
+                                                      @RequestParam String branchCode) {
+        return ResponseEntity.ok(branchService.getAllBranches(role, email, branchCode));
+    }
+
+}
