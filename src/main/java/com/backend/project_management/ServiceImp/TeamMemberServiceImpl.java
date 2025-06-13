@@ -233,4 +233,42 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     }
 
 
+
+    @Override
+    public void updateTeamMemberProfilePicture(Long memberId, MultipartFile imageFile, String role, String email) {
+        // Permission check
+        if (!staffValidation.hasPermission(role, email, "PUT")) {
+            throw new AccessDeniedException("You do not have permission to update the profile picture of a Team Member");
+        }
+
+        // Fetch the Team Member
+        TeamMember teamMember = repository.findById(memberId)
+                .orElseThrow(() -> new RequestNotFound("Team Member with ID " + memberId + " not found"));
+
+        // Validate the image file
+        if (imageFile == null || imageFile.isEmpty()) {
+            throw new IllegalArgumentException("Profile picture cannot be empty");
+        }
+
+        try {
+            // Upload image and get the URL
+            String newImageUrl = s3Service.uploadImage(imageFile);
+
+            // Optional: delete the old image from S3 if needed
+            String oldImageUrl = teamMember.getImageUrl();
+            if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+                s3Service.deleteImage(oldImageUrl);
+            }
+
+            // Update profile picture URL
+            teamMember.setImageUrl(newImageUrl);
+            repository.save(teamMember); // Persist the update
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload profile picture: " + e.getMessage(), e);
+        }
+    }
+
+
+
 }

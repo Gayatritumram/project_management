@@ -26,7 +26,7 @@ public class TeamMemberController {
     @Autowired
     private TeamMemberService service;
 
-    @PostMapping("/create")
+    @PostMapping("/createTeamMember")
     public ResponseEntity<TeamMemberDTO> createTeamMember(@RequestParam("data") String dtoJson,
                                                           @RequestParam(value = "image", required = false) MultipartFile imageFile,
                                                           @RequestParam String role,
@@ -48,7 +48,7 @@ public class TeamMemberController {
 
 
     // Get Team Member by ID
-    @GetMapping("getById/{id}")
+    @GetMapping("getTeamMemberById/{id}")
     public ResponseEntity<TeamMemberDTO> getById(@PathVariable Long id,
                                                  @RequestParam String role,
                                                  @RequestParam String email) {
@@ -73,7 +73,7 @@ public class TeamMemberController {
     }
 
     // Update Team Member
-    @PutMapping("/update/{id}")
+    @PutMapping("/updateTeamMember/{id}")
     public ResponseEntity<TeamMemberDTO> update(@PathVariable Long id,
                                                 @RequestBody TeamMemberDTO dto,
                                                 @RequestParam String role,
@@ -82,12 +82,23 @@ public class TeamMemberController {
     }
 
     // Delete Team Member
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/deleteTeamMember/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id,
                                          @RequestParam String role,
                                          @RequestParam String email) {
         service.deleteTeamMember(id, role, email);
         return ResponseEntity.ok("Team Member deleted successfully.");
+    }
+
+    @PutMapping("/updateTeamMemberProfilePicture/{memberId}")
+    public ResponseEntity<String> updateTeamMemberProfilePicture(@PathVariable Long memberId,
+                                                                 @RequestParam(value = "image", required = false) MultipartFile imageFile,
+                                                                 @RequestParam String role,
+                                                                 @RequestParam String email){
+
+        service.updateTeamMemberProfilePicture(memberId,imageFile, role, email);
+        return ResponseEntity.ok("Profile picture updated successfully.");
+
     }
 
 

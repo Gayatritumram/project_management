@@ -25,7 +25,7 @@ public class TaskController {
     private TaskService taskService;
 
     //Admin Assign A task To Team member Use this api
-    @PostMapping("/create/{id}")
+    @PostMapping("/createTaskForMember/{id}")
     public ResponseEntity<TaskDTO> createTask(
             @RequestParam("task") String taskJson,
             @RequestParam(value = "file", required = false) MultipartFile file,
@@ -46,7 +46,7 @@ public class TaskController {
 
 
     //
-    @PostMapping("/create/Leader/{id}")
+    @PostMapping("/createTaskForLeader/{id}")
     public ResponseEntity<TaskDTO> createTask2(
             @RequestParam("task") String taskJson,
             @RequestParam(value = "file", required = false) MultipartFile file,
@@ -67,7 +67,7 @@ public class TaskController {
 
 
 
-    @PutMapping("/update/{taskId}")
+    @PutMapping("/updateTask/{taskId}")
     public ResponseEntity<TaskDTO> updateTask(
             @PathVariable Long taskId,
             @RequestParam("task") String taskJson,
@@ -88,7 +88,7 @@ public class TaskController {
 
 
 
-    @GetMapping("/getTask/{id}")
+    @GetMapping("/getTaskById/{id}")
     public ResponseEntity<TaskDTO> getTask(@PathVariable Long id,
                                            @RequestParam String role,
                                            @RequestParam String email) {
@@ -106,7 +106,7 @@ public class TaskController {
 
 
 
-    @DeleteMapping("/deleteTask/{id}")
+    @DeleteMapping("/deleteTaskById/{id}")
     public ResponseEntity<String> deleteTask(@PathVariable Long id,
                                              @RequestParam String role,
                                              @RequestParam String email) {

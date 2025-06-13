@@ -177,17 +177,6 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
                 .orElseThrow(() -> new RuntimeException("TeamLeader not found with email: " + email));
     }
 
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public String forgotPassword(String email) {
         Optional<TeamLeader> optionalTeamLeader = teamLeaderRepository.findByEmail(email);
@@ -225,6 +214,41 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
             return "Password successfully reset.";
         } else {
             throw new IllegalArgumentException("Team Leader email not found!");
+        }
+    }
+
+    @Override
+    public void updateTeamMemberProfilePicture(Long leaderId, MultipartFile imageFile, String role, String email) {
+        // Permission check
+        if (!staffValidation.hasPermission(role, email, "PUT")) {
+            throw new AccessDeniedException("You do not have permission to update the profile picture of a Team Member");
+        }
+
+        // Fetch the Team Member
+        TeamLeader teamLeader = teamLeaderRepository.findById(leaderId)
+                .orElseThrow(() -> new RequestNotFound("Team Member with ID " + leaderId + " not found"));
+
+        // Validate the image file
+        if (imageFile == null || imageFile.isEmpty()) {
+            throw new IllegalArgumentException("Profile picture cannot be empty");
+        }
+
+        try {
+            // Upload image and get the URL
+            String newImageUrl = s3Service.uploadImage(imageFile);
+
+            // Optional: delete the old image from S3 if needed
+            String oldImageUrl = teamLeader.getImageUrl();
+            if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+                s3Service.deleteImage(oldImageUrl);
+            }
+
+            // Update profile picture URL
+            teamLeader.setImageUrl(newImageUrl);
+            teamLeaderRepository.save(teamLeader); // Persist the update
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload profile picture: " + e.getMessage(), e);
         }
     }
 }

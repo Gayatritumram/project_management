@@ -23,7 +23,7 @@ public class TeamLeaderController {
     private TeamLeaderService teamLeaderService;
 
 
-    @PostMapping("/create")
+    @PostMapping("/createTeamLeader")
     public ResponseEntity<TeamLeaderDTO> createTeamLeader(@RequestParam("data") String dtoJson,
                                                           @RequestParam(value = "image", required = false) MultipartFile imageFile,
                                                           @RequestParam String role,
@@ -58,41 +58,52 @@ public class TeamLeaderController {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<TeamLeaderDTO>> getAll(@RequestParam String role,
+    @GetMapping("/getAllTeamLeaders")
+    public ResponseEntity<List<TeamLeaderDTO>> getAllTeamLeaders(@RequestParam String role,
                                                       @RequestParam String email,
                                                       @RequestParam String branchCode) {
         return ResponseEntity.ok(teamLeaderService.getAllTeamLeaders(role, email, branchCode));
     }
 
-    @GetMapping("getById/{id}")
-    public ResponseEntity<TeamLeaderDTO> getById(@PathVariable Long id,
+    @GetMapping("getTeamLeadersById/{id}")
+    public ResponseEntity<TeamLeaderDTO> getTeamLeadersById(@PathVariable Long id,
                                                  @RequestParam String role,
                                                  @RequestParam String email) {
         return ResponseEntity.ok(teamLeaderService.getTeamLeaderById(id, role, email));
     }
 
-    @GetMapping("/email/{emailFind}")
-    public ResponseEntity<TeamLeaderDTO> getByEmail(@RequestParam String email,
+    @GetMapping("/getTeamLeadersByEmail/{emailFind}")
+    public ResponseEntity<TeamLeaderDTO> getTeamLeadersByEmail(@RequestParam String email,
                                                     @RequestParam String role,
                                                     @PathVariable String emailFind) {
         return ResponseEntity.ok(teamLeaderService.getTeamLeaderByEmail(email,role,emailFind));
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<TeamLeaderDTO> update(@PathVariable Long id, @RequestBody TeamLeaderDTO dto,
+    @PutMapping("/updateTeamLeaders/{id}")
+    public ResponseEntity<TeamLeaderDTO> updateTeamLeaders(@PathVariable Long id, @RequestBody TeamLeaderDTO dto,
                                                 @RequestParam String role,
                                                 @RequestParam String email) {
         return ResponseEntity.ok(teamLeaderService.updateTeamLeader(id, dto, role, email));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id,
+    @DeleteMapping("/deleteTeamLeader/{id}")
+    public ResponseEntity<String> deleteTeamLeader(@PathVariable Long id,
                                          @RequestParam String role,
                                          @RequestParam String email) {
         teamLeaderService.deleteTeamLeader(id, role, email);
         return ResponseEntity.ok("Team Leader with ID " + id + " deleted successfully.");
     }
 
-    //updateImage API for team leader
+
+    @PutMapping("/updateTeamLeaderProfilePicture/{leaderId}")
+    public ResponseEntity<String> updateTeamLeaderProfilePicture(@PathVariable Long leaderId,
+                                                                 @RequestParam(value = "image", required = false) MultipartFile imageFile,
+                                                                 @RequestParam String role,
+                                                                 @RequestParam String email){
+
+        teamLeaderService.updateTeamMemberProfilePicture(leaderId,imageFile, role, email);
+        return ResponseEntity.ok("Profile picture updated successfully.");
+
+    }
+
 }

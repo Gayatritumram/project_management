@@ -17,4 +17,6 @@ public interface TeamLeaderService {
     String forgotPassword(String email);
     String verifyOtp(String email, int otp);
     String resetPassword(String email, String newPassword, String confirmPassword);
+
+    void updateTeamMemberProfilePicture(Long leaderId, MultipartFile imageFile, String role, String email);
 }

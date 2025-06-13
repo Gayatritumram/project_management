@@ -17,7 +17,7 @@ public class  TeamController {
 
 
 
-    @PostMapping("/create")
+    @PostMapping("/createTeam")
     public ResponseEntity<TeamDTO> createTeam(@RequestBody TeamDTO teamDTO,
                                               @RequestParam String role,
                                               @RequestParam String email) {
