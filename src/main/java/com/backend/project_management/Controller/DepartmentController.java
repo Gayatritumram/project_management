@@ -50,7 +50,7 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentService.getAllDepartments(role, email, branchCode));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/deleteDepartment/{id}")
     public ResponseEntity<String> deleteDepartment(@PathVariable Long id,
                                                    @RequestParam String role,
                                                    @RequestParam String email) {

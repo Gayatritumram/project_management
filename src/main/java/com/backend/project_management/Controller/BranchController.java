@@ -43,8 +43,8 @@ public class BranchController {
                                                       @RequestParam String branchCode) {
         return ResponseEntity.ok(branchService.getAllBranches(role, email, branchCode));
     }
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id,
+    @DeleteMapping("/deleteBranchById/{id}")
+    public ResponseEntity<String> deleteBranchById(@PathVariable Long id,
                                          @RequestParam String role,
                                          @RequestParam String email) {
         branchService.deleteBranch(id, role, email);
