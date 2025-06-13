@@ -10,4 +10,5 @@ public interface DepartmentService {
     DepartmentDTO updateDepartment(Long id, DepartmentDTO dto, String email, String role);
     DepartmentDTO getDepartmentById(Long id, String email, String role);
     List<DepartmentDTO> getAllDepartments(String role,String email, String branchCode);
+    void deleteDepartment(Long id, String role, String email);
 }

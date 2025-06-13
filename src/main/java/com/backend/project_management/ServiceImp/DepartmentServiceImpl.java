@@ -87,4 +87,12 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
         return List.of();
     }
+
+    @Override
+    public void deleteDepartment(Long id, String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "DELETE")) {
+            throw new AccessDeniedException("You do not have permission to delete department");
+        }
+        departmentRepository.deleteById(id);
+    }
 }
