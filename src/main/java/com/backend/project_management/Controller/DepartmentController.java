@@ -1,8 +1,6 @@
 package com.backend.project_management.Controller;
 
 import com.backend.project_management.DTO.DepartmentDTO;
-import com.backend.project_management.DTO.ProjectDTO;
-import com.backend.project_management.DTO.TeamDTO;
 import com.backend.project_management.Service.DepartmentService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +47,14 @@ public class DepartmentController {
     public ResponseEntity<List<DepartmentDTO>> getAllDepartments(@RequestParam String role,
                                                                  @RequestParam String email,
                                                                  @RequestParam String branchCode) {
-        return ResponseEntity.ok(departmentService.getAllDepartments(role, email,branchCode));
+        return ResponseEntity.ok(departmentService.getAllDepartments(role, email, branchCode));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteDepartment(@PathVariable Long id,
+                                                   @RequestParam String role,
+                                                   @RequestParam String email) {
+        departmentService.deleteDepartment(id, role, email);
+        return ResponseEntity.ok("Department deleted successfully");
     }
 }
