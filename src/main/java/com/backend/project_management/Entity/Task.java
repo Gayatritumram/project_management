@@ -53,5 +53,7 @@ public class Task {
     @JsonBackReference("assigned-by")
     private TeamLeader assignedByLeader;
 
+    private String assignedToName;
+
 
 }

@@ -42,6 +42,7 @@ public class TaskMapper {
         dto.setCreatedByEmail(task.getCreatedByEmail());
         dto.setBranchCode(task.getBranchCode());
         dto.setRole(task.getRole());
+        dto.setAssignedToName(task.getAssignedToName());
 
 
         dto.setAssignedByAdminId(task.getAssignedByAdmin() != null ? task.getAssignedByAdmin().getId() : null);
@@ -69,7 +70,7 @@ public class TaskMapper {
         task.setCreatedByEmail(dto.getCreatedByEmail());
         task.setBranchCode(dto.getBranchCode());
         task.setRole(dto.getRole());
-
+        task.setAssignedToName(dto.getAssignedToName());
         if (dto.getAssignedByAdminId() != null) {
             task.setAssignedByAdmin(projectAdminRepository.findById(dto.getAssignedByAdminId()).orElse(null));
         }

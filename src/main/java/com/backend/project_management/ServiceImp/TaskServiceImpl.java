@@ -79,6 +79,7 @@ public class TaskServiceImpl implements TaskService {
                         .orElseThrow(() -> new RuntimeException("Logged-in team leader not found"));
                 System.out.println("currentLeader: " + currentLeader);
                 task.setAssignedByLeader(currentLeader);
+
             }
         } catch (RuntimeException e) {
             System.err.println("Warning: " + e.getMessage()); // log and continue
@@ -87,6 +88,7 @@ public class TaskServiceImpl implements TaskService {
         TeamMember assignedTo = teamMemberRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Team member not found"));
         task.setAssignedToTeamMember(assignedTo);
+        task.setAssignedToName(assignedTo.getName());
 
 
         if (file != null && !file.isEmpty()) {
@@ -96,6 +98,9 @@ public class TaskServiceImpl implements TaskService {
                 throw new RuntimeException(e);
            }
         }
+
+        TeamMember member = teamMemberRepository.findById(id).orElseThrow(() -> new RuntimeException("Task with ID " + id + " not found"));
+        task.setAssignedToName(member.getName());
 
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
@@ -293,6 +298,9 @@ public class TaskServiceImpl implements TaskService {
         if (file != null && !file.isEmpty()) {
             task.setImageUrl(s3Service.uploadImage(file));
         }
+        ///
+        TeamLeader member = teamLeaderRepository.findById(id).orElseThrow(() -> new RuntimeException("Task with ID " + id + " not found"));
+        task.setAssignedToName(member.getName());
 
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
@@ -398,5 +406,8 @@ public class TaskServiceImpl implements TaskService {
         List<Task> tasks = taskRepository.findAllByAssignedToTeamLeader_Id(id);
         return taskMapper.toDtoList(tasks);
     }
+
+
+
 
 }

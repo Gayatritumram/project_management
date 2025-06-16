@@ -41,4 +41,6 @@ public class TaskDTO {
     private Long assignedToTeamMember;
     private Long assignedToTeamLeader;
 
+    private String assignedToName;
+
 }
