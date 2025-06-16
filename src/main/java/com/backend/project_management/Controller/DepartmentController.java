@@ -2,7 +2,6 @@ package com.backend.project_management.Controller;
 
 import com.backend.project_management.DTO.DepartmentDTO;
 import com.backend.project_management.Service.DepartmentService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
