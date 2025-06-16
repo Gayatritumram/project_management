@@ -76,7 +76,4 @@ public class ProjectController {
                                                           @RequestParam String email) {
         return ResponseEntity.ok(projectService.assignProjectToTeam(projectId, teamId,role,email));
     }
-
-
-
 }

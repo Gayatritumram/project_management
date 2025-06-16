@@ -48,10 +48,4 @@ public class ProjectAdminController {
         adminService.deleteProjectAdmin(id,role,email);
         return ResponseEntity.ok("Admin with ID " + id + " deleted successfully.");
     }
-
-
-
-
-
-
 }
