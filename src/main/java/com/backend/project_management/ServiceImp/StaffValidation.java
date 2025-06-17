@@ -50,7 +50,7 @@ public class StaffValidation {
             }
         }
 
-        if (switch (role.toUpperCase()) {
+        return switch (role.toUpperCase()) {
             case "STAFF" -> {
                 Map<String, Boolean> perms = staffService.getPermissionsByEmail(email);
                 yield switch (action.toUpperCase()) {
@@ -71,7 +71,6 @@ public class StaffValidation {
                     default -> false;
                 };
             }
-
             case "TEAM_LEADER" -> {
                 // Fetch entity directly (assuming teamLeaderRepository is accessible here)
                 TeamLeader leader = teamLeaderRepository.findByEmail(email)
@@ -85,7 +84,6 @@ public class StaffValidation {
                     default -> false;
                 };
             }
-
             case "TEAM_MEMBER" -> {
                 TeamMember member = teamMemberRepository.findByEmail(email).orElse(null);
                 if (member == null) yield false;
@@ -96,10 +94,9 @@ public class StaffValidation {
                     default -> false;
                 };
             }
-
+            case "ADMIN" -> true; // Add ADMIN case if needed
             default -> false;
-        }) return true;
-        else return false;
+        };
     }
 
 

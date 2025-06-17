@@ -101,6 +101,13 @@ public class TeamMemberController {
 
     }
 
+    // Get TeamMemberByEmail
+    @GetMapping("/getTeamMemberByEmail/{memberEmail}")
+    public ResponseEntity<TeamMemberDTO> getTeamMemberByEmailPath(@PathVariable String memberEmail,
+                                                                  @RequestParam String role,
+                                                                  @RequestParam String email) {
+        return ResponseEntity.ok(service.getTeamMemberByEmail(memberEmail, role, email));
+    }
 
 
 

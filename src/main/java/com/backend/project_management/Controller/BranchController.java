@@ -13,6 +13,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/branch")
+@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "https://pjsofttech.in")
 public class BranchController {
     @Autowired
     private BranchService branchService;

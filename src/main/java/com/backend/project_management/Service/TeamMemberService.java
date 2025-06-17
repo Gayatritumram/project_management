@@ -14,6 +14,8 @@ public interface TeamMemberService {
     TeamMemberDTO getTeamMemberById(Long id,String role,String  email);
     List<TeamMemberDTO> getAllTeamMembers(String role,String  email,String  branchCode);
 
+    TeamMemberDTO getTeamMemberByEmail(String memberEmail, String role, String email);
+
     void makeTeamLeader(Long id, String role,String  email);
     TeamMemberDTO updateTeamMember(Long id, TeamMemberDTO teamMemberDTO,String role,String  email);
     void deleteTeamMember(Long id,String role,String  email);

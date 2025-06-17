@@ -108,6 +108,17 @@ public class TeamMemberServiceImpl implements TeamMemberService {
                 .orElseThrow(() -> new RequestNotFound("Team Member not found"));
         return TeamMemberMapper.mapToTeamMemberDTO(teamMember);
     }
+    @Override
+    public TeamMemberDTO getTeamMemberByEmail(String memberEmail, String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view TeamMember");
+        }
+        TeamMember teamMember = repository.findByEmail(memberEmail)
+                .orElseThrow(() -> new RequestNotFound("Team Member not found with email: " + memberEmail));
+
+        return TeamMemberMapper.mapToTeamMemberDTO(teamMember);
+    }
+
 
     @Override
     public List<TeamMemberDTO> getAllTeamMembers(String role,String  email,String  branchCode) {
