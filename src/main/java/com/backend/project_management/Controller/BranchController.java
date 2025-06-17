@@ -21,35 +21,35 @@ public class BranchController {
 
 
     @PostMapping("/createBranch")
-    public ResponseEntity<BranchResponseDTO> createBranch(@RequestBody BranchResponseDTO branchResponseDTO,
+    public ResponseEntity<BranchResponseDTO> createBranchName(@RequestBody BranchResponseDTO branchResponseDTO,
                                                         @RequestParam String role,
                                                         @RequestParam String email) {
-        return ResponseEntity.ok(branchService.CreateBranch(branchResponseDTO, role, email));
+        return ResponseEntity.ok(branchService.CreateBranchName(branchResponseDTO, role, email));
     }
     @PutMapping("/updateBranch/{id}")
-    public ResponseEntity<BranchResponseDTO>updateBranch(@PathVariable Long id,
+    public ResponseEntity<BranchResponseDTO>updateBranchName(@PathVariable Long id,
                                                          @RequestBody BranchResponseDTO branchResponseDTO,
                                                          @RequestParam String role,
                                                          @RequestParam String email){
-        return ResponseEntity.ok(branchService.UpdateBranch(id,branchResponseDTO,role,email));
+        return ResponseEntity.ok(branchService.UpdateBranchName(id,branchResponseDTO,role,email));
     }
     @GetMapping("/getBranchById/{id}")
-    public ResponseEntity<BranchResponseDTO> getBranchById(@PathVariable Long id,
+    public ResponseEntity<BranchResponseDTO> getBranchNameById(@PathVariable Long id,
                                                  @RequestParam String role,
                                                  @RequestParam String email) {
-        return ResponseEntity.ok(branchService.getBranchById(id, role, email));
+        return ResponseEntity.ok(branchService.getBranchNameById(id, role, email));
     }
     @GetMapping("/getAllBranch")
-    public ResponseEntity<List<BranchResponseDTO>> getAllBranch(@RequestParam String role,
+    public ResponseEntity<List<BranchResponseDTO>> getAllBranchName(@RequestParam String role,
                                                       @RequestParam String email,
                                                       @RequestParam String branchCode) {
-        return ResponseEntity.ok(branchService.getAllBranches(role, email, branchCode));
+        return ResponseEntity.ok(branchService.getAllBranchesName(role, email, branchCode));
     }
     @DeleteMapping("/deleteBranchById/{id}")
     public ResponseEntity<String> deleteBranchById(@PathVariable Long id,
                                          @RequestParam String role,
                                          @RequestParam String email) {
-        branchService.deleteBranch(id, role, email);
+        branchService.deleteBranchName(id, role, email);
         return ResponseEntity.ok("Branch with ID " + id + " deleted successfully.");
     }
 

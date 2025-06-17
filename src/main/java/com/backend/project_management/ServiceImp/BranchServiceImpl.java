@@ -26,7 +26,7 @@ public class BranchServiceImpl implements BranchService {
 
 
     @Override
-    public BranchResponseDTO CreateBranch(BranchResponseDTO branchDTO,String role,String email) {
+    public BranchResponseDTO CreateBranchName(BranchResponseDTO branchDTO,String role,String email) {
         if (!staffValidation.hasPermission(role, email, "POST")) {
             System.out.println("Permission denied!");
             throw new AccessDeniedException("No permission to create Branch");
@@ -42,7 +42,7 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public BranchResponseDTO UpdateBranch(Long id, BranchResponseDTO branchResponseDTO, String role, String email) {
+    public BranchResponseDTO UpdateBranchName(Long id, BranchResponseDTO branchResponseDTO, String role, String email) {
             if (!staffValidation.hasPermission(role, email, "PUT")) {
                 throw new AccessDeniedException("You do not have permission to update Branch");
             }
@@ -53,7 +53,7 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public BranchResponseDTO getBranchById(Long id, String role, String email) {
+    public BranchResponseDTO getBranchNameById(Long id, String role, String email) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("You do not have permission to view getBranchId");
         }
@@ -63,7 +63,7 @@ public class BranchServiceImpl implements BranchService {
         }
 
     @Override
-    public List<BranchResponseDTO> getAllBranches(String role, String email,String branchCode) {
+    public List<BranchResponseDTO> getAllBranchesName(String role, String email,String branchCode) {
         if(!staffValidation.hasPermission(role, email, "GET")){
             throw new AccessDeniedException("You do not have permission to view Branch");
         }
@@ -73,7 +73,7 @@ public class BranchServiceImpl implements BranchService {
                     .collect(Collectors.toList());
     }
     @Override
-    public void deleteBranch(Long id,String role, String email) {
+    public void deleteBranchName(Long id,String role, String email) {
         if (!staffValidation.hasPermission(role, email, "DELETE")) {
             throw new AccessDeniedException("You do not have permission to view Branch");
         }
