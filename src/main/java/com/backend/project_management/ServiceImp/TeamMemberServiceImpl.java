@@ -243,19 +243,6 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         }
     }
 
-    @Override
-    public TeamMemberDTO getTeamMemberByName(String memberName, String role, String email) {
-        if (!staffValidation.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("You do not have permission to view TeamMember");
-        }
-
-        TeamMember teamMember = repository.findByName(memberName)
-                .orElseThrow(() -> new RequestNotFound("Team Member not found with name: " + memberName));
-
-        return TeamMemberMapper.mapToTeamMemberDTO(teamMember);
-    }
-
-
 
 
     @Override

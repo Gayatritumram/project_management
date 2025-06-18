@@ -221,18 +221,6 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
     }
 
     @Override
-    public TeamLeaderDTO getTeamLeaderByName(String name, String role, String email) {
-        if (!staffValidation.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("You do not have permission to view TeamLeader");
-        }
-
-        return teamLeaderRepository.findByName(name)
-                .map(teamLeaderMapper::toDto)
-                .orElseThrow(() -> new RequestNotFound("TeamLeader not found with name: " + name));
-    }
-
-
-    @Override
     public void updateTeamMemberProfilePicture(Long leaderId, MultipartFile imageFile, String role, String email) {
         // Permission check
         if (!staffValidation.hasPermission(role, email, "PUT")) {

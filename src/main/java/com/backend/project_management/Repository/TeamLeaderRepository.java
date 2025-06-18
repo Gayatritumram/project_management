@@ -15,6 +15,6 @@ public interface TeamLeaderRepository extends JpaRepository<TeamLeader, Long> {
     Optional<TeamLeader> findByName(String name);
     List<TeamLeader> findAllByBranchCode(String branchCode);
 
-    Optional<TeamLeader> findByName(String name);
+
 
 }
