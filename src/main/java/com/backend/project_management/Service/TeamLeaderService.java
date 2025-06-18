@@ -12,6 +12,7 @@ public interface TeamLeaderService {
     TeamLeaderDTO updateTeamLeader(Long id, TeamLeaderDTO teamLeaderDTO,String  role, String email);
     void deleteTeamLeader(Long id,String role, String email);
     TeamLeaderDTO getTeamLeaderById(Long id, String role, String email);
+    TeamLeaderDTO getTeamLeaderByName(String name, String role, String email);
     List<TeamLeaderDTO> getAllTeamLeaders(String role, String email, String branchCode);
     TeamLeaderDTO getTeamLeaderByEmail(String email,String role,String emailFind);
     String forgotPassword(String email);

@@ -106,4 +106,12 @@ public class TeamLeaderController {
 
     }
 
+    @GetMapping("/getTeamLeaderByName/{name}")
+    public ResponseEntity<TeamLeaderDTO> getTeamLeaderByName(@PathVariable String name,
+                                                             @RequestParam String role,
+                                                             @RequestParam String email) {
+        return ResponseEntity.ok(teamLeaderService.getTeamLeaderByName(name, role, email));
+    }
+
+
 }

@@ -154,6 +154,7 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
                 .orElseThrow(() -> new RuntimeException("TeamLeader not found with id: " + id));
     }
 
+
     @Override
     public List<TeamLeaderDTO> getAllTeamLeaders(String role, String email, String branchCode) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
@@ -218,6 +219,18 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
             throw new IllegalArgumentException("Team Leader email not found!");
         }
     }
+
+    @Override
+    public TeamLeaderDTO getTeamLeaderByName(String name, String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view TeamLeader");
+        }
+
+        return teamLeaderRepository.findByName(name)
+                .map(teamLeaderMapper::toDto)
+                .orElseThrow(() -> new RequestNotFound("TeamLeader not found with name: " + name));
+    }
+
 
     @Override
     public void updateTeamMemberProfilePicture(Long leaderId, MultipartFile imageFile, String role, String email) {

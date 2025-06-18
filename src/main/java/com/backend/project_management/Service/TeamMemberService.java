@@ -29,5 +29,8 @@ public interface TeamMemberService {
 
     void updateTeamMemberProfilePicture(Long memberId,MultipartFile imageFile, String role, String email);
 
+    TeamMemberDTO getTeamMemberByName(String memberName, String role, String email);
+
+
 
 }
