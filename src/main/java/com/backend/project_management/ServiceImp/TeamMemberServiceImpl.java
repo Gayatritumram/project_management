@@ -282,4 +282,14 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
 
 
+    @Override
+    public TeamMember getTeamMemberByName(String name, String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view this team member.");
+        }
+
+        return repository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Team member not found with name: " + name));
+    }
+
 }

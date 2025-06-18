@@ -253,4 +253,14 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
             throw new RuntimeException("Failed to upload profile picture: " + e.getMessage(), e);
         }
     }
+
+    @Override
+    public TeamLeader getTeamLeaderByName(String name, String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("Access denied: Not allowed to view Team Leader info.");
+        }
+
+        return teamLeaderRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Team Leader not found with name: " + name));
+    }
 }

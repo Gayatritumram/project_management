@@ -109,6 +109,15 @@ public class TeamMemberController {
         return ResponseEntity.ok(service.getTeamMemberByEmail(memberEmail, role, email));
     }
 
+    @GetMapping("/getTeamMemberByName")
+    public ResponseEntity<TeamMember> getTeamMemberByName(
+            @RequestParam String name,
+            @RequestParam String role,
+            @RequestParam String email
+    ) {
+        TeamMember member = service.getTeamMemberByName(name, role, email);
+        return ResponseEntity.ok(member);
+    }
 
 
 

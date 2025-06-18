@@ -106,4 +106,15 @@ public class TeamLeaderController {
 
     }
 
+    @GetMapping("/getTeamLeaderByName")
+    public ResponseEntity<TeamLeader> getTeamLeaderByName(
+            @RequestParam String name,
+            @RequestParam String role,
+            @RequestParam String email
+    ) {
+        TeamLeader leader = teamLeaderService.getTeamLeaderByName(name, role, email);
+        return ResponseEntity.ok(leader);
+    }
+
+
 }

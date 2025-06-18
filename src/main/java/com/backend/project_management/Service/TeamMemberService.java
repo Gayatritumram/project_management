@@ -28,6 +28,7 @@ public interface TeamMemberService {
     String resetPassword(String email, String newPassword, String confirmPassword);
 
     void updateTeamMemberProfilePicture(Long memberId,MultipartFile imageFile, String role, String email);
+    TeamMember getTeamMemberByName(String name, String role, String email);
 
 
 }
