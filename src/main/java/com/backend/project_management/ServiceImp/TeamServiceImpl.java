@@ -1,11 +1,15 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.TeamDTO;
+import com.backend.project_management.DTO.TeamMemberDTO;
 import com.backend.project_management.Entity.Team;
+import com.backend.project_management.Entity.TeamLeader;
+import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamMapper;
 import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TeamLeaderRepository;
+import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +23,7 @@ import java.util.stream.Collectors;
 public class TeamServiceImpl implements TeamService {
     @Autowired
     private  TeamRepository teamRepository;
-    @Autowired
-    private  TeamMapper teamMapper;
+
 
     @Autowired
     private StaffValidation  staffValidation;
@@ -30,6 +33,9 @@ public class TeamServiceImpl implements TeamService {
 
     @Autowired
     private TeamLeaderRepository teamLeaderRepository;
+
+    @Autowired
+    private TeamMemberRepository teamMemberRepository;
 
 
     @Override
@@ -41,7 +47,7 @@ public class TeamServiceImpl implements TeamService {
         }
         System.out.println("Permission granted!");
 
-        Team team = teamMapper.toEntity(teamDTO);
+        Team team = TeamMapper.toEntity(teamDTO);
 
         String branchCode = switch (role) {
             case "ADMIN" -> adminRepo.findByEmail(email)
@@ -58,8 +64,29 @@ public class TeamServiceImpl implements TeamService {
         team.setCreatedByEmail(email);
         team.setBranchCode(branchCode);
 
+        // Attach team leader
+        if (teamDTO.getTeamLeaderId() != null) {
+            TeamLeader leader = teamLeaderRepository.findById(teamDTO.getTeamLeaderId())
+                    .orElseThrow(() -> new RuntimeException("Team Leader not found"));
+            leader.setTeamId(team); // Set reverse mapping
+            team.setTeamLeader(leader);
+        }
+
+        // Attach team members
+        if (teamDTO.getTeamMemberList() != null && !teamDTO.getTeamMemberList().isEmpty()) {
+            List<Long> memberIds = teamDTO.getTeamMemberList().stream()
+                    .map(TeamMemberDTO::getId)
+                    .toList();
+
+            List<TeamMember> members = teamMemberRepository.findAllById(memberIds);
+            for (TeamMember member : members) {
+                member.setTeamId(team); // Reverse mapping
+            }
+            team.setMemberList(members);
+        }
+
         Team team1 = teamRepository.save(team);
-        return teamMapper.toDTO(team1);
+        return TeamMapper.toDTO(team1);
     }
 
     @Override
@@ -68,7 +95,7 @@ public class TeamServiceImpl implements TeamService {
             throw new AccessDeniedException("You do not have permission to view getTeamById");
         }
         return teamRepository.findById(id)
-                .map(teamMapper::toDTO)
+                .map(TeamMapper::toDTO)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
     }
 
@@ -78,7 +105,7 @@ public class TeamServiceImpl implements TeamService {
             throw new AccessDeniedException("You do not have permission to view getAllTeams");
         }
         return teamRepository.findAllByBranchCode(branchCode).stream()
-                .map(teamMapper::toDTO)
+                .map(TeamMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -94,7 +121,7 @@ public class TeamServiceImpl implements TeamService {
         existingTeam.setBranchName(teamDTO.getBranchName());
         existingTeam.setDepartment(teamDTO.getDepartment());
 
-        return teamMapper.toDTO(teamRepository.save(existingTeam));
+        return TeamMapper.toDTO(teamRepository.save(existingTeam));
     }
 
 

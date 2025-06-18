@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.List;//.
 @Data
 @Entity
@@ -24,10 +26,12 @@ public class Team {
     private String role;
     private String branchCode;
 
-    @OneToMany(mappedBy = "teamId", cascade = CascadeType.ALL, fetch = FetchType.LAZY) //.
-    private List<TeamMember> members;
+
+    @OneToMany(mappedBy = "teamId", cascade = CascadeType.ALL)
+    private List<TeamMember> memberList = new ArrayList<>();
+
+    @OneToOne(mappedBy = "teamId", cascade = CascadeType.ALL)
+    private TeamLeader teamLeader;
 
 
-    @OneToMany(mappedBy = "team1", cascade = CascadeType.ALL)
-    private List<Project>  assignTeam;
 }

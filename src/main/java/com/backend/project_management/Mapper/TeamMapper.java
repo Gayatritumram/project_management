@@ -2,11 +2,14 @@ package com.backend.project_management.Mapper;
 
 import com.backend.project_management.DTO.TeamDTO;
 import com.backend.project_management.Entity.Team;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+
 public class TeamMapper {
-    public TeamDTO toDTO(Team team) {
+
+    public static TeamDTO toDTO(Team team) {
         TeamDTO dto = new TeamDTO();
         dto.setId(team.getId());
         dto.setTeamName(team.getTeamName());
@@ -15,10 +18,25 @@ public class TeamMapper {
         dto.setRole(team.getRole());
         dto.setCreatedByEmail(team.getCreatedByEmail());
         dto.setBranchCode(team.getBranchCode());
+        // ✅ Map team members
+        if (team.getMemberList() != null) {
+            dto.setTeamMemberList(
+                    team.getMemberList()
+                            .stream()
+                            .map(TeamMemberMapper::mapToTeamMemberDTO)
+                            .toList()
+            );
+        }
+
+        // ✅ Map team leader ID
+        if (team.getTeamLeader() != null) {
+            dto.setTeamLeaderId(team.getTeamLeader().getId());
+        }
+
         return dto;
     }
 
-    public Team toEntity(TeamDTO teamDTO) {
+    public static Team toEntity(TeamDTO teamDTO) {
         Team team = new Team();
         team.setId(teamDTO.getId());
         team.setTeamName(teamDTO.getTeamName());

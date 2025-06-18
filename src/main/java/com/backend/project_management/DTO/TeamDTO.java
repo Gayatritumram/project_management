@@ -4,6 +4,8 @@ import com.backend.project_management.Entity.Project;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -20,5 +22,7 @@ public class TeamDTO {
     private String role;
     private String branchCode;
 
+    private Long teamLeaderId;
+    private List<TeamMemberDTO> teamMemberList;
 
 }

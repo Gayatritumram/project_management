@@ -25,13 +25,15 @@ public class TeamMemberDTO {
     private String branchName;
     private String imageUrl;
 
-    private Long teamId;
+
     @Email
     private String createdByEmail;
 
     private String role;
 
     private String branchCode;
+
+    private Long teamId;
 
 
 }

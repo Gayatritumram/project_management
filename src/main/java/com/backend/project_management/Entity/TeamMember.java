@@ -47,12 +47,9 @@ public class TeamMember{
 
     private String branchCode;
 
-
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teamId")
     private Team teamId;
-
 
     public boolean isCanAccessTask() {
         return  true;

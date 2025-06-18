@@ -51,14 +51,14 @@ public class TeamLeader {
 
     private String branchCode;
 
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team teamId;
 
     @OneToMany(mappedBy = "assignedByLeader")
     @JsonManagedReference("assigned-by")
     private List<Task> tasksAssigned; // You can name this whatever fits
 
+    @OneToOne
+    @JoinColumn(name = "team_id")
+    private Team teamId;
 
 
 

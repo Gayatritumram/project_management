@@ -46,12 +46,14 @@ public class TeamMemberMapper {
         dto.setBranchName(teamMember.getBranchName());
         dto.setPassword(teamMember.getPassword());
         dto.setImageUrl(teamMember.getImageUrl());
-        if (teamMember.getTeamId() != null) {
-            dto.setTeamId(teamMember.getTeamId().getId());
-        }
+
         dto.setCreatedByEmail(teamMember.getCreatedByEmail());
         dto.setBranchCode(teamMember.getBranchCode());
         dto.setRole(teamMember.getRole());
+
+        if (teamMember.getTeamId() != null) {
+            dto.setTeamId(teamMember.getTeamId().getId());
+        }
 
 
         return dto;

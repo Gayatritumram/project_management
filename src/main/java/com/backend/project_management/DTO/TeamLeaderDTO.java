@@ -16,7 +16,7 @@ public class TeamLeaderDTO {
     private String department;
     private String branchName;
     private LocalDate joinDate;
-    private Long teamId;
+
     private String imageUrl;
 
     @Email
@@ -25,5 +25,7 @@ public class TeamLeaderDTO {
     private String role;
 
     private String branchCode;
+
+    private Long teamId;
 
 }
