@@ -4,7 +4,7 @@ import com.backend.project_management.DTO.TaskDTO;
 import com.backend.project_management.Entity.*;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TaskMapper;
-import com.backend.project_management.Repository.ProjectAdminRepo;
+import com.backend.project_management.Repository.BranchAdminRepository;
 import com.backend.project_management.Repository.TaskRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
@@ -25,7 +25,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired private TaskRepository taskRepository;
     @Autowired private TaskMapper taskMapper;
     @Autowired private S3Service s3Service;
-    @Autowired private ProjectAdminRepo projectAdminRepo;
+
     @Autowired private TeamLeaderRepository teamLeaderRepository;
     @Autowired private TeamMemberRepository teamMemberRepository;
     @Autowired private JwtHelper jwtHelper;
@@ -33,7 +33,7 @@ public class TaskServiceImpl implements TaskService {
     private StaffValidation  staffValidation;
 
     @Autowired
-    private ProjectAdminRepo adminRepo;
+    private BranchAdminRepository adminRepo;
 
     @Autowired
     private TeamMemberRepository repository;
@@ -53,7 +53,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskMapper.toEntity(taskDTO);
 
         String branchCode = switch (role) {
-            case "ADMIN" -> adminRepo.findByEmail(email)
+            case "BRANCH" -> adminRepo.findByBranchEmail(email)
                     .orElseThrow(() -> new RequestNotFound("Admin not found"))
                     .getBranchCode();
             case "TEAM_LEADER" -> teamLeaderRepository.findByEmail(email)
@@ -69,8 +69,8 @@ public class TaskServiceImpl implements TaskService {
 
 
         try {
-            if (role.contains("ADMIN")) {
-                ProjectAdmin currentAdmin = projectAdminRepo.findByEmail(email)
+            if (role.contains("BRANCH")) {
+                BranchAdmin currentAdmin = adminRepo.findByBranchEmail(email)
                         .orElseThrow(() -> new RuntimeException("Logged-in admin not found"));
                 System.out.println("currentAdmin: " + currentAdmin);
                 task.setAssignedByAdmin(currentAdmin);
@@ -277,8 +277,8 @@ public class TaskServiceImpl implements TaskService {
         task.setBranchCode(branchCode);
 
         try {
-            if (role.contains("ADMIN")) {
-                ProjectAdmin currentAdmin = projectAdminRepo.findByEmail(email)
+            if (role.contains("BRANCH")) {
+                BranchAdmin currentAdmin = adminRepo.findByBranchEmail(email)
                         .orElseThrow(() -> new RuntimeException("Logged-in admin not found"));
                 task.setAssignedByAdmin(currentAdmin);
             } else if (role.contains("TEAM_LEADER")) {

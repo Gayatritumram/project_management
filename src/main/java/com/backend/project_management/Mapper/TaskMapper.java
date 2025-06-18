@@ -2,7 +2,7 @@ package com.backend.project_management.Mapper;
 
 import com.backend.project_management.DTO.TaskDTO;
 import com.backend.project_management.Entity.Task;
-import com.backend.project_management.Repository.ProjectAdminRepo;
+import com.backend.project_management.Repository.BranchAdminRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class TaskMapper {
 
     @Autowired
-    ProjectAdminRepo projectAdminRepository;
+    private BranchAdminRepository adminRepo;
 
     @Autowired
     TeamLeaderRepository teamLeaderRepository;
@@ -72,7 +72,7 @@ public class TaskMapper {
         task.setRole(dto.getRole());
         task.setAssignedToName(dto.getAssignedToName());
         if (dto.getAssignedByAdminId() != null) {
-            task.setAssignedByAdmin(projectAdminRepository.findById(dto.getAssignedByAdminId()).orElse(null));
+            task.setAssignedByAdmin(adminRepo.findById(dto.getAssignedByAdminId()).orElse(null));
         }
 
         if (dto.getAssignedByLeaderId() != null) {

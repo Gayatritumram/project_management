@@ -2,7 +2,6 @@ package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
-import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Service.StaffService;
@@ -21,8 +20,6 @@ public class StaffValidation {
     @Autowired
     private StaffService staffService;
 
-    @Autowired
-    private ProjectAdminRepo projectAdminRepo;
 
     @Autowired
     private TeamLeaderRepository teamLeaderRepository;
@@ -94,7 +91,6 @@ public class StaffValidation {
                     default -> false;
                 };
             }
-            case "ADMIN" -> true; // Add ADMIN case if needed
             default -> false;
         };
     }

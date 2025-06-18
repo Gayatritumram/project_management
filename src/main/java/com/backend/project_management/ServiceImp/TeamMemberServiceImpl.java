@@ -50,7 +50,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     private StaffValidation  staffValidation;
 
     @Autowired
-    private ProjectAdminRepo adminRepo;
+    private BranchAdminRepository adminRepo;
 
     @Autowired private TaskRepository taskRepository;
 
@@ -70,8 +70,8 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         TeamMember teamMember = TeamMemberMapper.mapToTeamMember(dto);
 
         String branchCode;
-        if (role.equals("ADMIN")) {
-            branchCode = adminRepo.findByEmail(email)
+        if (role.equals("BRANCH")) {
+            branchCode = adminRepo.findByBranchEmail(email)
                     .orElseThrow(() -> new RequestNotFound("Admin not found"))
                     .getBranchCode();
         } else {

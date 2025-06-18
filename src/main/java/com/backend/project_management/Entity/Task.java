@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
-@Table(name = "PMTask")
+@Table(name = "PM_Task")
 public class Task {
 
     @Id
@@ -37,7 +37,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "assigned_by_admin_id")
-    private ProjectAdmin assignedByAdmin;
+    private BranchAdmin assignedByAdmin;
 
     @ManyToOne
     @JoinColumn(name = "assigned_to_member_id")

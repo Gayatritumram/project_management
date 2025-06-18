@@ -7,6 +7,7 @@ import com.backend.project_management.Model.JwtRequest;
 import com.backend.project_management.Model.JwtResponse;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
+import com.backend.project_management.Service.BranchAdminService;
 import com.backend.project_management.Service.StaffService;
 import com.backend.project_management.Util.JwtHelper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,6 +44,9 @@ public class StaffServiceImp implements StaffService {
     private JwtHelper jwtHelper;
 
     @Autowired
+    private BranchAdminService branchAdminService;
+
+    @Autowired
     public StaffServiceImp(WebClient webClient) {
         this.webClient = webClient;
     }
@@ -64,11 +68,30 @@ public class StaffServiceImp implements StaffService {
                 .onStatus(HttpStatusCode::isError, response ->
                         response.bodyToMono(String.class)
                                 .flatMap(error -> Mono.error(new RuntimeException("Branch Login Failed: " + error)))
-
                 )
                 .bodyToMono(JwtResponse.class)
+                .flatMap(jwtResponse -> {
+                    Object data = jwtResponse.getData();
+                    if (jwtResponse.getToken() != null && data instanceof Map) {
+                        Map<String, Object> dataMap = (Map<String, Object>) data;
+                        if (dataMap.containsKey("branchEmail")) {
+                            try {
+                                branchAdminService.saveBranchAdmin(jwtResponse);
+                            } catch (Exception e) {
+                                System.out.println("Failed to save branch admin: " + e.getMessage());
+                            }
+                        } else {
+                            System.out.println("Skipping save: branchEmail not found in data.");
+                        }
+                    } else {
+                        System.out.println("Skipping save: token is null or data is not a valid map.");
+                    }
 
-                // 2. If branch login fails, try TeamLeader
+                    return Mono.just(jwtResponse);
+                })
+
+
+        // 2. If branch login fails, try TeamLeader
                 .onErrorResume(branchError -> {
                     Optional<TeamLeader> leaderOpt = teamLeaderRepository.findByEmail(email);
                     if (leaderOpt.isPresent()) {

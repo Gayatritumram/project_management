@@ -7,7 +7,7 @@ import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamMapper;
-import com.backend.project_management.Repository.ProjectAdminRepo;
+import com.backend.project_management.Repository.BranchAdminRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Repository.TeamRepository;
@@ -29,7 +29,7 @@ public class TeamServiceImpl implements TeamService {
     private StaffValidation  staffValidation;
 
     @Autowired
-    private ProjectAdminRepo adminRepo;
+    private BranchAdminRepository adminRepo;
 
     @Autowired
     private TeamLeaderRepository teamLeaderRepository;
@@ -50,7 +50,7 @@ public class TeamServiceImpl implements TeamService {
         Team team = TeamMapper.toEntity(teamDTO);
 
         String branchCode = switch (role) {
-            case "ADMIN" -> adminRepo.findByEmail(email)
+            case "BRANCH" -> adminRepo.findByBranchEmail(email)
                     .orElseThrow(() -> new RequestNotFound("Admin not found"))
                     .getBranchCode();
             case "TEAM_LEADER" -> teamLeaderRepository.findByEmail(email)

@@ -1,6 +1,5 @@
 package com.backend.project_management.Controller;
 
-import com.backend.project_management.Service.ProjectAdminService;
 import com.backend.project_management.Service.TeamLeaderService;
 import com.backend.project_management.Service.TeamMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 //@CrossOrigin(origins = "http://localhost:3000")
 @CrossOrigin(origins = "https://pjsofttech.in")
 public class forgetPassword1 {
-    @Autowired
-    private ProjectAdminService adminService;
 
     @Autowired
     private TeamMemberService service;
@@ -30,8 +27,6 @@ public class forgetPassword1 {
             @RequestParam(required = false) String confirmPassword) {
 
         switch (role.toUpperCase()) {
-            case "ADMIN":
-                return handleProjectAdminRecovery(email, otp, newPassword, confirmPassword);
 
             case "TEAM_MEMBER":
                 return handleTeamMemberRecovery(email, otp, newPassword, confirmPassword);
@@ -44,17 +39,6 @@ public class forgetPassword1 {
         }
     }
 
-    private ResponseEntity<String> handleProjectAdminRecovery(String email, Integer otp, String newPassword, String confirmPassword) {
-        if (email != null && otp == null && newPassword == null) {
-            return ResponseEntity.ok(adminService.forgotPassword(email));
-        } else if (email != null && otp != null && newPassword == null) {
-            return ResponseEntity.ok(adminService.verifyOtp(email, otp));
-        } else if (email != null && newPassword != null && confirmPassword != null) {
-            return ResponseEntity.ok(adminService.resetPassword(email, newPassword, confirmPassword));
-        } else {
-            return ResponseEntity.badRequest().body("Invalid input for project admin recovery.");
-        }
-    }
 
     private ResponseEntity<String> handleTeamMemberRecovery(String email, Integer otp, String newPassword, String confirmPassword) {
         if (email != null && otp == null && newPassword == null) {

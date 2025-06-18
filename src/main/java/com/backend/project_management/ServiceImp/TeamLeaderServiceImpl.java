@@ -1,11 +1,12 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.TeamLeaderDTO;
+import com.backend.project_management.Entity.BranchAdmin;
 import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamLeaderMapper;
-import com.backend.project_management.Repository.ProjectAdminRepo;
+import com.backend.project_management.Repository.BranchAdminRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.EmailService;
@@ -49,7 +50,8 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
     private StaffValidation  staffValidation;
 
     @Autowired
-    private ProjectAdminRepo adminRepo;
+    private BranchAdminRepository adminRepo;
+
 
 
 
@@ -64,8 +66,8 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
         TeamLeader leader = new TeamLeader();
         String branchCode;
-        if (role.equals("ADMIN")) {
-            branchCode = adminRepo.findByEmail(email)
+        if (role.equals("BRANCH")) {
+            branchCode = adminRepo.findByBranchEmail(email)
                     .orElseThrow(() -> new RequestNotFound("Admin not found"))
                     .getBranchCode();
         } else {

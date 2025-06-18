@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "PMTeamMember_table")
+@Table(name = "PM_TeamMember")
 public class TeamMember{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

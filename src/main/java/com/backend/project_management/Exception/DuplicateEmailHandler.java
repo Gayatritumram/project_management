@@ -1,6 +1,5 @@
 package com.backend.project_management.Exception;
 
-import com.backend.project_management.Repository.ProjectAdminRepo;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class DuplicateEmailHandler {
 
-    @Autowired
-    private ProjectAdminRepo projectAdminRepo;
-    
     @Autowired
     private TeamMemberRepository teamMemberRepository;
     
@@ -24,7 +20,7 @@ public class DuplicateEmailHandler {
      * @return true if email exists, false otherwise
      */
     public boolean isEmailAlreadyRegistered(String email) {
-        return projectAdminRepo.findByEmail(email).isPresent() || 
+        return
                teamMemberRepository.findByEmail(email).isPresent() ||
                teamLeaderRepository.findByEmail(email).isPresent();
     }

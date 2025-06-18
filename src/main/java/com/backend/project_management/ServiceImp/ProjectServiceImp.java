@@ -4,7 +4,7 @@ import com.backend.project_management.DTO.ProjectDTO;
 import com.backend.project_management.Entity.*;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.ProjectMapper;
-import com.backend.project_management.Repository.ProjectAdminRepo;
+import com.backend.project_management.Repository.BranchAdminRepository;
 import com.backend.project_management.Repository.ProjectRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamRepository;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
@@ -26,11 +25,12 @@ public class ProjectServiceImp implements ProjectService {
     @Autowired
     private StaffValidation  staffValidation;
 
-    @Autowired
-    private ProjectAdminRepo adminRepo;
 
     @Autowired
     private TeamLeaderRepository teamLeaderRepository;
+
+    @Autowired
+    private BranchAdminRepository adminRepo;
 
 
 
@@ -46,7 +46,7 @@ public class ProjectServiceImp implements ProjectService {
         Project project =ProjectMapper.mapToProject(projectDTO);
 
         String branchCode = switch (role) {
-            case "ADMIN" -> adminRepo.findByEmail(email)
+            case "BRANCH" -> adminRepo.findByBranchEmail(email)
                     .orElseThrow(() -> new RequestNotFound("Admin not found"))
                     .getBranchCode();
             case "TEAM_LEADER" -> teamLeaderRepository.findByEmail(email)
