@@ -14,7 +14,7 @@ public class TeamMapper {
         dto.setId(team.getId());
         dto.setTeamName(team.getTeamName());
         dto.setBranchName(team.getBranchName());
-        dto.setDepartment(team.getDepartment());
+        dto.setDepartmentName(team.getDepartmentName());
         dto.setRole(team.getRole());
         dto.setCreatedByEmail(team.getCreatedByEmail());
         dto.setBranchCode(team.getBranchCode());
@@ -41,7 +41,7 @@ public class TeamMapper {
         team.setId(teamDTO.getId());
         team.setTeamName(teamDTO.getTeamName());
         team.setBranchName(teamDTO.getBranchName());
-        team.setDepartment(teamDTO.getDepartment());
+        team.setDepartmentName(teamDTO.getDepartmentName());
         team.setRole(teamDTO.getRole());
         team.setCreatedByEmail(teamDTO.getCreatedByEmail());
         team.setBranchCode(teamDTO.getBranchCode());

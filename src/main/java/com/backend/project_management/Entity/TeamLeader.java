@@ -39,7 +39,7 @@ public class TeamLeader {
 
     private String phone;
     private String address;
-    private String department;
+    private String departmentName;
     private String branchName;
     private LocalDate joinDate;
     private String imageUrl;

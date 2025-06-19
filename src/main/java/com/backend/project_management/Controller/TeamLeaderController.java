@@ -44,7 +44,7 @@ public class TeamLeaderController {
         responseDTO.setEmail(created.getEmail());
         responseDTO.setPhone(created.getPhone());
         responseDTO.setAddress(created.getAddress());
-        responseDTO.setDepartment(created.getDepartment());
+        responseDTO.setDepartmentName(created.getDepartmentName());
         responseDTO.setBranchName(created.getBranchName());
         responseDTO.setJoinDate(created.getJoinDate());
         responseDTO.setImageUrl(created.getImageUrl());

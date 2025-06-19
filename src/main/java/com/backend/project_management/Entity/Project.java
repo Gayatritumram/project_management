@@ -29,7 +29,7 @@ public class Project {
     private String statusDescription;
 
     private String branchName;
-    private String department;
+    private String departmentName;
 
     @Email
     private String createdByEmail;

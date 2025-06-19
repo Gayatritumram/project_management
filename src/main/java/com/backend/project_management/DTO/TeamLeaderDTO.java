@@ -13,7 +13,7 @@ public class TeamLeaderDTO {
     private String password; // hash this before saving
     private String phone;
     private String address;
-    private String department;
+    private String departmentName;
     private String branchName;
     private LocalDate joinDate;
 

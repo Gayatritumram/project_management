@@ -15,7 +15,7 @@ public class TeamDTO {
     private Long id;
     private String teamName;
     private String branchName;
-    private String department;
+    private String departmentName;
 
     @Email
     private String createdByEmail;

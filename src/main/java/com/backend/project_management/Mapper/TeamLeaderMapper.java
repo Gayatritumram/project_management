@@ -20,7 +20,7 @@ public class TeamLeaderMapper {
         dto.setPassword(leader.getPassword());
         dto.setPhone(leader.getPhone());
         dto.setAddress(leader.getAddress());
-        dto.setDepartment(leader.getDepartment());
+        dto.setDepartmentName(leader.getDepartmentName());
         dto.setBranchName(leader.getBranchName());
         dto.setJoinDate(leader.getJoinDate());
         dto.setImageUrl(leader.getImageUrl());
@@ -40,7 +40,7 @@ public class TeamLeaderMapper {
         leader.setPassword(dto.getPassword());
         leader.setPhone(dto.getPhone());
         leader.setAddress(dto.getAddress());
-        leader.setDepartment(dto.getDepartment());
+        leader.setDepartmentName(dto.getDepartmentName());
         leader.setBranchName(dto.getBranchName());
         leader.setJoinDate(dto.getJoinDate());
         leader.setImageUrl(dto.getImageUrl());

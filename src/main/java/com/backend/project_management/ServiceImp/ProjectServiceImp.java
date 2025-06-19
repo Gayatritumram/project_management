@@ -129,7 +129,7 @@ public class ProjectServiceImp implements ProjectService {
         existingProject.setEstimatedDate(project.getEstimatedDate());
         existingProject.setStatusDescription(project.getStatusDescription());
         existingProject.setBranchName(project.getBranchName());
-        existingProject.setDepartment(project.getDepartment());
+        existingProject.setDepartmentName(project.getDepartmentName());
 
 
 

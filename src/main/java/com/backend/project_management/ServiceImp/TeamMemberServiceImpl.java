@@ -157,7 +157,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         teamLeader.setTeamId(teamMember.getTeamId());
         teamLeader.setBranchName(teamMember.getBranchName());
         teamLeader.setJoinDate(teamMember.getJoinDate());
-        teamLeader.setDepartment(teamMember.getDepartment());
+        teamLeader.setDepartmentName(teamMember.getDepartmentName());
         teamLeader.setAddress(teamMember.getAddress());
         teamLeader.setPhone(teamMember.getPhone());
         teamLeader.setCreatedByEmail(teamMember.getCreatedByEmail());
@@ -182,7 +182,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         teamMember.setName(teamMemberDTO.getName());
         teamMember.setEmail(teamMemberDTO.getEmail());
         teamMember.setJoinDate(teamMemberDTO.getJoinDate());
-        teamMember.setDepartment(teamMemberDTO.getDepartment());
+        teamMember.setDepartmentName(teamMemberDTO.getDepartmentName());
         teamMember.setPhone(teamMemberDTO.getPhone());
         teamMember.setAddress(teamMemberDTO.getAddress());
         teamMember.setRoleName(teamMemberDTO.getRoleName());

@@ -25,7 +25,7 @@ public class ProjectDTO {
     private LocalDate estimatedDate;
     private String statusDescription;
     private String branchName;
-    private String department;
+    private String departmentName;
 
     @Email
     private String createdByEmail;

@@ -21,7 +21,7 @@ public class ProjectMapper {
         projectDTO.setEndDate(project.getEndDate());
         projectDTO.setStatusDescription(project.getStatusDescription());
         projectDTO.setBranchName(project.getBranchName());
-        projectDTO.setDepartment(project.getDepartment());
+        projectDTO.setDepartmentName(project.getDepartmentName());
         if (project.getTeam1() != null) {
             projectDTO.setTeam1(project.getTeam1().getId());
         }
@@ -45,7 +45,7 @@ public class ProjectMapper {
         project.setEndDate(projectDTO.getEndDate());
         project.setStatusDescription(projectDTO.getStatusDescription());
         project.setBranchName(projectDTO.getBranchName());
-        project.setDepartment(projectDTO.getDepartment());
+        project.setDepartmentName(projectDTO.getDepartmentName());
 
         project.setCreatedByEmail(projectDTO.getCreatedByEmail());
         project.setRole(projectDTO.getRole());

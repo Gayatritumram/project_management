@@ -17,7 +17,7 @@ public class TeamMemberDTO {
     private String email;
     private String password;
     private LocalDate joinDate;
-    private String department;
+    private String departmentName;
     private String phone;
     private String address;
     private String roleName;

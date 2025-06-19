@@ -84,7 +84,7 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
         leader.setPassword(passwordEncoder.encode(dto.getPassword())); // Hash if needed
         leader.setPhone(dto.getPhone());
         leader.setAddress(dto.getAddress());
-        leader.setDepartment(dto.getDepartment());
+        leader.setDepartmentName(dto.getDepartmentName());
         leader.setBranchName(dto.getBranchName());
         leader.setJoinDate(dto.getJoinDate());
 
@@ -123,7 +123,7 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
         leader.setPhone(teamLeaderDTO.getPhone());
         leader.setAddress(teamLeaderDTO.getAddress());
-        leader.setDepartment(teamLeaderDTO.getDepartment());
+        leader.setDepartmentName(teamLeaderDTO.getDepartmentName());
         leader.setBranchName(teamLeaderDTO.getBranchName());
 
         TeamLeader updated = teamLeaderRepository.save(leader);

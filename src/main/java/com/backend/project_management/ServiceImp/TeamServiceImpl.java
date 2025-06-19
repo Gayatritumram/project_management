@@ -119,7 +119,7 @@ public class TeamServiceImpl implements TeamService {
                 .orElseThrow(() -> new RuntimeException("Team not found"));
         existingTeam.setTeamName(teamDTO.getTeamName());
         existingTeam.setBranchName(teamDTO.getBranchName());
-        existingTeam.setDepartment(teamDTO.getDepartment());
+        existingTeam.setDepartmentName(teamDTO.getDepartmentName());
 
         return TeamMapper.toDTO(teamRepository.save(existingTeam));
     }
