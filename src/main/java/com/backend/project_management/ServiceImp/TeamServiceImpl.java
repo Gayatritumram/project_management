@@ -113,16 +113,31 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public TeamDTO updateTeam(Long id, TeamDTO teamDTO, String role, String email) {
         if (!staffValidation.hasPermission(role, email, "PUT")) {
-            throw new AccessDeniedException("You do not have permission to view class rooms");
+            throw new AccessDeniedException("You do not have permission to update team details");
         }
+
         Team existingTeam = teamRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
+
         existingTeam.setTeamName(teamDTO.getTeamName());
         existingTeam.setBranchName(teamDTO.getBranchName());
+
+        TeamLeader teamLeader = teamLeaderRepository.findById(teamDTO.getTeamLeaderId())
+                .orElseThrow(() -> new RuntimeException("Team Leader not found"));
+        existingTeam.setTeamLeader(teamLeader);
+
+        List<TeamMember> members = teamDTO.getTeamMemberList().stream()
+                .map(dto -> teamMemberRepository.findById(dto.getId())
+                        .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + dto.getId())))
+                .collect(Collectors.toList());
+        existingTeam.setMemberList(members);
+
         existingTeam.setDepartmentName(teamDTO.getDepartmentName());
 
         return TeamMapper.toDTO(teamRepository.save(existingTeam));
     }
+
+
 
 
 
