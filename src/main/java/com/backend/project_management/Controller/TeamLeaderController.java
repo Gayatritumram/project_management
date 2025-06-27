@@ -5,14 +5,20 @@ import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Service.TeamLeaderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.*;
+
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/team-leader")
@@ -115,6 +121,26 @@ public class TeamLeaderController {
         TeamLeader leader = teamLeaderService.getTeamLeaderByName(name, role, email);
         return ResponseEntity.ok(leader);
     }
+
+    @GetMapping("/getAllTeamLeadersWithFilters")
+    public ResponseEntity<Page<TeamLeaderDTO>> getAllTeamLeaders(
+            @RequestParam String role,
+            @RequestParam String email,
+            @RequestParam String branchCode,
+            @RequestParam(required = false) String searchBy,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+
+        Page<TeamLeaderDTO> result = teamLeaderService.getAllTeamLeaders(
+                role, email, branchCode, searchBy, page, size, sortBy, sortDir
+        );
+        return ResponseEntity.ok(result);
+    }
+
+
+
 
 
 }

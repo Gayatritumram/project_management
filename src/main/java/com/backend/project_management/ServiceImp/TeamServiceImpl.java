@@ -119,23 +119,37 @@ public class TeamServiceImpl implements TeamService {
         Team existingTeam = teamRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
 
-        existingTeam.setTeamName(teamDTO.getTeamName());
-        existingTeam.setBranchName(teamDTO.getBranchName());
+        // 🔁 Update only if not null
+        if (teamDTO.getTeamName() != null) {
+            existingTeam.setTeamName(teamDTO.getTeamName());
+        }
 
-        TeamLeader teamLeader = teamLeaderRepository.findById(teamDTO.getTeamLeaderId())
-                .orElseThrow(() -> new RuntimeException("Team Leader not found"));
-        existingTeam.setTeamLeader(teamLeader);
+        if (teamDTO.getBranchName() != null) {
+            existingTeam.setBranchName(teamDTO.getBranchName());
+        }
 
-        List<TeamMember> members = teamDTO.getTeamMemberList().stream()
-                .map(dto -> teamMemberRepository.findById(dto.getId())
-                        .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + dto.getId())))
-                .collect(Collectors.toList());
-        existingTeam.setMemberList(members);
+        if (teamDTO.getTeamLeaderId() != null) {
+            TeamLeader teamLeader = teamLeaderRepository.findById(teamDTO.getTeamLeaderId())
+                    .orElseThrow(() -> new RuntimeException("Team Leader not found"));
+            existingTeam.setTeamLeader(teamLeader);
+        }
 
-        existingTeam.setDepartmentName(teamDTO.getDepartmentName());
+        if (teamDTO.getTeamMemberList() != null && !teamDTO.getTeamMemberList().isEmpty()) {
+            List<TeamMember> members = teamDTO.getTeamMemberList().stream()
+                    .map(dto -> teamMemberRepository.findById(dto.getId())
+                            .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + dto.getId())))
+                    .collect(Collectors.toList());
+            existingTeam.setMemberList(members);
+        }
 
+        if (teamDTO.getDepartmentName() != null) {
+            existingTeam.setDepartmentName(teamDTO.getDepartmentName());
+        }
+
+        // 💾 Save & return updated DTO
         return TeamMapper.toDTO(teamRepository.save(existingTeam));
     }
+
 
 
 
