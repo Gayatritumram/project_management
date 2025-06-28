@@ -57,8 +57,8 @@ public class TeamLeaderController {
         responseDTO.setCreatedByEmail(created.getCreatedByEmail());
         responseDTO.setRole(created.getRole());
         responseDTO.setBranchCode(created.getBranchCode());
-        if (created.getTeamId() != null) {
-            responseDTO.setTeamId(created.getTeamId().getId());
+        if (created.getTeam() != null) {
+            responseDTO.setTeamId(created.getTeam().getId());
         }
 
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);

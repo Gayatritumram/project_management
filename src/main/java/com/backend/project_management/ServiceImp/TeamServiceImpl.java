@@ -68,7 +68,7 @@ public class TeamServiceImpl implements TeamService {
         if (teamDTO.getTeamLeaderId() != null) {
             TeamLeader leader = teamLeaderRepository.findById(teamDTO.getTeamLeaderId())
                     .orElseThrow(() -> new RuntimeException("Team Leader not found"));
-            leader.setTeamId(team); // Set reverse mapping
+            leader.setTeam(team); // Set reverse mapping
             team.setTeamLeader(leader);
         }
 
@@ -80,7 +80,7 @@ public class TeamServiceImpl implements TeamService {
 
             List<TeamMember> members = teamMemberRepository.findAllById(memberIds);
             for (TeamMember member : members) {
-                member.setTeamId(team); // Reverse mapping
+                member.setTeam(team); // Reverse mapping
             }
             team.setMemberList(members);
         }
@@ -119,39 +119,58 @@ public class TeamServiceImpl implements TeamService {
         Team existingTeam = teamRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team not found"));
 
-        // 🔁 Update only if not null
+        // Basic field updates
         if (teamDTO.getTeamName() != null) {
             existingTeam.setTeamName(teamDTO.getTeamName());
         }
-
         if (teamDTO.getBranchName() != null) {
             existingTeam.setBranchName(teamDTO.getBranchName());
         }
-
-        if (teamDTO.getTeamLeaderId() != null) {
-            TeamLeader teamLeader = teamLeaderRepository.findById(teamDTO.getTeamLeaderId())
-                    .orElseThrow(() -> new RuntimeException("Team Leader not found"));
-            existingTeam.setTeamLeader(teamLeader);
-        }
-
-        if (teamDTO.getTeamMemberList() != null && !teamDTO.getTeamMemberList().isEmpty()) {
-            List<TeamMember> members = teamDTO.getTeamMemberList().stream()
-                    .map(dto -> teamMemberRepository.findById(dto.getId())
-                            .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + dto.getId())))
-                    .collect(Collectors.toList());
-            existingTeam.setMemberList(members);
-        }
-
         if (teamDTO.getDepartmentName() != null) {
             existingTeam.setDepartmentName(teamDTO.getDepartmentName());
         }
 
-        // 💾 Save & return updated DTO
-        return TeamMapper.toDTO(teamRepository.save(existingTeam));
+        // 🔄 Remove previous team leader if any
+        if (existingTeam.getTeamLeader() != null) {
+            TeamLeader previousLeader = existingTeam.getTeamLeader();
+            previousLeader.setTeam(null);
+        }
+
+        // 👨‍💼 Assign new team leader (with reverse mapping)
+        if (teamDTO.getTeamLeaderId() != null) {
+            TeamLeader newLeader = teamLeaderRepository.findById(teamDTO.getTeamLeaderId())
+                    .orElseThrow(() -> new RuntimeException("Team Leader not found"));
+            newLeader.setTeam(existingTeam);
+            existingTeam.setTeamLeader(newLeader);
+        } else {
+            existingTeam.setTeamLeader(null); // Optional: clear if null
+        }
+
+        // 🔁 Clear old team members
+        if (existingTeam.getMemberList() != null) {
+            for (TeamMember oldMember : existingTeam.getMemberList()) {
+                oldMember.setTeam(null); // unlink from this team
+            }
+            existingTeam.getMemberList().clear();
+        }
+
+        // 👥 Assign new team members
+        if (teamDTO.getTeamMemberList() != null && !teamDTO.getTeamMemberList().isEmpty()) {
+            List<TeamMember> newMembers = teamDTO.getTeamMemberList().stream()
+                    .map(dto -> {
+                        TeamMember member = teamMemberRepository.findById(dto.getId())
+                                .orElseThrow(() -> new RuntimeException("Team Member not found with ID: " + dto.getId()));
+                        member.setTeam(existingTeam); // reverse mapping
+                        return member;
+                    })
+                    .collect(Collectors.toList());
+            existingTeam.setMemberList(newMembers);
+        }
+
+        // Save updated team
+        Team savedTeam = teamRepository.save(existingTeam);
+        return TeamMapper.toDTO(savedTeam);
     }
-
-
-
 
 
 

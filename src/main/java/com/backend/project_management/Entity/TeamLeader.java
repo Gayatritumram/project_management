@@ -58,8 +58,7 @@ public class TeamLeader {
 
     @OneToOne
     @JoinColumn(name = "team_id")
-    private Team teamId;
-
+    private Team team;
 
 
     public boolean isCanAccessTask() {

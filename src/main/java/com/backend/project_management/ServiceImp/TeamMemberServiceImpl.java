@@ -87,7 +87,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         if (dto.getTeamId() != null) {
             Team admin = teamRepository.findById(dto.getTeamId())
                     .orElseThrow(() -> new RuntimeException("Team not found"));
-            teamMember.setTeamId(admin);
+            teamMember.setTeam(admin);
 
         }
 
@@ -154,7 +154,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         teamLeader.setName(teamMember.getName());
         teamLeader.setEmail(teamMember.getEmail());
         teamLeader.setPassword(passwordEncoder.encode(teamMember.getPassword()));
-        teamLeader.setTeamId(teamMember.getTeamId());
+        teamLeader.setTeam(teamMember.getTeam());
         teamLeader.setBranchName(teamMember.getBranchName());
         teamLeader.setJoinDate(teamMember.getJoinDate());
         teamLeader.setDepartmentName(teamMember.getDepartmentName());

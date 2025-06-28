@@ -97,7 +97,7 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
         if (dto.getTeamId() != null) {
             Team team = teamRepository.findById(dto.getTeamId())
                     .orElseThrow(() -> new RuntimeException("Team not found"));
-            leader.setTeamId(team);
+            leader.setTeam(team);
         }
 
         if (imageFile != null && !imageFile.isEmpty()) {

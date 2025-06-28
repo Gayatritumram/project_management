@@ -27,10 +27,10 @@ public class Team {
     private String branchCode;
 
 
-    @OneToMany(mappedBy = "teamId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<TeamMember> memberList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "teamId", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "team", cascade = CascadeType.ALL)
     private TeamLeader teamLeader;
 
 

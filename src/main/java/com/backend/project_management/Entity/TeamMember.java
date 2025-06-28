@@ -48,8 +48,8 @@ public class TeamMember{
     private String branchCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teamId")
-    private Team teamId;
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     public boolean isCanAccessTask() {
         return  true;
