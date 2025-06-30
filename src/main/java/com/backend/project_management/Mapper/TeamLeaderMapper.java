@@ -24,7 +24,7 @@ public class TeamLeaderMapper {
         dto.setBranchName(leader.getBranchName());
         dto.setJoinDate(leader.getJoinDate());
         dto.setImageUrl(leader.getImageUrl());
-        dto.setTeamId(leader.getTeamId() != null ? leader.getTeamId().getId() : null);
+        dto.setTeamId(leader.getTeam() != null ? leader.getTeam().getId() : null);
         dto.setCreatedByEmail(leader.getCreatedByEmail());
         dto.setBranchCode(leader.getBranchCode());
         dto.setRole(leader.getRole());
@@ -49,7 +49,7 @@ public class TeamLeaderMapper {
         leader.setRole(dto.getRole());
 
         if (dto.getTeamId() != null) {
-            leader.setTeamId(teamRepository.findById(dto.getTeamId())
+            leader.setTeam(teamRepository.findById(dto.getTeamId())
                     .orElseThrow(() -> new RuntimeException("Team not found")));
         }
 

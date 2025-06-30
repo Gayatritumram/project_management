@@ -51,8 +51,8 @@ public class TeamMemberMapper {
         dto.setBranchCode(teamMember.getBranchCode());
         dto.setRole(teamMember.getRole());
 
-        if (teamMember.getTeamId() != null) {
-            dto.setTeamId(teamMember.getTeamId().getId());
+        if (teamMember.getTeam() != null) {
+            dto.setTeamId(teamMember.getTeam().getId());
         }
 
 

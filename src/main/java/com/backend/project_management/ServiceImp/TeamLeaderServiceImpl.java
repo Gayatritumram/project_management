@@ -6,19 +6,24 @@ import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamLeaderMapper;
+import com.backend.project_management.Pagination.TeamLeaderSpecification;
 import com.backend.project_management.Repository.BranchAdminRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.EmailService;
 import com.backend.project_management.Service.OtpService;
 import com.backend.project_management.Service.TeamLeaderService;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -92,7 +97,7 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
         if (dto.getTeamId() != null) {
             Team team = teamRepository.findById(dto.getTeamId())
                     .orElseThrow(() -> new RuntimeException("Team not found"));
-            leader.setTeamId(team);
+            leader.setTeam(team);
         }
 
         if (imageFile != null && !imageFile.isEmpty()) {
@@ -264,4 +269,38 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
         return teamLeaderRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Team Leader not found with name: " + name));
     }
+
+
+
+
+
+    @Override
+    public Page<TeamLeaderDTO> getAllTeamLeaders(String role, String email, String branchCode,
+                                                 String searchBy, int page, int size,
+                                                 String sortBy, String sortDir) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Specification<TeamLeader> spec = TeamLeaderSpecification.filter(branchCode, searchBy)
+                .and((root, query, cb) -> cb.notEqual(root.get("email"), email));
+
+        Page<TeamLeader> result = teamLeaderRepository.findAll(spec, pageable);
+
+        List<TeamLeaderDTO> dtoList = result.getContent()
+                .stream()
+                .map(teamLeaderMapper::toDto)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(dtoList, pageable, result.getTotalElements());
+    }
+
+
+
+
+
+
 }
