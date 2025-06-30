@@ -97,13 +97,12 @@ public class TaskController {
 
 ///
 
-    @GetMapping("/getAllTasks")
-    public ResponseEntity<List<TaskDTO>> getAllTasks(@RequestParam String role,
-                                                     @RequestParam String email,
-                                                     @RequestParam String branchCode) {
-        return ResponseEntity.ok(taskService.getAllTasks(role, email, branchCode));
-    }
-
+@GetMapping("/getAllTasks")
+public ResponseEntity<List<TaskDTO>> getAllTasks(@ModelAttribute TaskDTO filterDTO,
+                                                 @RequestParam String role,
+                                                 @RequestParam String email) {
+    return ResponseEntity.ok(taskService.getAllTasksWithFilter(role, email, filterDTO));
+}
 
 
     @DeleteMapping("/deleteTaskById/{id}")

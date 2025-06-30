@@ -9,6 +9,7 @@ import com.backend.project_management.Repository.TaskRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Service.TaskService;
+import com.backend.project_management.Pagination.TaskSpecification;
 import com.backend.project_management.Util.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -404,6 +405,21 @@ public class TaskServiceImpl implements TaskService {
             throw new AccessDeniedException("You do not have permission to view task");
         }
         List<Task> tasks = taskRepository.findAllByAssignedToTeamLeader_Id(id);
+        return taskMapper.toDtoList(tasks);
+    }
+
+    @Override
+    public List<TaskDTO> getAllTasksWithFilter(String role, String email, TaskDTO filterDTO) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view tasks");
+        }
+
+        if (filterDTO.getBranchCode() == null || filterDTO.getBranchCode().isEmpty()) {
+            String branchCode = staffValidation.fetchBranchCodeByRole(role, email);
+            filterDTO.setBranchCode(branchCode);
+        }
+
+        List<Task> tasks = taskRepository.findAll(TaskSpecification.build(filterDTO));
         return taskMapper.toDtoList(tasks);
     }
 

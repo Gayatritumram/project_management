@@ -35,6 +35,11 @@ public class TaskDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
+    private String timeFrame; // "today", "7days", "30days", "custom"
+    private LocalDate customStartDate;
+    private LocalDate customEndDate;
+
+
 
     private Long assignedByAdminId;
     private Long assignedByLeaderId;
