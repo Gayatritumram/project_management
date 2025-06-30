@@ -1,6 +1,7 @@
 package com.backend.project_management.Service;
 
 import com.backend.project_management.DTO.TaskDTO;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -50,6 +51,6 @@ public interface TaskService {
     // Get all tasks assigned to a leader by their ID
     List<TaskDTO> getTasksAssignedToLeaderId(Long id,String role,String email);
 
-    List<TaskDTO> getAllTasksWithFilter(String role, String email, TaskDTO filterDTO);
+    Page<TaskDTO> getAllTasksWithFilter(TaskDTO filter, int page, int size, String sortBy, String sortType, String role, String email,String branchCode);
 
 }
