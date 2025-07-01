@@ -17,20 +17,23 @@ public class TaskSpecification {
             if (filter.getBranchCode() != null) {
                 predicates.add(cb.equal(root.get("branchCode"), filter.getBranchCode()));
             }
+
             if (filter.getSubject() != null) {
                 predicates.add(cb.like(cb.lower(root.get("subject")), "%" + filter.getSubject().toLowerCase() + "%"));
             }
+
             if (filter.getStatus() != null) {
                 predicates.add(cb.equal(root.get("status"), filter.getStatus()));
             }
+
             if (filter.getPriority() != null) {
                 predicates.add(cb.equal(root.get("priority"), filter.getPriority()));
             }
+
             if (filter.getProjectName() != null) {
                 predicates.add(cb.equal(root.get("projectName"), filter.getProjectName()));
             }
 
-            // For entity reference fields like assignedToTeamMember and assignedToTeamLeader
             if (filter.getAssignedToTeamMember() != null) {
                 predicates.add(cb.equal(root.get("assignedToTeamMember").get("id"), filter.getAssignedToTeamMember()));
             }
@@ -39,7 +42,6 @@ public class TaskSpecification {
                 predicates.add(cb.equal(root.get("assignedToTeamLeader").get("id"), filter.getAssignedToTeamLeader()));
             }
 
-            // Handle time frame filters
             if (filter.getStartDate() != null) {
                 predicates.add(cb.greaterThanOrEqualTo(root.get("startDate"), filter.getStartDate()));
             }

@@ -7,6 +7,7 @@ import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamMemberMapper;
+import com.backend.project_management.Pagination.TeamMemberSpecification;
 import com.backend.project_management.Repository.*;
 import com.backend.project_management.Service.EmailService;
 import com.backend.project_management.Service.OtpService;
@@ -14,6 +15,7 @@ import com.backend.project_management.Service.TeamMemberService;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -291,5 +293,24 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         return repository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Team member not found with name: " + name));
     }
+
+    @Override
+    public List<TeamMemberDTO> filterTeamMembers(String name, String branchName, String departmentName, String roleName, String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to filter Team Members");
+        }
+
+        Specification<TeamMember> spec = Specification
+                .where(TeamMemberSpecification.hasName(name))
+                .and(TeamMemberSpecification.hasBranchName(branchName))
+                .and(TeamMemberSpecification.hasDepartmentName(departmentName))
+                .and(TeamMemberSpecification.hasRoleName(roleName));
+
+        return repository.findAll(spec)
+                .stream()
+                .map(TeamMemberMapper::mapToTeamMemberDTO)
+                .collect(Collectors.toList());
+    }
+
 
 }

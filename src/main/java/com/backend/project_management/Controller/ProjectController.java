@@ -38,11 +38,12 @@ public class ProjectController {
     }
 
     @GetMapping("/getAllProjects")
-    public ResponseEntity<List<ProjectDTO>> getAllProjects(@RequestParam String role,
-                                                           @RequestParam String email,
-                                                           @RequestParam String branchCode) {
-        return ResponseEntity.ok(projectService.getAllProjects(role, email, branchCode));
+    public ResponseEntity<List<ProjectDTO>> getAllProjects(@ModelAttribute ProjectDTO filter,
+                                                           @RequestParam String role,
+                                                           @RequestParam String email) {
+        return ResponseEntity.ok(projectService.getAllProjectsWithFilter(role, email, filter));
     }
+
 
 
     @GetMapping("/getProjectByName/{name}")

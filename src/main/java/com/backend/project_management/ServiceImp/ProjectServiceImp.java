@@ -4,6 +4,7 @@ import com.backend.project_management.DTO.ProjectDTO;
 import com.backend.project_management.Entity.*;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.ProjectMapper;
+import com.backend.project_management.Pagination.ProjectSpecification;
 import com.backend.project_management.Repository.BranchAdminRepository;
 import com.backend.project_management.Repository.ProjectRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
@@ -167,6 +168,18 @@ public class ProjectServiceImp implements ProjectService {
 
 
         return ProjectMapper.mapToProjectDTO(saved);
+    }
+
+    @Override
+    public List<ProjectDTO> getAllProjectsWithFilter(String role, String email, ProjectDTO filter) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view project");
+        }
+
+        return projectRepository.findAll(ProjectSpecification.filterBy(filter))
+                .stream()
+                .map(ProjectMapper::mapToProjectDTO)
+                .collect(Collectors.toList());
     }
 
 }

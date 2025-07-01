@@ -12,6 +12,10 @@ import com.backend.project_management.Service.TaskService;
 import com.backend.project_management.Pagination.TaskSpecification;
 import com.backend.project_management.Util.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -409,21 +413,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDTO> getAllTasksWithFilter(String role, String email, TaskDTO filterDTO) {
+    public Page<TaskDTO> getAllTasksWithFilter(TaskDTO filter, int page, int size, String sortBy, String sortType, String role, String email,String branchCode) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("You do not have permission to view tasks");
+            throw new AccessDeniedException("No permission to view tasks");
         }
 
-        if (filterDTO.getBranchCode() == null || filterDTO.getBranchCode().isEmpty()) {
-            String branchCode = staffValidation.fetchBranchCodeByRole(role, email);
-            filterDTO.setBranchCode(branchCode);
-        }
+        Sort sort = sortType.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        List<Task> tasks = taskRepository.findAll(TaskSpecification.build(filterDTO));
-        return taskMapper.toDtoList(tasks);
+        Page<Task> taskPage = taskRepository.findAll(TaskSpecification.build(filter), pageable);
+
+        return taskPage.map(taskMapper::toDto); // assuming you have this method
     }
-
-
 
 
 }

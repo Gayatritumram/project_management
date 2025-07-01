@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.hibernate.boot.jaxb.Origin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -98,11 +99,19 @@ public class TaskController {
 ///
 
 @GetMapping("/getAllTasks")
-public ResponseEntity<List<TaskDTO>> getAllTasks(@ModelAttribute TaskDTO filterDTO,
-                                                 @RequestParam String role,
-                                                 @RequestParam String email) {
-    return ResponseEntity.ok(taskService.getAllTasksWithFilter(role, email, filterDTO));
+public ResponseEntity<Page<TaskDTO>> getAllTasks(
+        @ModelAttribute TaskDTO filter,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "startDate") String sortBy,
+        @RequestParam(defaultValue = "asc") String sortType,
+        @RequestParam String role,
+        @RequestParam String email,
+        @RequestParam String branchCode
+) {
+    return ResponseEntity.ok(taskService.getAllTasksWithFilter(filter, page, size, sortBy, sortType, role, email,branchCode));
 }
+
 
 
     @DeleteMapping("/deleteTaskById/{id}")
