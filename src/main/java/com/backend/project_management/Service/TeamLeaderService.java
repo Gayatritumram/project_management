@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface TeamLeaderService {
-    TeamLeader createTeamLeader(TeamLeaderDTO dto, MultipartFile imageFile,String role, String email) throws IOException;
+    TeamLeaderDTO createTeamLeader(TeamLeaderDTO dto, MultipartFile imageFile,String role, String email) throws IOException;
     TeamLeaderDTO updateTeamLeader(Long id, TeamLeaderDTO teamLeaderDTO,String  role, String email);
     void deleteTeamLeader(Long id,String role, String email);
     TeamLeaderDTO getTeamLeaderById(Long id, String role, String email);
@@ -21,7 +21,7 @@ public interface TeamLeaderService {
     String resetPassword(String email, String newPassword, String confirmPassword);
 
     void updateTeamMemberProfilePicture(Long leaderId, MultipartFile imageFile, String role, String email);
-    TeamLeader getTeamLeaderByName(String name, String role, String email);
+    TeamLeaderDTO getTeamLeaderByName(String name, String role, String email);
 
 
     public Page<TeamLeaderDTO> getAllTeamLeaders(String role, String email, String branchCode,

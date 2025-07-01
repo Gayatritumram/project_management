@@ -6,6 +6,7 @@ import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamLeaderMapper;
+import com.backend.project_management.Mapper.TeamMapper;
 import com.backend.project_management.Pagination.TeamLeaderSpecification;
 import com.backend.project_management.Repository.BranchAdminRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
@@ -61,11 +62,12 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
 
     @Override
-    public TeamLeader createTeamLeader(TeamLeaderDTO dto, MultipartFile imageFile,String role, String email)throws IOException {
+    public TeamLeaderDTO createTeamLeader(TeamLeaderDTO dto, MultipartFile imageFile,String role, String email)throws IOException {
         System.out.println("Checking permission for role: " + role + ", email: " + email);
         if (!staffValidation.hasPermission(role, email, "POST")) {
             System.out.println("Permission denied!");
-            throw new AccessDeniedException("No permission to create Branch");
+            throw new AccessDeniedException("Access denied: You are not allowed to create a Team Leader.");
+
         }
         System.out.println("Permission granted!");
 
@@ -73,7 +75,7 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
         String branchCode;
         if (role.equals("BRANCH")) {
             branchCode = adminRepo.findByBranchEmail(email)
-                    .orElseThrow(() -> new RequestNotFound("Admin not found"))
+                    .orElseThrow(() -> new RequestNotFound("BRANCH_Admin not found"))
                     .getBranchCode();
         } else {
             branchCode = staffValidation.fetchBranchCodeByRole(role, email);
@@ -91,12 +93,14 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
         leader.setAddress(dto.getAddress());
         leader.setDepartmentName(dto.getDepartmentName());
         leader.setBranchName(dto.getBranchName());
-        leader.setJoinDate(dto.getJoinDate());
+        if (dto.getJoinDate() != null) {
+            leader.setJoinDate(dto.getJoinDate());
+        }
 
 
         if (dto.getTeamId() != null) {
             Team team = teamRepository.findById(dto.getTeamId())
-                    .orElseThrow(() -> new RuntimeException("Team not found"));
+                    .orElseThrow(() -> new RequestNotFound("Team with ID " + dto.getTeamId() + " not found"));
             leader.setTeam(team);
         }
 
@@ -105,7 +109,8 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
             leader.setImageUrl(imageUrl);
         }
 
-        return teamLeaderRepository.save(leader);
+        TeamLeader savedLeader = teamLeaderRepository.save(leader);
+        return teamLeaderMapper.toDto(savedLeader);
     }
 
 
@@ -261,13 +266,14 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
     }
 
     @Override
-    public TeamLeader getTeamLeaderByName(String name, String role, String email) {
+    public TeamLeaderDTO getTeamLeaderByName(String name, String role, String email) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("Access denied: Not allowed to view Team Leader info.");
         }
 
-        return teamLeaderRepository.findByName(name)
+        TeamLeader teamLeader = teamLeaderRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Team Leader not found with name: " + name));
+        return teamLeaderMapper.toDto(teamLeader);
     }
 
 
@@ -297,10 +303,5 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
         return new PageImpl<>(dtoList, pageable, result.getTotalElements());
     }
-
-
-
-
-
 
 }

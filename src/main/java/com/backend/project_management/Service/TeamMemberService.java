@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface TeamMemberService {
-    TeamMember createTeamMember(TeamMemberDTO dto, MultipartFile imageFile , String role, String email) throws IOException;
+    TeamMemberDTO createTeamMember(TeamMemberDTO dto, MultipartFile imageFile , String role, String email) throws IOException;
     TeamMemberDTO getTeamMemberById(Long id,String role,String  email);
     List<TeamMemberDTO> getAllTeamMembers(String role,String  email,String  branchCode);
 
@@ -28,7 +28,7 @@ public interface TeamMemberService {
     String resetPassword(String email, String newPassword, String confirmPassword);
 
     void updateTeamMemberProfilePicture(Long memberId,MultipartFile imageFile, String role, String email);
-    TeamMember getTeamMemberByName(String name, String role, String email);
+    TeamMemberDTO getTeamMemberByName(String name, String role, String email);
 
     List<TeamMemberDTO> filterTeamMembers(String name, String branchName, String departmentName, String roleName, String role, String email);
 

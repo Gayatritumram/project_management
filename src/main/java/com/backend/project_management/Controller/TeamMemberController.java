@@ -27,25 +27,25 @@ public class TeamMemberController {
     private TeamMemberService service;
 
     @PostMapping("/createTeamMember")
-    public ResponseEntity<TeamMemberDTO> createTeamMember(@RequestParam("data") String dtoJson,
-                                                          @RequestParam(value = "image", required = false) MultipartFile imageFile,
-                                                          @RequestParam String role,
-                                                          @RequestParam String email
+    public ResponseEntity<TeamMemberDTO> createTeamMember(
+            @RequestParam("data") String dtoJson,
+            @RequestParam(value = "image", required = false) MultipartFile imageFile,
+            @RequestParam String role,
+            @RequestParam String email
     ) throws IOException {
+
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        TeamMemberDTO teamMDTO = objectMapper.readValue(dtoJson, TeamMemberDTO.class);
+        TeamMemberDTO teamMemberDTO = objectMapper.readValue(dtoJson, TeamMemberDTO.class);
 
-        TeamMember created = service.createTeamMember(teamMDTO, imageFile, role, email);
 
-        teamMDTO.setId(created.getId());
-        teamMDTO.setImageUrl(created.getImageUrl());
+        TeamMemberDTO createdDTO = service.createTeamMember(teamMemberDTO, imageFile, role, email);
 
-        return new ResponseEntity<>(teamMDTO, HttpStatus.CREATED);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdDTO);
     }
-
 
     // Get Team Member by ID
     @GetMapping("getTeamMemberById/{id}")
@@ -116,24 +116,13 @@ public class TeamMemberController {
     }
 
     @GetMapping("/getTeamMemberByName")
-    public ResponseEntity<TeamMember> getTeamMemberByName(
+    public ResponseEntity<TeamMemberDTO> getTeamMemberByName(
             @RequestParam String name,
             @RequestParam String role,
             @RequestParam String email
     ) {
-        TeamMember member = service.getTeamMemberByName(name, role, email);
+        TeamMemberDTO member = service.getTeamMemberByName(name, role, email);
         return ResponseEntity.ok(member);
     }
-
-
-
-
-
-
-    // Forgot Password - Send OTP
-
-
-
-
 
 }
