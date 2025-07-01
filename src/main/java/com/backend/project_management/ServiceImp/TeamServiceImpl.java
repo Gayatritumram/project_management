@@ -7,12 +7,15 @@ import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TeamMapper;
+import com.backend.project_management.Pagination.TeamSpecification;
 import com.backend.project_management.Repository.BranchAdminRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamMemberRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,12 @@ public class TeamServiceImpl implements TeamService {
 
     @Autowired
     private TeamMemberRepository teamMemberRepository;
+
+    @Autowired
+    private TeamMapper teamMapper;
+
+
+
 
 
     @Override
@@ -188,6 +197,47 @@ public class TeamServiceImpl implements TeamService {
         teamRepository.deleteById(id);
 
     }
+
+    @Override
+public Page<TeamDTO> getAllTeams(String role, String email,
+                                 Team filter, int page, int size,
+                                 String sortBy, String sortDir) {
+
+    if (!staffValidation.hasPermission(role, email, "GET")) {
+        throw new AccessDeniedException("Access denied");
+    }
+
+    // Fetch branchCode if not set
+    if (filter.getBranchCode() == null || filter.getBranchCode().isEmpty()) {
+        String branchCode = switch (role.toUpperCase()) {
+            case "BRANCH" -> adminRepo.findByBranchEmail(email)
+                    .orElseThrow(() -> new RequestNotFound("Branch Admin not found"))
+                    .getBranchCode();
+            case "TEAM_LEADER" -> teamLeaderRepository.findByEmail(email)
+                    .orElseThrow(() -> new RequestNotFound("Team Leader not found"))
+                    .getBranchCode();
+            default -> staffValidation.fetchBranchCodeByRole(role, email);
+        };
+        filter.setBranchCode(branchCode);
+    }
+
+    Sort sort = sortDir.equalsIgnoreCase("asc")
+            ? Sort.by(sortBy).ascending()
+            : Sort.by(sortBy).descending();
+
+    Pageable pageable = PageRequest.of(page, size, sort);
+
+    Specification<Team> spec = TeamSpecification.filter(filter);
+
+    Page<Team> result = teamRepository.findAll(spec, pageable);
+
+    List<TeamDTO> dtoList = result.getContent()
+            .stream()
+            .map(TeamMapper::toDTO)
+            .collect(Collectors.toList());
+
+    return new PageImpl<>(dtoList, pageable, result.getTotalElements());
+}
 
 
 }

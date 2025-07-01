@@ -1,20 +1,23 @@
 package com.backend.project_management.Controller;
 
 import com.backend.project_management.DTO.TeamDTO;
+import com.backend.project_management.DTO.TeamLeaderDTO;
+import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/teams")
 @CrossOrigin(origins = "https://pjsofttech.in")
-public class  TeamController {
+public class TeamController {
 
     @Autowired
     private TeamService teamService;
-
 
 
     @PostMapping("/createTeam")
@@ -48,11 +51,45 @@ public class  TeamController {
 
     @DeleteMapping("deleteTeam/{id}")
     public ResponseEntity<String> deleteTeam(@PathVariable Long id,
-                                           @RequestParam String role,
-                                           @RequestParam String email) {
+                                             @RequestParam String role,
+                                             @RequestParam String email) {
         teamService.deleteTeam(id, role, email);
         return ResponseEntity.ok("Team Leader with ID " + id + " deleted successfully.");
     }
+
+    @GetMapping("/getAllTeamsWithFilters")
+public ResponseEntity<Page<TeamDTO>> getAllTeams(
+        @RequestParam String role,
+        @RequestParam String email,
+        @RequestParam(required = false) Long id,
+        @RequestParam(required = false) String teamName,
+        @RequestParam(required = false) String branchName,
+        @RequestParam(required = false) String departmentName,
+        @RequestParam(required = false) String createdByEmail,
+        @RequestParam(required = false) String filterRole,
+        @RequestParam(required = false) String branchCode,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "id") String sortBy,
+        @RequestParam(defaultValue = "asc") String sortDir) {
+
+    Team filter = new Team();
+    filter.setId(id);
+    filter.setTeamName(teamName);
+    filter.setBranchName(branchName);
+    filter.setDepartmentName(departmentName);
+    filter.setCreatedByEmail(createdByEmail);
+    filter.setRole(filterRole);
+    filter.setBranchCode(branchCode);
+
+    // Debugging output
+    System.out.println("Filter object: " + filter);
+
+    Page<TeamDTO> result = teamService.getAllTeams(
+            role, email, filter, page, size, sortBy, sortDir
+    );
+    return ResponseEntity.ok(result);
+}
 
 
 }
