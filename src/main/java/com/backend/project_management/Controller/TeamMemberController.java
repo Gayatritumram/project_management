@@ -57,10 +57,16 @@ public class TeamMemberController {
 
     // Get all non-leader Team Members
     @GetMapping("/getAllTeamMembers")
-    public ResponseEntity<List<TeamMemberDTO>> getAllTeamMembers(@RequestParam String role,
-                                                                 @RequestParam String email,
-                                                                 @RequestParam String branchCode) {
-        return ResponseEntity.ok(service.getAllTeamMembers(role, email, branchCode));
+    public ResponseEntity<List<TeamMemberDTO>> filterTeamMembers(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String branchName,
+            @RequestParam(required = false) String departmentName,
+            @RequestParam(required = false) String roleName,
+            @RequestParam String role,
+            @RequestParam String email
+    ) {
+        List<TeamMemberDTO> results = service.filterTeamMembers(name, branchName, departmentName, roleName, role, email);
+        return ResponseEntity.ok(results);
     }
 
     // Promote a Team Member to Team Leader
@@ -118,6 +124,8 @@ public class TeamMemberController {
         TeamMember member = service.getTeamMemberByName(name, role, email);
         return ResponseEntity.ok(member);
     }
+
+
 
 
 
