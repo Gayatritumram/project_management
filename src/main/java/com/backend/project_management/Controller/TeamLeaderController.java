@@ -1,5 +1,6 @@
 package com.backend.project_management.Controller;
 
+import com.backend.project_management.DTO.ProjectDTO;
 import com.backend.project_management.DTO.TeamLeaderDTO;
 import com.backend.project_management.DTO.TeamMemberDTO;
 import com.backend.project_management.Entity.TeamLeader;
@@ -138,6 +139,16 @@ public class TeamLeaderController {
         return ResponseEntity.ok(teamMembers);
 
     }
+
+    @GetMapping("/getProjectByTeamLeadersId/{id}")
+    public ResponseEntity<ProjectDTO> projectByTeamLeadersId(
+            @PathVariable Long id,
+            @RequestParam String role,
+            @RequestParam String email) {
+        ProjectDTO project = teamLeaderService.getProjectByTeamLeadersId(id, role, email);
+        return ResponseEntity.ok(project);
+    }
+
 
 
 

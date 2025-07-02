@@ -1,5 +1,6 @@
 package com.backend.project_management.Service;
 
+import com.backend.project_management.DTO.ProjectDTO;
 import com.backend.project_management.DTO.TeamLeaderDTO;
 import com.backend.project_management.DTO.TeamMemberDTO;
 import com.backend.project_management.Entity.TeamLeader;
@@ -30,5 +31,7 @@ public interface TeamLeaderService {
                                                  String sortBy, String sortDir);
 
     List<TeamMemberDTO> getAllTeamMemberByLeaderId(Long id,String role,String email);
+
+    ProjectDTO getProjectByTeamLeadersId(Long id,String role,String email);
 
 }

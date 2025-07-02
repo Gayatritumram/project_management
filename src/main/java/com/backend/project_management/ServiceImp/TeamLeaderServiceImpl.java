@@ -1,16 +1,20 @@
 package com.backend.project_management.ServiceImp;
 
+import com.backend.project_management.DTO.ProjectDTO;
 import com.backend.project_management.DTO.TeamDTO;
 import com.backend.project_management.DTO.TeamLeaderDTO;
 import com.backend.project_management.DTO.TeamMemberDTO;
 import com.backend.project_management.Entity.BranchAdmin;
+import com.backend.project_management.Entity.Project;
 import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Exception.RequestNotFound;
+import com.backend.project_management.Mapper.ProjectMapper;
 import com.backend.project_management.Mapper.TeamLeaderMapper;
 import com.backend.project_management.Mapper.TeamMapper;
 import com.backend.project_management.Pagination.TeamLeaderSpecification;
 import com.backend.project_management.Repository.BranchAdminRepository;
+import com.backend.project_management.Repository.ProjectRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
 import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.EmailService;
@@ -60,6 +64,8 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
     @Autowired
     private BranchAdminRepository adminRepo;
 
+    @Autowired
+    private ProjectRepository projectRepository;
 
 
 
@@ -321,5 +327,22 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
         return team.getTeamMemberList();
     }
+
+    @Override
+    public ProjectDTO getProjectByTeamLeadersId(Long id, String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("Access denied");
+        }
+        TeamLeader teamLeader = teamLeaderRepository.findById(id)
+                .orElseThrow(() -> new RequestNotFound("Team Leader with ID " + id + " not found"));
+        Team team = teamLeader.getTeam();
+        if (team == null) {
+            throw new RuntimeException("Team not assigned to Team Leader");
+        }
+        Project project = projectRepository.findByTeam1(team)
+                .orElseThrow(() -> new RequestNotFound("Project not found for Team ID " + team.getId()));
+        return ProjectMapper.mapToProjectDTO(project);
+    }
+
 
 }
