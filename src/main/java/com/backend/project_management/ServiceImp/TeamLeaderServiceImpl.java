@@ -1,6 +1,8 @@
 package com.backend.project_management.ServiceImp;
 
+import com.backend.project_management.DTO.TeamDTO;
 import com.backend.project_management.DTO.TeamLeaderDTO;
+import com.backend.project_management.DTO.TeamMemberDTO;
 import com.backend.project_management.Entity.BranchAdmin;
 import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamLeader;
@@ -302,6 +304,22 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(dtoList, pageable, result.getTotalElements());
+    }
+
+    @Override
+    public List<TeamMemberDTO> getAllTeamMemberByLeaderId(Long id, String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("Access denied");
+        }
+        TeamLeader teamLeader = teamLeaderRepository.findById(id)
+                .orElseThrow(() -> new RequestNotFound("Team Member with ID " + id + " not found"));
+
+        TeamDTO team = teamRepository.findById(teamLeader.getTeam().getId())
+                .map(TeamMapper::toDTO)
+                .orElseThrow(() -> new RuntimeException("Team not found"));
+
+
+        return team.getTeamMemberList();
     }
 
 }

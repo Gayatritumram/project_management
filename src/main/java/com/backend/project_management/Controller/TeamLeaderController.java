@@ -1,7 +1,9 @@
 package com.backend.project_management.Controller;
 
 import com.backend.project_management.DTO.TeamLeaderDTO;
+import com.backend.project_management.DTO.TeamMemberDTO;
 import com.backend.project_management.Entity.TeamLeader;
+import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Service.TeamLeaderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -128,7 +130,14 @@ public class TeamLeaderController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/getAllTeamMemberByLeaderId/{id}")
+    public ResponseEntity<List<TeamMemberDTO>> getAllTeamMemberByLeaderId(@PathVariable Long id,
+                                                                    @RequestParam String role,
+                                                                    @RequestParam String email){
+        List<TeamMemberDTO> teamMembers = teamLeaderService.getAllTeamMemberByLeaderId(id,role,email);
+        return ResponseEntity.ok(teamMembers);
 
+    }
 
 
 

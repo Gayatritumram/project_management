@@ -1,6 +1,7 @@
 package com.backend.project_management.Service;
 
 import com.backend.project_management.DTO.TeamLeaderDTO;
+import com.backend.project_management.DTO.TeamMemberDTO;
 import com.backend.project_management.Entity.TeamLeader;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,5 +28,7 @@ public interface TeamLeaderService {
     public Page<TeamLeaderDTO> getAllTeamLeaders(String role, String email, String branchCode,
                                                  String searchBy, int page, int size,
                                                  String sortBy, String sortDir);
+
+    List<TeamMemberDTO> getAllTeamMemberByLeaderId(Long id,String role,String email);
 
 }
