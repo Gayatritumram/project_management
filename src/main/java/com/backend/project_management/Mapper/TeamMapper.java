@@ -2,7 +2,6 @@ package com.backend.project_management.Mapper;
 
 import com.backend.project_management.DTO.TeamDTO;
 import com.backend.project_management.Entity.Team;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component

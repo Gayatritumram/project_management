@@ -1,11 +1,7 @@
 package com.backend.project_management.Controller;
 
-import com.backend.project_management.DTO.TeamLeaderDTO;
 import com.backend.project_management.DTO.TeamMemberDTO;
-import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
-import com.backend.project_management.Model.JwtRequest;
-import com.backend.project_management.Model.JwtResponse;
 import com.backend.project_management.Service.TeamMemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

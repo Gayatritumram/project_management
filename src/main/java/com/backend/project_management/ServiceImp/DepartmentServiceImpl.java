@@ -2,11 +2,8 @@ package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.DepartmentDTO;
 import com.backend.project_management.Entity.Department;
-import com.backend.project_management.Entity.Project;
-import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.DepartmentMapper;
-import com.backend.project_management.Mapper.ProjectMapper;
 import com.backend.project_management.Repository.DepartmentRepository;
 import com.backend.project_management.Service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
