@@ -122,7 +122,7 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
     }
 
 
-    @GetMapping("/tasks/admin/email/{email}")
+    @GetMapping("/tasks/admin/email/{emailFind}")
     public ResponseEntity<List<TaskDTO>> getTasksByAdminEmail(@PathVariable String emailFind,
                                                               @PathVariable String email,
                                                               @RequestParam String role
@@ -135,7 +135,7 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
 
 
 
-    @GetMapping("/tasks/leader/email/{email}")
+    @GetMapping("/tasks/leader/email/{emailFind}")
     public ResponseEntity<List<TaskDTO>> getTasksByLeaderEmail(@PathVariable String emailFind,
                                                                 @PathVariable String email,
                                                                @RequestParam String role) {
@@ -143,7 +143,7 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
     }
 
 
-    @GetMapping("/tasks/member/email/{email}")
+    @GetMapping("/tasks/member/email/{emailFind}")
     public ResponseEntity<List<TaskDTO>> getTasksByMemberEmail(@PathVariable String emailFind,
                                                                @PathVariable String email,
                                                                @RequestParam String role) {
