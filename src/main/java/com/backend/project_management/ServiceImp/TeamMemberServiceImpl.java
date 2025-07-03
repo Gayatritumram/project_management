@@ -61,20 +61,20 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
 
     @Override
-    public TeamMember  createTeamMember(TeamMemberDTO dto, MultipartFile imageFile , String role, String email) throws IOException {
+    public TeamMemberDTO createTeamMember(TeamMemberDTO dto, MultipartFile imageFile, String role, String email) throws IOException {
         System.out.println("Checking permission for role: " + role + ", email: " + email);
         if (!staffValidation.hasPermission(role, email, "POST")) {
             System.out.println("Permission denied!");
-            throw new AccessDeniedException("No permission to create TeamMember");
+            throw new AccessDeniedException("Access denied: You do not have permission to create a Team Member.");
         }
         System.out.println("Permission granted!");
 
         TeamMember teamMember = TeamMemberMapper.mapToTeamMember(dto);
 
         String branchCode;
-        if (role.equals("BRANCH")) {
+        if ("BRANCH".equals(role)) {
             branchCode = adminRepo.findByBranchEmail(email)
-                    .orElseThrow(() -> new RequestNotFound("Admin not found"))
+                    .orElseThrow(() -> new RequestNotFound("Admin not found for email: " + email))
                     .getBranchCode();
         } else {
             branchCode = staffValidation.fetchBranchCodeByRole(role, email);
@@ -84,22 +84,27 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         teamMember.setRole("TEAM_MEMBER");
         teamMember.setCreatedByEmail(email);
         teamMember.setBranchCode(branchCode);
-        teamMember.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        if (dto.getPassword() != null) {
+            teamMember.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
 
         if (dto.getTeamId() != null) {
-            Team admin = teamRepository.findById(dto.getTeamId())
-                    .orElseThrow(() -> new RuntimeException("Team not found"));
-            teamMember.setTeam(admin);
-
+            Team team = teamRepository.findById(dto.getTeamId())
+                    .orElseThrow(() -> new RequestNotFound("Team not found with ID: " + dto.getTeamId()));
+            teamMember.setTeam(team);
         }
 
         if (imageFile != null && !imageFile.isEmpty()) {
-            String imageUrl = s3Service.uploadImage(imageFile); // S3 or local path
+            String imageUrl = s3Service.uploadImage(imageFile);
             teamMember.setImageUrl(imageUrl);
+            System.out.println("Image uploaded to: " + imageUrl);
         }
 
-        return repository.save(teamMember);
+        TeamMember savedMember = repository.save(teamMember);
+        return TeamMemberMapper.mapToTeamMemberDTO(savedMember);
     }
+
 
     @Override
     public TeamMemberDTO getTeamMemberById(Long id,String role,String  email) {
@@ -285,13 +290,15 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
 
     @Override
-    public TeamMember getTeamMemberByName(String name, String role, String email) {
+    public TeamMemberDTO getTeamMemberByName(String name, String role, String email) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("You do not have permission to view this team member.");
         }
 
-        return repository.findByName(name)
+         TeamMember teamMember = repository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Team member not found with name: " + name));
+
+        return TeamMemberMapper.mapToTeamMemberDTO(teamMember);
     }
 
     @Override

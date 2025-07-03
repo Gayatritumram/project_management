@@ -1,9 +1,13 @@
 package com.backend.project_management.Controller;
 
+import com.backend.project_management.DTO.ProjectDTO;
 import com.backend.project_management.DTO.TeamLeaderDTO;
+import com.backend.project_management.DTO.TeamMemberDTO;
 import com.backend.project_management.Entity.TeamLeader;
+import com.backend.project_management.Entity.TeamMember;
 import com.backend.project_management.Service.TeamLeaderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -25,39 +29,27 @@ public class TeamLeaderController {
 
 
     @PostMapping("/createTeamLeader")
-    public ResponseEntity<TeamLeaderDTO> createTeamLeader(@RequestParam("data") String dtoJson,
-                                                          @RequestParam(value = "image", required = false) MultipartFile imageFile,
-                                                          @RequestParam String role,
-                                                          @RequestParam String email
+    public ResponseEntity<TeamLeaderDTO> createTeamLeader(
+            @RequestParam("data") String dtoJson,
+            @RequestParam(value = "image", required = false) MultipartFile imageFile,
+            @RequestParam String role,
+            @RequestParam String email
     ) throws IOException {
+
+        // ✅ Deserialize JSON string to DTO
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
-        objectMapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         TeamLeaderDTO teamLeaderDTO = objectMapper.readValue(dtoJson, TeamLeaderDTO.class);
 
-        TeamLeader created = teamLeaderService.createTeamLeader(teamLeaderDTO, imageFile, role, email);
-        
-        // Map the saved entity back to DTO to include all fields
-        TeamLeaderDTO responseDTO = new TeamLeaderDTO();
-        responseDTO.setId(created.getId());
-        responseDTO.setName(created.getName());
-        responseDTO.setEmail(created.getEmail());
-        responseDTO.setPhone(created.getPhone());
-        responseDTO.setAddress(created.getAddress());
-        responseDTO.setDepartmentName(created.getDepartmentName());
-        responseDTO.setBranchName(created.getBranchName());
-        responseDTO.setJoinDate(created.getJoinDate());
-        responseDTO.setImageUrl(created.getImageUrl());
-        responseDTO.setCreatedByEmail(created.getCreatedByEmail());
-        responseDTO.setRole(created.getRole());
-        responseDTO.setBranchCode(created.getBranchCode());
-        if (created.getTeam() != null) {
-            responseDTO.setTeamId(created.getTeam().getId());
-        }
+        // ✅ Call service to create Team Leader
+        TeamLeaderDTO createdDTO = teamLeaderService.createTeamLeader(teamLeaderDTO, imageFile, role, email);
 
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        // ✅ Return the created DTO directly
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdDTO);
     }
+
 
     @GetMapping("/getAllTeamLeaders")
     public ResponseEntity<List<TeamLeaderDTO>> getAllTeamLeaders(@RequestParam String role,
@@ -108,12 +100,12 @@ public class TeamLeaderController {
     }
 
     @GetMapping("/getTeamLeaderByName")
-    public ResponseEntity<TeamLeader> getTeamLeaderByName(
+    public ResponseEntity<TeamLeaderDTO> getTeamLeaderByName(
             @RequestParam String name,
             @RequestParam String role,
             @RequestParam String email
     ) {
-        TeamLeader leader = teamLeaderService.getTeamLeaderByName(name, role, email);
+        TeamLeaderDTO leader = teamLeaderService.getTeamLeaderByName(name, role, email);
         return ResponseEntity.ok(leader);
     }
 
@@ -134,6 +126,23 @@ public class TeamLeaderController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/getAllTeamMemberByLeaderId/{id}")
+    public ResponseEntity<List<TeamMemberDTO>> getAllTeamMemberByLeaderId(@PathVariable Long id,
+                                                                    @RequestParam String role,
+                                                                    @RequestParam String email){
+        List<TeamMemberDTO> teamMembers = teamLeaderService.getAllTeamMemberByLeaderId(id,role,email);
+        return ResponseEntity.ok(teamMembers);
+
+    }
+
+    @GetMapping("/getProjectByTeamLeadersId/{id}")
+    public ResponseEntity<ProjectDTO> projectByTeamLeadersId(
+            @PathVariable Long id,
+            @RequestParam String role,
+            @RequestParam String email) {
+        ProjectDTO project = teamLeaderService.getProjectByTeamLeadersId(id, role, email);
+        return ResponseEntity.ok(project);
+    }
 
 
 

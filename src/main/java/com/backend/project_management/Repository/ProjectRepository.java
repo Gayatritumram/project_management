@@ -1,6 +1,7 @@
 package com.backend.project_management.Repository;
 
 import com.backend.project_management.Entity.Project;
+import com.backend.project_management.Entity.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
     Optional<Project> findByProjectName(String projectName);
 
     List<Project> findAllByBranchCode(String branchCode);
+
+    Optional<Project> findByTeam1(Team team);
+
+
 
 }
 
