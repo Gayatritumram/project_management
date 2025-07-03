@@ -1,7 +1,6 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.TeamLeaderDTO;
-import com.backend.project_management.Entity.BranchAdmin;
 import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Exception.RequestNotFound;
@@ -13,7 +12,6 @@ import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.EmailService;
 import com.backend.project_management.Service.OtpService;
 import com.backend.project_management.Service.TeamLeaderService;
-import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

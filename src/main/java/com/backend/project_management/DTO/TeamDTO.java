@@ -1,6 +1,5 @@
 package com.backend.project_management.DTO;
 
-import com.backend.project_management.Entity.Project;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 

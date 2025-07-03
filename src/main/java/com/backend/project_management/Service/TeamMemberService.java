@@ -1,8 +1,6 @@
 package com.backend.project_management.Service;
 
-import com.backend.project_management.DTO.TeamLeaderDTO;
 import com.backend.project_management.DTO.TeamMemberDTO;
-import com.backend.project_management.Entity.TeamLeader;
 import com.backend.project_management.Entity.TeamMember;
 import org.springframework.web.multipart.MultipartFile;
 

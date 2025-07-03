@@ -1,7 +1,6 @@
 package com.backend.project_management.Controller;
 
 import com.backend.project_management.DTO.TeamDTO;
-import com.backend.project_management.DTO.TeamLeaderDTO;
 import com.backend.project_management.Entity.Team;
 import com.backend.project_management.Service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;

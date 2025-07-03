@@ -2,7 +2,6 @@ package com.backend.project_management.Service;
 
 import com.backend.project_management.Entity.BranchAdmin;
 import com.backend.project_management.Model.JwtResponse;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package com.backend.project_management.Pagination;
 
 import com.backend.project_management.Entity.TeamMember;
-import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
 public class TeamMemberSpecification {
