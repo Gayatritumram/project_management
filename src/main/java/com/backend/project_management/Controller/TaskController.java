@@ -151,7 +151,7 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
         return ResponseEntity.ok(taskService.getTasksAssignedToMemberEmail(emailFind, email,role));
     }
 
-    @GetMapping("/leader/today/{email}")
+    @GetMapping("/leader/today/{emailFind}")
     public ResponseEntity<List<TaskDTO>> getTodaysLeaderTasks(@PathVariable String emailFind,
                                                               @PathVariable String email,
                                                               @RequestParam String role) {
