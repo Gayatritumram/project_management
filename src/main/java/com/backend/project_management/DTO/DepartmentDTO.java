@@ -1,7 +1,11 @@
 package com.backend.project_management.DTO;
 
-import lombok.Data;
-@Data
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class DepartmentDTO {
 
     private Long id;

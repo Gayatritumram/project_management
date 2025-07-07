@@ -1,11 +1,14 @@
 package com.backend.project_management.DTO;
 
 import jakarta.validation.constraints.Email;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TeamLeaderDTO {
     private Long id;
     private String name;

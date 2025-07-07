@@ -93,7 +93,7 @@ public class TaskServiceImpl implements TaskService {
         TeamMember assignedTo = teamMemberRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Team member not found"));
         task.setAssignedToTeamMember(assignedTo);
-        task.setAssignedToName(assignedTo.getName());
+
 
 
         if (file != null && !file.isEmpty()) {

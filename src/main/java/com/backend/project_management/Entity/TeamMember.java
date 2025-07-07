@@ -1,19 +1,19 @@
 package com.backend.project_management.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "PM_TeamMember")
 public class TeamMember{
@@ -42,6 +42,7 @@ public class TeamMember{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
+    @JsonIgnore
     private Team team;
 
     public boolean isCanAccessTask() {

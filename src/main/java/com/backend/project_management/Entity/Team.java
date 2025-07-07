@@ -1,18 +1,20 @@
 package com.backend.project_management.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;//.
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;//.
-@Data
-@Entity
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @Table(name = "PM_Team")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +32,8 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<TeamMember> memberList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "team", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "team")
+    @JsonIgnore  // or @JsonBackReference if needed
     private TeamLeader teamLeader;
 
 

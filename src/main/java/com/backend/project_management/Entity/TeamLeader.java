@@ -1,19 +1,19 @@
 package com.backend.project_management.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -48,11 +48,12 @@ public class TeamLeader {
 
 
     @OneToMany(mappedBy = "assignedByLeader")
-    @JsonManagedReference("assigned-by")
-    private List<Task> tasksAssigned; // You can name this whatever fits
+    @JsonIgnore  // Prevent recursion: Task → Leader → Task
+    private List<Task> tasksAssigned;
 
     @OneToOne
     @JoinColumn(name = "team_id")
+    @JsonIgnore  // Prevent recursion: Leader → Team → Leader
     private Team team;
 
 
