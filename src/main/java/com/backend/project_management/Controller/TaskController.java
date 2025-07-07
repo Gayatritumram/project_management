@@ -130,11 +130,6 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
         return ResponseEntity.ok(taskService.getTasksAssignedByAdminEmail(emailFind, email, role));
     }
 
-
-
-
-
-
     @GetMapping("/tasks/leader/email/{emailFind}")
     public ResponseEntity<List<TaskDTO>> getTasksByLeaderEmail(@PathVariable String emailFind,
                                                                 @PathVariable String email,
