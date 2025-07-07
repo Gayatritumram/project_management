@@ -15,7 +15,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
 
     List<Project> findAllByBranchCode(String branchCode);
 
-    Optional<Project> findByTeam1(Team team);
+    List<Project> findByTeam1(Team team);
 
 
 

@@ -329,19 +329,26 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
     }
 
     @Override
-    public ProjectDTO getProjectByTeamLeadersId(Long id, String role, String email) {
+    public List<ProjectDTO> getProjectsByTeamLeadersId(Long id, String role, String email) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("Access denied");
         }
+
         TeamLeader teamLeader = teamLeaderRepository.findById(id)
                 .orElseThrow(() -> new RequestNotFound("Team Leader with ID " + id + " not found"));
         Team team = teamLeader.getTeam();
         if (team == null) {
             throw new RuntimeException("Team not assigned to Team Leader");
         }
-        Project project = projectRepository.findByTeam1(team)
-                .orElseThrow(() -> new RequestNotFound("Project not found for Team ID " + team.getId()));
-        return ProjectMapper.mapToProjectDTO(project);
+
+        List<Project> projects = projectRepository.findByTeam1(team);
+        if (projects.isEmpty()) {
+            throw new RequestNotFound("No projects found for Team ID " + team.getId());
+        }
+
+        return projects.stream()
+                .map(ProjectMapper::mapToProjectDTO)
+                .toList(); // or .collect(Collectors.toList());
     }
 
 

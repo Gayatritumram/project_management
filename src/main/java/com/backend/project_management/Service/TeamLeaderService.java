@@ -32,6 +32,6 @@ public interface TeamLeaderService {
 
     List<TeamMemberDTO> getAllTeamMemberByLeaderId(Long id,String role,String email);
 
-    ProjectDTO getProjectByTeamLeadersId(Long id,String role,String email);
+    List<ProjectDTO> getProjectsByTeamLeadersId(Long id, String role, String email);
 
 }

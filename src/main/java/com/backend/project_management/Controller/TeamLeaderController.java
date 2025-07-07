@@ -136,11 +136,11 @@ public class TeamLeaderController {
     }
 
     @GetMapping("/getProjectByTeamLeadersId/{id}")
-    public ResponseEntity<ProjectDTO> projectByTeamLeadersId(
+    public ResponseEntity<List<ProjectDTO>> projectByTeamLeadersId(
             @PathVariable Long id,
             @RequestParam String role,
             @RequestParam String email) {
-        ProjectDTO project = teamLeaderService.getProjectByTeamLeadersId(id, role, email);
+        List<ProjectDTO> project = teamLeaderService.getProjectsByTeamLeadersId(id, role, email);
         return ResponseEntity.ok(project);
     }
 
