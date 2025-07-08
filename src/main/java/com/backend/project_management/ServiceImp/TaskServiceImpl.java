@@ -413,6 +413,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<TaskDTO> getAllTasks(String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("You do not have permission to view tasks");
+        }
+
+        List<Task> tasks = taskRepository.findAll();
+        return taskMapper.toDtoList(tasks);
+    }
+
+
+    @Override
     public Page<TaskDTO> getAllTasksWithFilter(TaskDTO filter, int page, int size, String sortBy, String sortType, String role, String email,String branchCode) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view tasks");

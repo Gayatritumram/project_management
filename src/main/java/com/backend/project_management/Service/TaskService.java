@@ -51,6 +51,9 @@ public interface TaskService {
     // Get all tasks assigned to a leader by their ID
     List<TaskDTO> getTasksAssignedToLeaderId(Long id,String role,String email);
 
+    List<TaskDTO> getAllTasks(String role, String email);
+
+
     Page<TaskDTO> getAllTasksWithFilter(TaskDTO filter, int page, int size, String sortBy, String sortType, String role, String email,String branchCode);
 
 }
