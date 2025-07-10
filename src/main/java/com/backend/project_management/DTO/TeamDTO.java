@@ -21,7 +21,7 @@ public class TeamDTO {
     private String role;
     private String branchCode;
 
-    private Long teamLeaderId;
+    private String teamLeaderId;
     private List<TeamMemberDTO> teamMemberList;
 
 }

@@ -29,7 +29,7 @@ public class TeamMapper {
 
         // ✅ Map team leader ID
         if (team.getTeamLeader() != null) {
-            dto.setTeamLeaderId(team.getTeamLeader().getId());
+            dto.setTeamLeaderId(team.getTeamLeader().getName());
         }
 
         return dto;
