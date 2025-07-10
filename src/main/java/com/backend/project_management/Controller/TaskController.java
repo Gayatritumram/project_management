@@ -3,6 +3,7 @@ package com.backend.project_management.Controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.backend.project_management.DTO.TaskSummaryDTO;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,7 +153,7 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
         return ResponseEntity.ok(taskService.getTodaysLeaderTasksByEmail(emailFind, email, role));
     }
 
-
+    ///  this Api return All tasks assigned to member using member id
     @GetMapping("/assigned-to/member/{id}")
     public ResponseEntity<List<TaskDTO>> getTasksAssignedToMember(@PathVariable Long id,
                                                                   @RequestParam String role,
@@ -160,12 +161,15 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
         return ResponseEntity.ok(taskService.getTasksAssignedToMemberById(id, role, email));
     }
 
+    ///  this Api return All tasks assigned to leader using leader id
     @GetMapping("/assigned-by/leader/{id}")
     public ResponseEntity<List<TaskDTO>> getTasksAssignedByLeader(@PathVariable Long id,
                                                                   @RequestParam String role,
                                                                   @RequestParam String email) {
         return ResponseEntity.ok(taskService.getTasksAssignedByLeaderId(id, role, email));
     }
+
+
 
     @GetMapping("/assigned-by/admin/{id}")
     public ResponseEntity<List<TaskDTO>> getTasksAssignedByAdmin(@PathVariable Long id,
@@ -248,6 +252,20 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
         return ResponseEntity.ok(taskService.getTasksAssignedToLeaderId(id, role, email));
     }
 
+    @GetMapping("/getAllTaskForLeader/{leaderId}")
+    public ResponseEntity<List<TaskDTO>> getAllTaskForLeader(
+            @PathVariable Long leaderId,
+            @RequestParam String role,
+            @RequestParam String email) {
+        List<TaskDTO> tasks = taskService.getTasksAssignedByLeaderId(leaderId, role, email);
+        return ResponseEntity.ok(tasks);
+    }
 
+    @GetMapping("/getAllTaskSummary")
+    public ResponseEntity<List<TaskSummaryDTO>> getAllTaskSummaries(@RequestParam String role,
+                                                                    @RequestParam String email,
+                                                                    @RequestParam String branchCode) {
+        return ResponseEntity.ok(taskService.getAllTaskSummaries(role,email,branchCode));
+    }
 
 }

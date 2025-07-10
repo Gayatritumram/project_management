@@ -1,6 +1,7 @@
 package com.backend.project_management.Mapper;
 
 import com.backend.project_management.DTO.TaskDTO;
+import com.backend.project_management.DTO.TaskSummaryDTO;
 import com.backend.project_management.Entity.Task;
 import com.backend.project_management.Repository.BranchAdminRepository;
 import com.backend.project_management.Repository.TeamLeaderRepository;
@@ -98,5 +99,25 @@ public class TaskMapper {
         return tasks.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public static TaskSummaryDTO mapToTaskSummary(Task task) {
+        TaskSummaryDTO dto = new TaskSummaryDTO();
+        dto.setSubject(task.getSubject());
+        dto.setDescription(task.getDescription());
+        dto.setPriority(task.getPriority());
+        dto.setStatus(task.getStatus());
+        dto.setStartDate(task.getStartDate());
+        dto.setEndDate(task.getEndDate());
+
+        if (task.getAssignedToTeamLeader() != null) {
+            dto.setAssignedToNameofLeader(task.getAssignedToTeamLeader().getName());
+        }
+
+        if (task.getAssignedToTeamMember() != null) {
+            dto.setAssignedToNameofMember(task.getAssignedToTeamMember().getName());
+        }
+
+        return dto;
     }
 }

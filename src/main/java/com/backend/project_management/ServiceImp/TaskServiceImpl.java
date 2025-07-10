@@ -1,6 +1,7 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.TaskDTO;
+import com.backend.project_management.DTO.TaskSummaryDTO;
 import com.backend.project_management.Entity.*;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TaskMapper;
@@ -437,5 +438,15 @@ public class TaskServiceImpl implements TaskService {
         return taskPage.map(taskMapper::toDto); // assuming you have this method
     }
 
+    @Override
+    public List<TaskSummaryDTO> getAllTaskSummaries(String role,String email,String branchCode) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("No permission to view tasks");
+        }
+        List<Task> tasks = taskRepository.findAllByBranchCode(branchCode);
+        return tasks.stream()
+                .map(TaskMapper::mapToTaskSummary)
+                .toList();
+    }
 
 }
