@@ -75,7 +75,7 @@ public class TeamServiceImpl implements TeamService {
 
         // Attach team leader
         if (teamDTO.getTeamLeaderId() != null) {
-            TeamLeader leader = teamLeaderRepository.findById(teamDTO.getTeamLeaderId())
+            TeamLeader leader = teamLeaderRepository.findByName(teamDTO.getTeamLeaderId())
                     .orElseThrow(() -> new RuntimeException("Team Leader not found"));
             leader.setTeam(team); // Set reverse mapping
             team.setTeamLeader(leader);
@@ -147,7 +147,7 @@ public class TeamServiceImpl implements TeamService {
 
         // 👨‍💼 Assign new team leader (with reverse mapping)
         if (teamDTO.getTeamLeaderId() != null) {
-            TeamLeader newLeader = teamLeaderRepository.findById(teamDTO.getTeamLeaderId())
+            TeamLeader newLeader = teamLeaderRepository.findByName(teamDTO.getTeamLeaderId())
                     .orElseThrow(() -> new RuntimeException("Team Leader not found"));
             newLeader.setTeam(existingTeam);
             existingTeam.setTeamLeader(newLeader);
