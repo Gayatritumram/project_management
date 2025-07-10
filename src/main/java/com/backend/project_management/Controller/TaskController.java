@@ -97,7 +97,7 @@ public class TaskController {
 
 ///
 
-@GetMapping("/getAllTasks")
+@GetMapping("/getAllTasksWithFilter")
 public ResponseEntity<Page<TaskDTO>> getAllTasks(
         @ModelAttribute TaskDTO filter,
         @RequestParam(defaultValue = "0") int page,
@@ -230,6 +230,15 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
         TaskDTO createdTask = taskService.assignTaskFromLeaderToMember(taskDTO, token.replace("Bearer ", ""), leaderId, memberId, file, role, email);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
+
+    @GetMapping("/getAllTasks")
+    public ResponseEntity<List<TaskDTO>> getAllTasks(
+            @RequestParam String role,
+            @RequestParam String email
+    ) {
+        return ResponseEntity.ok(taskService.getAllTasks(role, email));
+    }
+
 
     // Get all tasks assigned to a leader
     @GetMapping("/assigned-to/leader/{id}")
