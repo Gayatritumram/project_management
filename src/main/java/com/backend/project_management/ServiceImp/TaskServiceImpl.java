@@ -1,5 +1,6 @@
 package com.backend.project_management.ServiceImp;
 
+import com.backend.project_management.DTO.TaskCountDTO;
 import com.backend.project_management.DTO.TaskDTO;
 import com.backend.project_management.DTO.TaskDashboardDTO;
 import com.backend.project_management.DTO.TaskSummaryDTO;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -463,5 +465,31 @@ public class TaskServiceImpl implements TaskService {
         dto.setTodaysTask(taskRepository.countTodaysTasks(branchCode));
         return dto;
     }
+
+    @Override
+    public TaskCountDTO getTaskCountsByTimeFrame(String branchCode, String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        LocalDate today = LocalDate.now();
+        LocalDate last7Days = today.minusDays(7);
+        LocalDate last30Days = today.minusDays(30);
+        LocalDate last365Days = today.minusDays(365);
+
+        long total = taskRepository.countByBranchCode(branchCode);
+        long count7 = taskRepository.countByStartDateBetweenAndBranchCode(last7Days, today, branchCode);
+        long count30 = taskRepository.countByStartDateBetweenAndBranchCode(last30Days, today, branchCode);
+        long count365 = taskRepository.countByStartDateBetweenAndBranchCode(last365Days, today, branchCode);
+
+        TaskCountDTO dto = new TaskCountDTO();
+        dto.setTotal(total);
+        dto.setLast7Days(count7);
+        dto.setLast30Days(count30);
+        dto.setLast365Days(count365);
+        return dto;
+    }
+
+
 
 }

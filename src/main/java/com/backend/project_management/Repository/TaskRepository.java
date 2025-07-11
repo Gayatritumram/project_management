@@ -1,5 +1,6 @@
 package com.backend.project_management.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.backend.project_management.Entity.TeamMember;
@@ -57,5 +58,9 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
 
     @Query("SELECT COUNT(t) FROM Task t WHERE t.startDate = CURRENT_DATE AND t.branchCode = :branchCode")
     long countTodaysTasks(@Param("branchCode") String branchCode);
+
+    long countByBranchCode(String branchCode);
+
+    long countByStartDateBetweenAndBranchCode(LocalDate start, LocalDate end, String branchCode);
 }
 

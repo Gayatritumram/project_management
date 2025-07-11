@@ -1,5 +1,6 @@
 package com.backend.project_management.Service;
 
+import com.backend.project_management.DTO.TaskCountDTO;
 import com.backend.project_management.DTO.TaskDTO;
 import com.backend.project_management.DTO.TaskDashboardDTO;
 import com.backend.project_management.DTO.TaskSummaryDTO;
@@ -61,5 +62,8 @@ public interface TaskService {
     List<TaskSummaryDTO> getAllTaskSummaries(String role,String email,String branchCode);
 
     TaskDashboardDTO getTaskDashboard(String role,String email,String branchCode);
+
+    TaskCountDTO getTaskCountsByTimeFrame(String branchCode, String role, String email);
+
 
 }
