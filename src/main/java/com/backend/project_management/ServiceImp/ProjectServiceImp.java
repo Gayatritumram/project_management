@@ -1,6 +1,7 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.ProjectDTO;
+import com.backend.project_management.DTO.ProjectStatusCountDTO;
 import com.backend.project_management.Entity.*;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.ProjectMapper;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
@@ -181,5 +183,29 @@ public class ProjectServiceImp implements ProjectService {
                 .map(ProjectMapper::mapToProjectDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public ProjectStatusCountDTO getProjectStatusCounts(String branchCode, String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("Access Denied");
+        }
+
+        LocalDate today = LocalDate.now();
+
+        long completed = projectRepository.countByStatusAndBranchCode("Completed", branchCode);
+        long inProgress = projectRepository.countByStatusAndBranchCode("In Progress", branchCode);
+        long delay = projectRepository.countByStatusAndBranchCode("Delay", branchCode);
+        long onHold = projectRepository.countByStatusAndBranchCode("On Hold", branchCode);
+        long todays = projectRepository.countByStartDateAndBranchCode(today, branchCode);
+
+        ProjectStatusCountDTO dto = new ProjectStatusCountDTO();
+        dto.setCompleted(completed);
+        dto.setInProgress(inProgress);
+        dto.setDelay(delay);
+        dto.setOnHold(onHold);
+        dto.setTodaysProject(todays);
+        return dto;
+    }
+
 
 }
