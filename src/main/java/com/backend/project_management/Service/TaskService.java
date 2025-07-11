@@ -1,6 +1,7 @@
 package com.backend.project_management.Service;
 
 import com.backend.project_management.DTO.TaskDTO;
+import com.backend.project_management.DTO.TaskDashboardDTO;
 import com.backend.project_management.DTO.TaskSummaryDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,5 +59,7 @@ public interface TaskService {
     Page<TaskDTO> getAllTasksWithFilter(TaskDTO filter, int page, int size, String sortBy, String sortType, String role, String email,String branchCode);
 
     List<TaskSummaryDTO> getAllTaskSummaries(String role,String email,String branchCode);
+
+    TaskDashboardDTO getTaskDashboard(String role,String email,String branchCode);
 
 }

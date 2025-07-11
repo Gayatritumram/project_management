@@ -3,6 +3,7 @@ package com.backend.project_management.Controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.backend.project_management.DTO.TaskDashboardDTO;
 import com.backend.project_management.DTO.TaskSummaryDTO;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -266,6 +267,15 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
                                                                     @RequestParam String email,
                                                                     @RequestParam String branchCode) {
         return ResponseEntity.ok(taskService.getAllTaskSummaries(role,email,branchCode));
+    }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<TaskDashboardDTO> getDashboard(
+            @RequestParam String branchCode,
+            @RequestParam String role,
+            @RequestParam String email
+    ) {
+        return ResponseEntity.ok(taskService.getTaskDashboard(role,email,branchCode));
     }
 
 }

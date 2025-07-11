@@ -1,6 +1,7 @@
 package com.backend.project_management.ServiceImp;
 
 import com.backend.project_management.DTO.TaskDTO;
+import com.backend.project_management.DTO.TaskDashboardDTO;
 import com.backend.project_management.DTO.TaskSummaryDTO;
 import com.backend.project_management.Entity.*;
 import com.backend.project_management.Exception.RequestNotFound;
@@ -447,6 +448,20 @@ public class TaskServiceImpl implements TaskService {
         return tasks.stream()
                 .map(TaskMapper::mapToTaskSummary)
                 .toList();
+    }
+
+    @Override
+    public TaskDashboardDTO getTaskDashboard(String role,String email,String branchCode) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("No permission to view tasks");
+        }
+        TaskDashboardDTO dto = new TaskDashboardDTO();
+        dto.setCompleted(taskRepository.countByStatusAndBranchCode("Completed", branchCode));
+        dto.setInProgress(taskRepository.countByStatusAndBranchCode("In Progress", branchCode));
+        dto.setDelay(taskRepository.countByStatusAndBranchCode("Delay", branchCode));
+        dto.setOnHold(taskRepository.countByStatusAndBranchCode("On Hold", branchCode));
+        dto.setTodaysTask(taskRepository.countTodaysTasks(branchCode));
+        return dto;
     }
 
 }

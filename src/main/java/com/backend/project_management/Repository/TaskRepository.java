@@ -51,5 +51,11 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
     List<Task> findAllByBranchCode(String branchCode);
 
     List<Task> findByAssignedToTeamMember(TeamMember teamMember);
+
+
+    long countByStatusAndBranchCode(String status, String branchCode);
+
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.startDate = CURRENT_DATE AND t.branchCode = :branchCode")
+    long countTodaysTasks(@Param("branchCode") String branchCode);
 }
 
