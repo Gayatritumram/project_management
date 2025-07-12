@@ -27,5 +27,5 @@ public interface ProjectService {
     List<ProjectDTO> getAllProjectsWithFilter(String role, String email, ProjectDTO filter);
 
     ProjectStatusCountDTO getProjectStatusCounts(String branchCode, String role, String email);
-    List<ProjectDTO> getAllProjectsForDashboard(String role, String email, String branchCode);
+
 }
