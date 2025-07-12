@@ -1,8 +1,9 @@
 package com.backend.project_management.Controller;
 
+import com.backend.project_management.DTO.MonthlyTaskCountDTO;
 import com.backend.project_management.DTO.ProjectStatusCountDTO;
 import com.backend.project_management.DTO.TaskCountDTO;
-import com.backend.project_management.DTO.TaskDashboardDTO;
+
 import com.backend.project_management.Service.ProjectService;
 import com.backend.project_management.Service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,14 @@ public class DashboardController {
     private ProjectService projectService;
 
     // dashboard by status
-    @GetMapping("/task/byStatus")
-    public ResponseEntity<TaskDashboardDTO> getDashboard(
-            @RequestParam String branchCode,
+    @GetMapping("/task/monthlyCounts")
+    public ResponseEntity<MonthlyTaskCountDTO> getMonthlyTaskCounts(
+            @RequestParam int month,
+            @RequestParam int year,
             @RequestParam String role,
             @RequestParam String email
     ) {
-        return ResponseEntity.ok(taskService.getTaskDashboard(role,email,branchCode));
+        return ResponseEntity.ok(taskService.getMonthlyTaskCounts(month, year, role, email));
     }
 
     @GetMapping("/task/countsByTimeFrame")
@@ -46,7 +48,6 @@ public class DashboardController {
     ) {
         return ResponseEntity.ok(projectService.getProjectStatusCounts(branchCode, role, email));
     }
-
 
 
 

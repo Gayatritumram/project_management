@@ -1,8 +1,8 @@
 package com.backend.project_management.ServiceImp;
 
+import com.backend.project_management.DTO.MonthlyTaskCountDTO;
 import com.backend.project_management.DTO.TaskCountDTO;
 import com.backend.project_management.DTO.TaskDTO;
-import com.backend.project_management.DTO.TaskDashboardDTO;
 import com.backend.project_management.DTO.TaskSummaryDTO;
 import com.backend.project_management.Entity.*;
 import com.backend.project_management.Exception.RequestNotFound;
@@ -453,18 +453,30 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDashboardDTO getTaskDashboard(String role,String email,String branchCode) {
+    public MonthlyTaskCountDTO getMonthlyTaskCounts(int month, int year, String role, String email) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view tasks");
+            throw new AccessDeniedException("Access denied");
         }
-        TaskDashboardDTO dto = new TaskDashboardDTO();
-        dto.setCompleted(taskRepository.countByStatusAndBranchCode("Completed", branchCode));
-        dto.setInProgress(taskRepository.countByStatusAndBranchCode("In Progress", branchCode));
-        dto.setDelay(taskRepository.countByStatusAndBranchCode("Delay", branchCode));
-        dto.setOnHold(taskRepository.countByStatusAndBranchCode("On Hold", branchCode));
-        dto.setTodaysTask(taskRepository.countTodaysTasks(branchCode));
+
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+
+        long total = taskRepository.countByStartDateBetween(startDate, endDate);
+        long completed = taskRepository.countByStatusAndStartDateBetween("Completed", startDate, endDate);
+        long inProgress = taskRepository.countByStatusAndStartDateBetween("In Progress", startDate, endDate);
+        long delay = taskRepository.countByStatusAndStartDateBetween("Delay", startDate, endDate);
+        long onHold = taskRepository.countByStatusAndStartDateBetween("On Hold", startDate, endDate);
+
+        MonthlyTaskCountDTO dto = new MonthlyTaskCountDTO();
+        dto.setTotal(total);
+        dto.setCompleted(completed);
+        dto.setInProgress(inProgress);
+        dto.setDelay(delay);
+        dto.setOnHold(onHold);
+
         return dto;
     }
+
 
     @Override
     public TaskCountDTO getTaskCountsByTimeFrame(String branchCode, String role, String email) {
