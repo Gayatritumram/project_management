@@ -22,6 +22,7 @@ public interface ProjectService {
 
     ProjectDTO assignProjectToTeam(Long projectId, Long teamId,String role,String email);
 
+    List<ProjectDTO> getAllProjectsForDashboard(String role, String email, String branchCode);
 
     List<ProjectDTO> getAllProjectsWithFilter(String role, String email, ProjectDTO filter);
 
