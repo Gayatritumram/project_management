@@ -182,17 +182,4 @@ public class ProjectServiceImp implements ProjectService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<ProjectDTO> getAllProjectsForDashboard(String role, String email, String branchCode) {
-        if (!staffValidation.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("You do not have permission to view projects");
-        }
-
-        List<Project> projects = projectRepository.findAllByBranchCode(branchCode);
-
-        return projects.stream()
-                .map(ProjectMapper::mapToProjectDTO)
-                .collect(Collectors.toList());
-    }
-
 }

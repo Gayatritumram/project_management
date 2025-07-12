@@ -1,16 +1,18 @@
 package com.backend.project_management.DTO;
 
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskDashboardDTO {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProjectStatusCountDTO {
     private long completed;
     private long inProgress;
     private long delay;
     private long onHold;
-    private long todaysTask;
+    private long todaysProject;
 }
-

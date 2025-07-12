@@ -1,6 +1,7 @@
 package com.backend.project_management.Service;
 
 import com.backend.project_management.DTO.ProjectDTO;
+import com.backend.project_management.DTO.ProjectStatusCountDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,4 +25,7 @@ public interface ProjectService {
     List<ProjectDTO> getAllProjectsForDashboard(String role, String email, String branchCode);
 
     List<ProjectDTO> getAllProjectsWithFilter(String role, String email, ProjectDTO filter);
+
+    ProjectStatusCountDTO getProjectStatusCounts(String branchCode, String role, String email);
+
 }

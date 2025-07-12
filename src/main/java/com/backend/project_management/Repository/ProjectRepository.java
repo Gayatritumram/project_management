@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 @Repository
@@ -16,6 +17,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
     List<Project> findAllByBranchCode(String branchCode);
 
     List<Project> findByTeam1(Team team);
+
+    long countByStatusAndBranchCode(String status, String branchCode);
+
+    long countByStartDateAndBranchCode(LocalDate startDate, String branchCode);
 
 
 
