@@ -65,5 +65,4 @@ public interface TaskService {
 
     TaskCountDTO getTaskCountsByTimeFrame(String branchCode, String role, String email);
 
-
 }

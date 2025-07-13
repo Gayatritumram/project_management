@@ -1,9 +1,6 @@
 package com.backend.project_management.Controller;
 
-import com.backend.project_management.DTO.MonthlyTaskCountDTO;
-import com.backend.project_management.DTO.ProjectDTO;
-import com.backend.project_management.DTO.ProjectStatusCountDTO;
-import com.backend.project_management.DTO.TaskCountDTO;
+import com.backend.project_management.DTO.*;
 
 import com.backend.project_management.Service.ProjectService;
 import com.backend.project_management.Service.TaskService;
@@ -26,6 +23,8 @@ public class DashboardController {
     @Autowired
     private ProjectService projectService;
 
+
+
     // dashboard by status
     @GetMapping("/task/monthlyCounts")
     public ResponseEntity<MonthlyTaskCountDTO> getMonthlyTaskCounts(
@@ -46,6 +45,8 @@ public class DashboardController {
         return ResponseEntity.ok(taskService.getTaskCountsByTimeFrame(branchCode, role, email));
     }
 
+
+
     @GetMapping("/project/statusCounts")
     public ResponseEntity<ProjectStatusCountDTO> getProjectStatusCounts(
             @RequestParam String branchCode,
@@ -54,6 +55,9 @@ public class DashboardController {
     ) {
         return ResponseEntity.ok(projectService.getProjectStatusCounts(branchCode, role, email));
     }
+
+
+
 
     @GetMapping("/project/getAllProjects")
     public ResponseEntity<List<Map<String, Object>>> getAllProjectsForDashboard(
@@ -74,6 +78,59 @@ public class DashboardController {
         }).collect(Collectors.toList());
 
         return ResponseEntity.ok(filteredResponse);
-}
+    }
+
+
+
+
+    @GetMapping("/task/all/leader")
+    public ResponseEntity<?> getAllTasksForLeader(
+            @RequestParam String role,
+            @RequestParam String email
+    ) {
+        List<TaskDTO> tasks = taskService.getAllTasks(role, email);
+
+        List<Map<String, Object>> filterResponse = tasks.stream().map(t -> {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("subject", t.getSubject());
+            map.put("status", t.getStatus());
+            map.put("description", t.getDescription());
+            map.put("priority", t.getPriority());
+            map.put("startDate", t.getStartDate());
+            map.put("endDate", t.getEndDate());
+            return map;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(filterResponse);
+
+
+    }
+
+
+
+
+    @GetMapping("/task/all/member")
+    public ResponseEntity<?> getAllTasksForMember(
+            @RequestParam String role,
+            @RequestParam String email
+    ) {
+        List<TaskDTO> tasks = taskService.getAllTasks(role, email);
+
+        List<Map<String, Object>> filterResponse = tasks.stream().map(t -> {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("subject", t.getSubject());
+            map.put("status", t.getStatus());
+            map.put("description", t.getDescription());
+            map.put("priority", t.getPriority());
+            map.put("startDate", t.getStartDate());
+            map.put("endDate", t.getEndDate());
+            return map;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(filterResponse);
+
+    }
+
+
 
 }
