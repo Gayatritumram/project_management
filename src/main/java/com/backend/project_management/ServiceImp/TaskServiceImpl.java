@@ -502,6 +502,58 @@ public class TaskServiceImpl implements TaskService {
         return dto;
     }
 
+    @Override
+    public List<Map<String, Object>> getTasksAssignedByLeaderToMembers(String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        List<Task> tasks = taskRepository.findAllByAssignedByLeaderIsNotNullAndAssignedToTeamMemberIsNotNull();
+
+        return tasks.stream().map(task -> {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("subject", task.getSubject());
+            map.put("status", task.getStatus());
+            map.put("description", task.getDescription());
+            map.put("priority", task.getPriority());
+            map.put("startDate", task.getStartDate());
+            map.put("endDate", task.getEndDate());
+            map.put("assignedToMemberName", task.getAssignedToName());
+            return map;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Map<String, Object>> getTasksAssignedByAdmin(String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        List<Task> tasks = taskRepository.findAllByAssignedByAdminIsNotNull();
+
+        return tasks.stream().map(task -> {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("subject", task.getSubject());
+            map.put("status", task.getStatus());
+            map.put("description", task.getDescription());
+            map.put("priority", task.getPriority());
+            map.put("startDate", task.getStartDate());
+            map.put("endDate", task.getEndDate());
+
+            if (task.getAssignedToTeamMember() != null) {
+                map.put("assignedTo", "Member: " + task.getAssignedToTeamMember().getName());
+            } else if (task.getAssignedToTeamLeader() != null) {
+                map.put("assignedTo", "Leader: " + task.getAssignedToTeamLeader().getName());
+            } else {
+                map.put("assignedTo", "Unassigned");
+            }
+
+            return map;
+        }).collect(Collectors.toList());
+    }
+
+
+
 
 
 }

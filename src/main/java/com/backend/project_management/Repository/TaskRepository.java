@@ -61,5 +61,9 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
     long countByBranchCode(String branchCode);
 
     long countByStartDateBetweenAndBranchCode(LocalDate start, LocalDate end, String branchCode);
+
+    List<Task> findAllByAssignedByLeaderIsNotNullAndAssignedToTeamMemberIsNotNull();
+
+    List<Task> findAllByAssignedByAdminIsNotNull();
 }
 

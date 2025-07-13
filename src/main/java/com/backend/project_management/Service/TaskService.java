@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface TaskService {
 
@@ -64,5 +65,9 @@ public interface TaskService {
     MonthlyTaskCountDTO getMonthlyTaskCounts(int month, int year, String role, String email);
 
     TaskCountDTO getTaskCountsByTimeFrame(String branchCode, String role, String email);
+
+    List<Map<String, Object>> getTasksAssignedByLeaderToMembers(String role, String email);
+
+   List<Map<String, Object>> getTasksAssignedByAdmin(String role, String email);
 
 }
