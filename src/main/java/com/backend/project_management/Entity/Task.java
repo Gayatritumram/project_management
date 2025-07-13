@@ -25,7 +25,6 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String subject;
-    private String name;
     private String description;
     private String projectName;
     private String priority;
@@ -42,26 +41,33 @@ public class Task {
     private String role;
     private String branchCode;
 
+
+
     @ManyToOne
     @JoinColumn(name = "assigned_by_leader_id")
     @JsonIgnore
     private TeamLeader assignedByLeader;
+
+
 
     @ManyToOne
     @JoinColumn(name = "assigned_to_leader_id")
     @JsonIgnore
     private TeamLeader assignedToTeamLeader;
 
+
+
     @ManyToOne
     @JoinColumn(name = "assigned_to_member_id")
     @JsonIgnore
     private TeamMember assignedToTeamMember;
 
+
+
     @ManyToOne
     @JoinColumn(name = "assigned_by_admin_id")
     @JsonIgnore
     private BranchAdmin assignedByAdmin;
-
 
 
     private String assignedToName;
