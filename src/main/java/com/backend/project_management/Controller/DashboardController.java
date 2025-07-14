@@ -5,6 +5,7 @@ import com.backend.project_management.DTO.*;
 import com.backend.project_management.Entity.Project;
 import com.backend.project_management.Entity.Task;
 import com.backend.project_management.Repository.TaskRepository;
+import com.backend.project_management.Repository.TeamRepository;
 import com.backend.project_management.Service.ProjectService;
 import com.backend.project_management.Service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class DashboardController {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private TeamRepository teamRepository;
 
     // dashboard by status
     @GetMapping("/task/monthlyCounts")
@@ -82,6 +85,21 @@ public class DashboardController {
             map.put("branchName", p.getBranchName());
             map.put("departmentName", p.getDepartmentName());
             map.put("startDate", p.getStartDate());
+
+            // Extract team leader name using team1 ID
+            String leaderName = "";
+            if (p.getTeam1() != null) {
+                teamRepository.findById(p.getTeam1()).ifPresent(team -> {
+                    if (team.getTeamLeader() != null) {
+                        map.put("teamLeaderName", team.getTeamLeader().getName());
+                    } else {
+                        map.put("teamLeaderName", "Not Assigned");
+                    }
+                });
+            } else {
+                map.put("teamLeaderName", "No Team Assigned");
+            }
+
             return map;
         }).collect(Collectors.toList());
 
