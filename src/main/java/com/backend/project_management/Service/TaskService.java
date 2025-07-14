@@ -64,7 +64,7 @@ public interface TaskService {
 
     List<MonthlyTaskCountDTO> getMonthlyTaskCounts(int month, int year, String role, String email);
 
-    TaskCountDTO getTaskCountsByTimeFrame(String branchCode, String role, String email);
+    Map<String, Long> getTaskCountsByTimeFrame(String branchCode, String role, String email);
 
     List<Map<String, Object>> getTasksAssignedByLeaderToMembers(String role, String email);
 

@@ -49,12 +49,13 @@ public class DashboardController {
 
 
     @GetMapping("/task/countsByTimeFrame")
-    public ResponseEntity<TaskCountDTO> getTaskCountsByTimeFrame(
+    public ResponseEntity<Map<String, Long>> getTaskCountsByTimeFrame(
             @RequestParam String branchCode,
             @RequestParam String role,
             @RequestParam String email
     ) {
-        return ResponseEntity.ok(taskService.getTaskCountsByTimeFrame(branchCode, role, email));
+        Map<String, Long> data = taskService.getTaskCountsByTimeFrame(branchCode, role, email);
+        return ResponseEntity.ok(data);
     }
 
 
@@ -72,6 +73,7 @@ public class DashboardController {
         response.put("In Progress", dto.getIn_Progress());
         response.put("On Hold", dto.getOn_Hold());
         response.put("Delay", dto.getDelay());
+        response.put("Upcoming", dto.getUpcoming());
         response.put("Today's Project", dto.getTodays_Project());
 
         return ResponseEntity.ok(response);

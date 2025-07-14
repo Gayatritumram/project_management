@@ -197,6 +197,7 @@ public class ProjectServiceImp implements ProjectService {
         long delay = projectRepository.countByStatusAndBranchCode("Delay", branchCode);
         long onHold = projectRepository.countByStatusAndBranchCode("On Hold", branchCode);
         long todays = projectRepository.countByStartDateAndBranchCode(today, branchCode);
+        long upcoming = projectRepository.countByTeam1IsNull();
 
         ProjectStatusCountDTO dto = new ProjectStatusCountDTO();
         dto.setCompleted(completed);
@@ -204,6 +205,8 @@ public class ProjectServiceImp implements ProjectService {
         dto.setDelay(delay);
         dto.setOn_Hold(onHold);
         dto.setTodays_Project(todays);
+        dto.setUpcoming(upcoming);
+
         return dto;
     }
 

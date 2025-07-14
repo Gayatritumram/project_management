@@ -15,4 +15,5 @@ public class ProjectStatusCountDTO {
     private long Delay;
     private long On_Hold;
     private long Todays_Project;
+    private long upcoming;
 }

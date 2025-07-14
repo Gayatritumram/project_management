@@ -14,5 +14,6 @@ public class TaskCountDTO {
     private long last7Days;
     private long last30Days;
     private long last365Days;
+
 }
 

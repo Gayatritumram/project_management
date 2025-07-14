@@ -484,27 +484,33 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public TaskCountDTO getTaskCountsByTimeFrame(String branchCode, String role, String email) {
+    public Map<String, Long> getTaskCountsByTimeFrame(String branchCode, String role, String email) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("Access denied");
         }
 
         LocalDate today = LocalDate.now();
+        LocalDate startOfToday = today; // For clarity
+        LocalDate endOfToday = today;
+
         LocalDate last7Days = today.minusDays(7);
         LocalDate last30Days = today.minusDays(30);
         LocalDate last365Days = today.minusDays(365);
 
         long total = taskRepository.countByBranchCode(branchCode);
+        long countToday = taskRepository.countByStartDateBetweenAndBranchCode(startOfToday, endOfToday, branchCode);
         long count7 = taskRepository.countByStartDateBetweenAndBranchCode(last7Days, today, branchCode);
         long count30 = taskRepository.countByStartDateBetweenAndBranchCode(last30Days, today, branchCode);
         long count365 = taskRepository.countByStartDateBetweenAndBranchCode(last365Days, today, branchCode);
 
-        TaskCountDTO dto = new TaskCountDTO();
-        dto.setTotal(total);
-        dto.setLast7Days(count7);
-        dto.setLast30Days(count30);
-        dto.setLast365Days(count365);
-        return dto;
+        Map<String, Long> response = new LinkedHashMap<>();
+        response.put("Total", total);
+        response.put("Today", countToday);
+        response.put("Last 7 Days", count7);
+        response.put("Last 30 Days", count30);
+        response.put("Last 365 Days", count365);
+
+        return response;
     }
 
     @Override

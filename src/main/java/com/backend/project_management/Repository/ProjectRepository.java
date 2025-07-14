@@ -21,6 +21,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
     long countByStatusAndBranchCode(String status, String branchCode);
 
     long countByStartDateAndBranchCode(LocalDate startDate, String branchCode);
+    long countByTeam1IsNull();
+
 
 
 
