@@ -2,6 +2,7 @@ package com.backend.project_management.Controller;
 
 import com.backend.project_management.DTO.*;
 
+import com.backend.project_management.Entity.Project;
 import com.backend.project_management.Entity.Task;
 import com.backend.project_management.Repository.TaskRepository;
 import com.backend.project_management.Service.ProjectService;
@@ -49,12 +50,21 @@ public class DashboardController {
 
 
     @GetMapping("/project/statusCounts")
-    public ResponseEntity<ProjectStatusCountDTO> getProjectStatusCounts(
+    public ResponseEntity<Map<String, Object>> getProjectStatusCounts(
             @RequestParam String branchCode,
             @RequestParam String role,
             @RequestParam String email
     ) {
-        return ResponseEntity.ok(projectService.getProjectStatusCounts(branchCode, role, email));
+        ProjectStatusCountDTO dto = projectService.getProjectStatusCounts(branchCode, role, email);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("Completed", dto.getCompleted());
+        response.put("In Progress", dto.getIn_Progress());
+        response.put("On Hold", dto.getOn_Hold());
+        response.put("Delay", dto.getDelay());
+        response.put("Today's Project", dto.getTodays_Project());
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/project/getAllProjects")
@@ -95,8 +105,5 @@ public class DashboardController {
         List<Map<String, Object>> tasks = taskService.getTasksAssignedByAdmin(role, email);
         return ResponseEntity.ok(tasks);
     }
-
-
-
 
 }

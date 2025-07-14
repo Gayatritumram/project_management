@@ -200,10 +200,10 @@ public class ProjectServiceImp implements ProjectService {
 
         ProjectStatusCountDTO dto = new ProjectStatusCountDTO();
         dto.setCompleted(completed);
-        dto.setInProgress(inProgress);
+        dto.setIn_Progress(inProgress);
         dto.setDelay(delay);
-        dto.setOnHold(onHold);
-        dto.setTodaysProject(todays);
+        dto.setOn_Hold(onHold);
+        dto.setTodays_Project(todays);
         return dto;
     }
 
