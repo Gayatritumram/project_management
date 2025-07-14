@@ -453,28 +453,33 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public MonthlyTaskCountDTO getMonthlyTaskCounts(int month, int year, String role, String email) {
+    public List<MonthlyTaskCountDTO> getMonthlyTaskCounts(int month, int year, String role, String email) {
         if (!staffValidation.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("Access denied");
+            throw new AccessDeniedException("Access Denied");
         }
 
-        LocalDate startDate = LocalDate.of(year, month, 1);
-        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        // Get number of days in the month
+        LocalDate date = LocalDate.of(year, month, 1);
+        int daysInMonth = date.lengthOfMonth();
 
-        long total = taskRepository.countByStartDateBetween(startDate, endDate);
-        long completed = taskRepository.countByStatusAndStartDateBetween("Completed", startDate, endDate);
-        long inProgress = taskRepository.countByStatusAndStartDateBetween("In Progress", startDate, endDate);
-        long delay = taskRepository.countByStatusAndStartDateBetween("Delay", startDate, endDate);
-        long onHold = taskRepository.countByStatusAndStartDateBetween("On Hold", startDate, endDate);
+        // Fetch counts only for existing days
+        List<Object[]> dbResults = taskRepository.getTaskCountGroupedByDay(month, year);
+        Map<Integer, Long> dayToCountMap = new HashMap<>();
 
-        MonthlyTaskCountDTO dto = new MonthlyTaskCountDTO();
-        dto.setTotal(total);
-        dto.setCompleted(completed);
-        dto.setInProgress(inProgress);
-        dto.setDelay(delay);
-        dto.setOnHold(onHold);
+        for (Object[] row : dbResults) {
+            Integer day = (Integer) row[0];
+            Long count = (Long) row[1];
+            dayToCountMap.put(day, count);
+        }
 
-        return dto;
+        // Fill all days with 0 if missing
+        List<MonthlyTaskCountDTO> fullMonth = new ArrayList<>();
+        for (int i = 1; i <= daysInMonth; i++) {
+            long count = dayToCountMap.getOrDefault(i, 0L);
+            fullMonth.add(new MonthlyTaskCountDTO(i, count));
+        }
+
+        return fullMonth;
     }
 
 

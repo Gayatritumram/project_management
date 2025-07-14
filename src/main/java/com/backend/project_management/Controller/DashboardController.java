@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Month;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,14 +33,20 @@ public class DashboardController {
 
     // dashboard by status
     @GetMapping("/task/monthlyCounts")
-    public ResponseEntity<MonthlyTaskCountDTO> getMonthlyTaskCounts(
-            @RequestParam int month,
-            @RequestParam int year,
+    public ResponseEntity<List<MonthlyTaskCountDTO>> getMonthlyTaskDistribution(
             @RequestParam String role,
-            @RequestParam String email
+            @RequestParam String email,
+            @RequestParam String month,
+            @RequestParam int year
     ) {
-        return ResponseEntity.ok(taskService.getMonthlyTaskCounts(month, year, role, email));
+        int monthNumber = Month.valueOf(month.toUpperCase()).getValue();
+
+        List<MonthlyTaskCountDTO> data =
+                taskService.getMonthlyTaskCounts(monthNumber, year, role, email);
+
+        return ResponseEntity.ok(data);
     }
+
 
     @GetMapping("/task/countsByTimeFrame")
     public ResponseEntity<TaskCountDTO> getTaskCountsByTimeFrame(
@@ -105,6 +112,7 @@ public class DashboardController {
 
         return ResponseEntity.ok(filteredResponse);
     }
+
 
     @GetMapping("/task/assigned-by-leader")
     public ResponseEntity<?> getTasksAssignedByLeaderToMembers(

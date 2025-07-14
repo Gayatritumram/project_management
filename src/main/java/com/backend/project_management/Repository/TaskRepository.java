@@ -65,5 +65,11 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
     List<Task> findAllByAssignedByLeaderIsNotNullAndAssignedToTeamMemberIsNotNull();
 
     List<Task> findAllByAssignedByAdminIsNotNull();
+
+    @Query("SELECT FUNCTION('day', t.startDate), COUNT(t) FROM Task t " +
+            "WHERE MONTH(t.startDate) = :month AND YEAR(t.startDate) = :year " +
+            "GROUP BY FUNCTION('day', t.startDate)")
+    List<Object[]> getTaskCountGroupedByDay(@Param("month") int month, @Param("year") int year);
+
 }
 

@@ -62,7 +62,7 @@ public interface TaskService {
 
     List<TaskSummaryDTO> getAllTaskSummaries(String role,String email,String branchCode);
 
-    MonthlyTaskCountDTO getMonthlyTaskCounts(int month, int year, String role, String email);
+    List<MonthlyTaskCountDTO> getMonthlyTaskCounts(int month, int year, String role, String email);
 
     TaskCountDTO getTaskCountsByTimeFrame(String branchCode, String role, String email);
 
