@@ -44,6 +44,9 @@ public class TaskMapper {
         dto.setBranchCode(task.getBranchCode());
         dto.setRole(task.getRole());
         dto.setAssignedToName(task.getAssignedToName());
+        dto.setBranch(task.getBranch());
+        dto.setDepartment(task.getDepartment());
+
 
 
 
@@ -73,6 +76,10 @@ public class TaskMapper {
         task.setBranchCode(dto.getBranchCode());
         task.setRole(dto.getRole());
         task.setAssignedToName(dto.getAssignedToName());
+
+        task.setBranch(dto.getBranch());
+        task.setDepartment(dto.getDepartment());
+
         if (dto.getAssignedByAdminId() != null) {
             task.setAssignedByAdmin(adminRepo.findById(dto.getAssignedByAdminId()).orElse(null));
         }

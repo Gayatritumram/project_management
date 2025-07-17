@@ -27,6 +27,9 @@ public class TaskDTO {
 
     private String imageUrl;
 
+    private String branch;
+    private String department;
+
     @Email
     private String createdByEmail;
     private String role;

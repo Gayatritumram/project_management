@@ -32,6 +32,10 @@ public class Task {
     private String statusBar;
     private int days;
     private String imageUrl;
+    //new fields
+    private String branch;
+    private String department;
+
 
     private LocalDate startDate;
     private LocalDate endDate;
