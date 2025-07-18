@@ -33,8 +33,8 @@ public class Task {
     private int days;
     private String imageUrl;
     //new fields
-    private String branch;
-    private String department;
+    private String branchName;
+    private String departmentName;
 
 
     private LocalDate startDate;

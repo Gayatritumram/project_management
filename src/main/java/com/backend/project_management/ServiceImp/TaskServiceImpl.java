@@ -137,8 +137,8 @@ public class TaskServiceImpl implements TaskService {
             if (taskDTO.getPriority() != null) task.setPriority(taskDTO.getPriority());
             if (taskDTO.getStatus() != null) task.setStatus(taskDTO.getStatus());
             if (taskDTO.getStatusBar() != null) task.setStatusBar(taskDTO.getStatusBar());
-            if (taskDTO.getBranch() != null) task.setBranch(taskDTO.getBranch());
-            if (taskDTO.getDepartment() != null) task.setDepartment(taskDTO.getDepartment());
+            if (taskDTO.getBranch() != null) task.setBranchName(taskDTO.getBranch());
+            if (taskDTO.getDepartment() != null) task.setDepartmentName(taskDTO.getDepartment());
             if (taskDTO.getDays() != 0) task.setDays(taskDTO.getDays());
 
             if (taskDTO.getStartDate() != null) task.setStartDate(taskDTO.getStartDate());
