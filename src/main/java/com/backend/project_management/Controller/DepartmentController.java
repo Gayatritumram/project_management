@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/department")
 //@CrossOrigin(origins = "https://pjsofttech.in")
-
+@CrossOrigin(origins = "http://localhost:5173")
 
 public class DepartmentController {
 

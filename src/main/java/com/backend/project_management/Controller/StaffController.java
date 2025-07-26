@@ -12,7 +12,8 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "https://pjsofttech.in")
+//@CrossOrigin(origins = "https://pjsofttech.in")
+@CrossOrigin(origins = "http://localhost:5173")
 public class StaffController
 {
     @Autowired

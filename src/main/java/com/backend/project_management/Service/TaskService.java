@@ -70,4 +70,6 @@ public interface TaskService {
 
    List<Map<String, Object>> getTasksAssignedByAdmin(String role, String email);
 
+    List<TaskDTO> getAllLeaderTasksForMember(Long memberId);
+    List<TaskDTO> getAllAdminTasksForMember(Long memberId);
 }

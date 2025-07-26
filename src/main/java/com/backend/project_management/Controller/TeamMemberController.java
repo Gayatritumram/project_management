@@ -16,7 +16,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/team-members")
-@CrossOrigin(origins = "https://pjsofttech.in")
+@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "https://pjsofttech.in")
 public class TeamMemberController {
 
     @Autowired

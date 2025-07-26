@@ -19,7 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/tasks")
-@CrossOrigin(origins = "https://pjsofttech.in")
+//@CrossOrigin(origins = "https://pjsofttech.in")
+@CrossOrigin(origins = "http://localhost:5173")
 public class TaskController {
 
     @Autowired
@@ -123,13 +124,18 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
     }
 
 
-    @GetMapping("/tasks/admin/email/{emailFind}")
+    @GetMapping("/tasks/admin/email/{email}")
     public ResponseEntity<List<TaskDTO>> getTasksByAdminEmail(@PathVariable String emailFind,
                                                               @PathVariable String email,
                                                               @RequestParam String role
     ) {
         return ResponseEntity.ok(taskService.getTasksAssignedByAdminEmail(emailFind, email, role));
     }
+
+
+
+
+
 
     @GetMapping("/tasks/leader/email/{emailFind}")
     public ResponseEntity<List<TaskDTO>> getTasksByLeaderEmail(@PathVariable String emailFind,
@@ -146,7 +152,7 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
         return ResponseEntity.ok(taskService.getTasksAssignedToMemberEmail(emailFind, email,role));
     }
 
-    @GetMapping("/leader/today/{emailFind}")
+    @GetMapping("/leader/today/{email}")
     public ResponseEntity<List<TaskDTO>> getTodaysLeaderTasks(@PathVariable String emailFind,
                                                               @PathVariable String email,
                                                               @RequestParam String role) {
@@ -161,14 +167,15 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
         return ResponseEntity.ok(taskService.getTasksAssignedToMemberById(id, role, email));
     }
 
+
     ///  this Api return All tasks assigned to leader using leader id
+    /// for All task use this
     @GetMapping("/assigned-by/leader/{id}")
     public ResponseEntity<List<TaskDTO>> getTasksAssignedByLeader(@PathVariable Long id,
                                                                   @RequestParam String role,
                                                                   @RequestParam String email) {
         return ResponseEntity.ok(taskService.getTasksAssignedByLeaderId(id, role, email));
     }
-
 
 
     @GetMapping("/assigned-by/admin/{id}")
@@ -266,6 +273,16 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
                                                                     @RequestParam String email,
                                                                     @RequestParam String branchCode) {
         return ResponseEntity.ok(taskService.getAllTaskSummaries(role,email,branchCode));
+    }
+    /// member site sathi he use kar
+    @GetMapping("/task/member/leaderTasks/{memberId}")
+    public ResponseEntity<List<TaskDTO>> getAllLeaderTasksForMember(@PathVariable Long memberId) {
+        return ResponseEntity.ok(taskService.getAllLeaderTasksForMember(memberId));
+    }
+
+    @GetMapping("/task/member/adminTasks/{memberId}")
+    public ResponseEntity<List<TaskDTO>> getAllAdminTasksForMember(@PathVariable Long memberId) {
+        return ResponseEntity.ok(taskService.getAllAdminTasksForMember(memberId));
     }
 
 

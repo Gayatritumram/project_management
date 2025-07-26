@@ -567,6 +567,17 @@ public class TaskServiceImpl implements TaskService {
 
 
 
+    @Override
+    public List<TaskDTO> getAllLeaderTasksForMember(Long memberId) {
+        List<Task> tasks = taskRepository.findByAssignedToTeamMember_IdAndAssignedByLeaderIsNotNull(memberId);
+        return tasks.stream().map(taskMapper::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TaskDTO> getAllAdminTasksForMember(Long memberId) {
+        List<Task> tasks = taskRepository.findByAssignedToTeamMember_IdAndAssignedByAdminIsNotNull(memberId);
+        return tasks.stream().map(taskMapper::toDto).collect(Collectors.toList());
+    }
 
 
 }

@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/dashboard")
-@CrossOrigin(origins = "https://pjsofttech.in")
+//@CrossOrigin(origins = "https://pjsofttech.in")
+@CrossOrigin(origins = "http://localhost:5173")
 public class DashboardController {
     @Autowired
     private TaskService taskService;
@@ -59,7 +60,7 @@ public class DashboardController {
     }
 
 
-
+//wait run karu de bakiche
     @GetMapping("/project/statusCounts")
     public ResponseEntity<Map<String, Object>> getProjectStatusCounts(
             @RequestParam String branchCode,

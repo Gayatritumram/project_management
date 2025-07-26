@@ -1,7 +1,6 @@
 package com.backend.project_management.Service;
 
 import com.backend.project_management.DTO.TeamMemberDTO;
-import com.backend.project_management.Entity.TeamMember;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -29,6 +28,7 @@ public interface TeamMemberService {
     TeamMemberDTO getTeamMemberByName(String name, String role, String email);
 
     List<TeamMemberDTO> filterTeamMembers(String name, String branchName, String departmentName, String roleName, String role, String email);
+
 
 
 
