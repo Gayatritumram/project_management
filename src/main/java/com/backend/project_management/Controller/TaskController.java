@@ -276,13 +276,18 @@ public ResponseEntity<Page<TaskDTO>> getAllTasks(
     }
     /// member site sathi he use kar
     @GetMapping("/task/member/leaderTasks/{memberId}")
-    public ResponseEntity<List<TaskDTO>> getAllLeaderTasksForMember(@PathVariable Long memberId) {
-        return ResponseEntity.ok(taskService.getAllLeaderTasksForMember(memberId));
+    public ResponseEntity<List<TaskDTO>> getAllLeaderTasksForMember(@PathVariable Long memberId,
+                                                                    @RequestParam String role,
+                                                                    @RequestParam String email
+    ) {
+        return ResponseEntity.ok(taskService.getAllLeaderTasksForMember(memberId,role,email));
     }
 
     @GetMapping("/task/member/adminTasks/{memberId}")
-    public ResponseEntity<List<TaskDTO>> getAllAdminTasksForMember(@PathVariable Long memberId) {
-        return ResponseEntity.ok(taskService.getAllAdminTasksForMember(memberId));
+    public ResponseEntity<List<TaskDTO>> getAllAdminTasksForMember(@PathVariable Long memberId,
+                                                                   @RequestParam String role,
+                                                                   @RequestParam String email) {
+        return ResponseEntity.ok(taskService.getAllAdminTasksForMember(memberId,role,email));
     }
 
 

@@ -135,4 +135,14 @@ public class DashboardController {
         return ResponseEntity.ok(tasks);
     }
 
+    /// for member site ------>>>>>>
+    @GetMapping("/member/task/{memberId}")
+    public ResponseEntity<MemberDashboardDTO> getMemberDashboard(@PathVariable Long memberId,
+                                                                 @RequestParam String role,
+                                                                 @RequestParam String email) {
+        MemberDashboardDTO data = taskService.getMemberDashboardData(memberId,role,email);
+        return ResponseEntity.ok(data);
+    }
+
+
 }

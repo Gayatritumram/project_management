@@ -1,9 +1,6 @@
 package com.backend.project_management.Service;
 
-import com.backend.project_management.DTO.MonthlyTaskCountDTO;
-import com.backend.project_management.DTO.TaskCountDTO;
-import com.backend.project_management.DTO.TaskDTO;
-import com.backend.project_management.DTO.TaskSummaryDTO;
+import com.backend.project_management.DTO.*;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -70,6 +67,7 @@ public interface TaskService {
 
    List<Map<String, Object>> getTasksAssignedByAdmin(String role, String email);
 
-    List<TaskDTO> getAllLeaderTasksForMember(Long memberId);
-    List<TaskDTO> getAllAdminTasksForMember(Long memberId);
+    List<TaskDTO> getAllLeaderTasksForMember(Long memberId, String role, String email);
+    List<TaskDTO> getAllAdminTasksForMember(Long memberId,String role, String email);
+    MemberDashboardDTO getMemberDashboardData(Long memberId,String role,String email);
 }

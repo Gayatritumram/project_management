@@ -1,9 +1,6 @@
 package com.backend.project_management.ServiceImp;
 
-import com.backend.project_management.DTO.MonthlyTaskCountDTO;
-import com.backend.project_management.DTO.TaskCountDTO;
-import com.backend.project_management.DTO.TaskDTO;
-import com.backend.project_management.DTO.TaskSummaryDTO;
+import com.backend.project_management.DTO.*;
 import com.backend.project_management.Entity.*;
 import com.backend.project_management.Exception.RequestNotFound;
 import com.backend.project_management.Mapper.TaskMapper;
@@ -568,16 +565,50 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public List<TaskDTO> getAllLeaderTasksForMember(Long memberId) {
+    public List<TaskDTO> getAllLeaderTasksForMember(Long memberId, String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("Access denied");
+        }
         List<Task> tasks = taskRepository.findByAssignedToTeamMember_IdAndAssignedByLeaderIsNotNull(memberId);
         return tasks.stream().map(taskMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<TaskDTO> getAllAdminTasksForMember(Long memberId) {
+    public List<TaskDTO> getAllAdminTasksForMember(Long memberId, String role, String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("Access denied");
+        }
         List<Task> tasks = taskRepository.findByAssignedToTeamMember_IdAndAssignedByAdminIsNotNull(memberId);
         return tasks.stream().map(taskMapper::toDto).collect(Collectors.toList());
     }
+
+    @Override
+    public MemberDashboardDTO getMemberDashboardData(Long memberId,String role,String email) {
+        if (!staffValidation.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("Access denied");
+        }
+        LocalDate today = LocalDate.now();
+        LocalDate start7 = today.minusDays(7);
+        LocalDate start30 = today.minusDays(30);
+        LocalDate start365 = today.minusDays(365);
+
+        MemberDashboardDTO dto = new MemberDashboardDTO();
+
+        dto.setTotalTasks(taskRepository.countByAssignedToTeamMemberId(memberId));
+        dto.setInProgress(taskRepository.countByAssignedToTeamMemberIdAndStatus(memberId, "In Progress"));
+        dto.setCompleted(taskRepository.countByAssignedToTeamMemberIdAndStatus(memberId, "Completed"));
+        dto.setDelay(taskRepository.countByAssignedToTeamMemberIdAndStatus(memberId, "Delay"));
+        dto.setOnHold(taskRepository.countByAssignedToTeamMemberIdAndStatus(memberId, "On Hold"));
+
+        dto.setToday(taskRepository.countByAssignedToTeamMemberIdAndStartDateBetween(memberId, today, today));
+        dto.setLast7Days(taskRepository.countByAssignedToTeamMemberIdAndStartDateBetween(memberId, start7, today));
+        dto.setLast30Days(taskRepository.countByAssignedToTeamMemberIdAndStartDateBetween(memberId, start30, today));
+        dto.setLast365Days(taskRepository.countByAssignedToTeamMemberIdAndStartDateBetween(memberId, start365, today));
+
+
+        return dto;
+    }
+
 
 
 }

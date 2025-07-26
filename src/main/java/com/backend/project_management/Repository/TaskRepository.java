@@ -77,5 +77,15 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
     // All tasks assigned by any admin to a specific member
     List<Task> findByAssignedToTeamMember_IdAndAssignedByAdminIsNotNull(Long memberId);
 
+    // Total count for member
+    long countByAssignedToTeamMemberId(Long memberId);
+
+    long countByAssignedToTeamMemberIdAndStatus(Long memberId, String status);
+
+    long countByAssignedToTeamMemberIdAndStartDateBetween(Long memberId, LocalDate start, LocalDate end);
+
+
+
+
 }
 
